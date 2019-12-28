@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.controllers.homepageController">
+   <children>
+      <VBox prefHeight="710.0" prefWidth="1000.0">
+         <children>
+            <Pane prefHeight="131.0" prefWidth="1000.0">
+               <children>
+                  <Text fx:id="greeting" layoutX="27.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Good Evening, Uda'le">
+                     <font>
+                        <Font name="System Italic" size="34.0" />
+                     </font>
+                  </Text>
+               </children></Pane>
+            <HBox prefHeight="270.0" prefWidth="1000.0">
+               <children>
+                  <Pane prefHeight="259.0" prefWidth="333.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ddffb8" height="156.0" layoutX="32.0" layoutY="57.0" onMouseClicked="#gotoMyRequests" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="roundedRect" width="269.0" />
+                        <Text layoutX="126.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You Have">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="userRequestsInTreatment" layoutX="157.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="114.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="in treatment">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="259.0" prefWidth="333.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bafeff" height="156.0" layoutX="32.0" layoutY="57.0" onMouseClicked="#gotoMyRequests" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="roundedRect" width="269.0" />
+                        <Text layoutX="118.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You've sent">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="userTotalRequest" layoutX="157.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="131.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="requests">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="paneForIT" prefHeight="259.0" prefWidth="333.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffd8ba" height="156.0" layoutX="32.0" layoutY="57.0" onMouseClicked="#gotoRequestTreatment" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="roundedRect" width="269.0" />
+                        <Text fx:id="UserNeedToTreat" layoutX="157.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="35.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request waiting for your action">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+               </children>
+            </HBox>
+            <Pane prefHeight="348.0" prefWidth="1000.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d1e9ff" height="26.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1000.0" />
+                  <TableView fx:id="table5last" layoutX="156.0" layoutY="35.0" prefHeight="285.0" prefWidth="689.0">
+                     <columns>
+                        <TableColumn prefWidth="75.0" text="C1" />
+                        <TableColumn prefWidth="75.0" text="C2" />
+                     </columns>
+                  </TableView>
+                  <Text layoutX="440.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your last 5 requests">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
