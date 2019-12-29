@@ -175,16 +175,16 @@ public class requestTreatmentController extends AppController implements Initial
             TableRow<ChangeRequest> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty()) {
+                    selectedRequestInstance = row.getItem();
+
                     initPanes();
                     rightPane_selectRequest.setVisible(false);
-
                     if (row.getItem().getCurrentStage().equals("INIT")) {
                         rightPane_Init.setVisible(true);
                         if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
 							btnInit.setVisible(true);
                     } else { // ACTIVE request
                         rightPane_requestTreatment.setVisible(true);
-                        selectedRequestInstance = row.getItem();
 
                         requestID.setText("" + selectedRequestInstance.getRequestID());
                         existingCondition.setText(selectedRequestInstance.getExistingCondition());
@@ -200,7 +200,6 @@ public class requestTreatmentController extends AppController implements Initial
                         } else {
                             rightPane_Freezed.setVisible(false);
                             rightPane_requestTreatment.setDisable(false);
-
                         }
                     }
                 }

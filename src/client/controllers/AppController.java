@@ -56,7 +56,6 @@ public class AppController {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
 		});
 
