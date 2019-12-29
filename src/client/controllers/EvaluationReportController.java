@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -86,6 +87,9 @@ public class EvaluationReportController extends AppController implements Initial
 	private TextArea cnstrntTXT;
 
 	@FXML
+	private Text msgFix;
+
+	@FXML
 	void SbmtEvlBtnClick(ActionEvent event) {
 
 		if(departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()||  timeEvlBox.getValue() == null)
@@ -118,6 +122,7 @@ public class EvaluationReportController extends AppController implements Initial
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		msgFix.setVisible(false);
 		dueDateLabel.setVisible(false);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
@@ -125,6 +130,9 @@ public class EvaluationReportController extends AppController implements Initial
 		if(!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
 			SbmtEvlBtn.setVisible(false);
 			timeEvlBox.setDisable(true);
+			msgFix.setText("This stage is done. You have only a viewing permission.");
+			msgFix.setFill(Color.BLUE);
+			msgFix.setVisible(true);
 
 		}
 		requestID.setText(thisRequest.getRequestID()+"");
@@ -147,15 +155,15 @@ public class EvaluationReportController extends AppController implements Initial
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
 		if(reports.size() > 0)
 		{
-			firstReportForRequest = false;
+			if(thisRequest.getCurrentStage().equals("EVALUATION"))
+				msgFix.setVisible(true);
 			EvaluationReport individualReport = reports.get(0);
 			reqChngTXT.setText(individualReport.getRequired_change());
 			expResTXT.setText(individualReport.getExpected_result());
 			cnstrntTXT.setText(individualReport.getExpected_risks());
 			timeEvlBox.setValue(individualReport.getEstimated_time().toLocalDate());
 		}
-		else
-			firstReportForRequest = true;
+
 	}
 
 	public void queryResult(Object object) {
