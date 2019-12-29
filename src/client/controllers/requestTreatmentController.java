@@ -173,7 +173,7 @@ public class requestTreatmentController extends AppController implements Initial
 		initPanes();
 
 
-		// event when user click on row
+		// event when user click on a row
 		table.setRowFactory(tv -> {
 			TableRow<ChangeRequest> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
