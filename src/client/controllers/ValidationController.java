@@ -108,8 +108,7 @@ public class ValidationController extends AppController implements Initializable
 		expectedRisk = this.cnstrntTXT.getText();
 		LocalDate date = this.timeEvlBox.getValue();
 		estimatedTime = date.toString();
-		EvaluationReport rep = new EvaluationReport(systemID, requiredChange, expectedResult, expectedRisk,
-				estimatedTime);
+
 
 		String query= "INSERT INTO `Evaluation Reports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
 				

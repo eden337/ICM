@@ -30,7 +30,7 @@ public class requestTreatmentController extends AppController implements Initial
     protected ChangeRequest selectedRequestInstance;
 
     @FXML
-    private TableView<ChangeRequest> table;
+    public TableView<ChangeRequest> table;
 
     @FXML
     private TableColumn<ChangeRequest, Integer> colId;
@@ -274,13 +274,13 @@ public class requestTreatmentController extends AppController implements Initial
     @FXML
     void evalButtonClick(ActionEvent event) {
         EvaluationReportController evaReport = new EvaluationReportController();
-        evaReport.start(new Stage());
+        loadPage("EvaluationForm");
     }
 
     @FXML
     void exeButtonClick(ActionEvent event) {
         ExecutionController exeControl = new ExecutionController();
-        exeControl.start(new Stage());
+        loadPage("EvaluationForm");
     }
 
     @FXML

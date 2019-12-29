@@ -65,6 +65,9 @@ public class ClientMessages {
             case FreezeRequest:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
+            case EVAL_GetAllReportsByRID:
+                EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
+                break;
             default:
                 break;
 
