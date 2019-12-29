@@ -14,30 +14,30 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
       <HBox>
          <children>
             <TableView fx:id="table" prefHeight="693.0" prefWidth="420.0">
               <columns>
-                <TableColumn fx:id="colId" prefWidth="108.0" text="ID" />
-                <TableColumn fx:id="colExisitCond" prefWidth="173.0" text="Exisiting Condition" />
-                  <TableColumn fx:id="colStatus" prefWidth="137.0" text="Status" />
+                <TableColumn fx:id="colId" prefWidth="61.0" text="ID" />
+                <TableColumn fx:id="colIntitator" prefWidth="107.0" text="lIntitator" />
+                  <TableColumn fx:id="colStage" prefWidth="130.0" text="Stage" />
+                  <TableColumn fx:id="colStatus" prefWidth="121.0" text="Status" />
               </columns>
             </TableView>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <AnchorPane fx:id="rightPane_msg" prefHeight="710.0" prefWidth="579.0" visible="false">
+                  <AnchorPane fx:id="rightPane_selectRequest" prefHeight="710.0" prefWidth="579.0" visible="false">
                      <children>
                         <Text fx:id="custom_msg" layoutX="40.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a request please" textAlignment="CENTER" wrappingWidth="508.2119140625">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Text>
-                        <Button fx:id="btnAllocateUsers" layoutX="236.0" layoutY="379.0" mnemonicParsing="false" onAction="#allocatePersonelButtonClick" prefHeight="31.0" prefWidth="107.0" styleClass="bg_color5" text="Allocate Users" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0">
+                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0" visible="false">
                      <children>
                         <Text fx:id="idText" layoutX="35.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
                         <Text fx:id="requestID" layoutX="48.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
@@ -82,7 +82,6 @@
                         <Button fx:id="closureBtn" layoutX="472.0" layoutY="450.0" mnemonicParsing="false" onAction="#closureButtonClick" prefHeight="38.0" prefWidth="79.0" text="Closure" />
                         <Button fx:id="freezeBtn" layoutX="311.0" layoutY="578.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" text="Freeze Treatment" />
                         <Button fx:id="refrshBtn" layoutX="24.0" layoutY="15.0" mnemonicParsing="false" onAction="#refrshBtn" prefHeight="25.0" prefWidth="124.0" text="Refresh" />
-                        <Button fx:id="personalAllocationBtn" layoutX="333.0" layoutY="64.0" mnemonicParsing="false" onAction="#allocatePersonelButtonClick" prefHeight="51.0" prefWidth="166.0" stylesheets="@css/theme.css" text="Allocate Personel" />
                         <Text layoutX="237.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Request" wrappingWidth="98.0" />
                      </children>
                   </AnchorPane>
@@ -103,6 +102,16 @@
                               <Button fx:id="btnUnfreeze" layoutX="105.0" layoutY="148.0" mnemonicParsing="false" onAction="#unfreeze" prefHeight="38.0" prefWidth="87.0" styleClass="bg_color4" text="UnFreeze" />
                            </children>
                         </Pane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="rightPane_Init" prefHeight="710.0" prefWidth="579.0">
+                     <children>
+                        <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Shuld be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="btnInit" layoutX="236.0" layoutY="379.0" mnemonicParsing="false" onAction="#allocatePersonelButtonClick" prefHeight="31.0" prefWidth="107.0" styleClass="bg_color5" text="Init Request" />
                      </children>
                   </AnchorPane>
                </children>

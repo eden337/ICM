@@ -102,13 +102,13 @@ public class DecisionController extends AppController implements Initializable {
 		dueDateLabel.setVisible(true);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		requestID.setText(thisRequest.getRequestID());
+		requestID.setText(thisRequest.getRequestID()+"");
 		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getRequestName());
+		requestNameLabel.setText(thisRequest.getInitiator());
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
-		inchargeTF.setText(thisRequest.getCurrInCharge());
-		dueDateLabel.setText(thisRequest.getDueDate());
+		inchargeTF.setText("");
+		dueDateLabel.setText(thisRequest.getDueDate().toString());
 	}
 
 }

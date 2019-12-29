@@ -3,6 +3,7 @@
  */
 package common.entity;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.Date;
  * @author Yuda Hatam
  *
  */
-public class ChangeRequest {
+public class ChangeRequest implements Serializable{
 
 	/**
 	 * @apiNote
@@ -24,255 +25,78 @@ public class ChangeRequest {
 	 * stages details add by system: repeated (a stage that was repeated so it's results were discarded)
 	 * Auxiliary stage variable: indexOfCurrentStage   
 	 */
-	private User initiator;
+	private String initiator;
+	private String currentStage;
+	private String intiatorType;
 	private String status;
-	private String requestID;
+	private int requestID;
 	private String infoSystem;
 	private String existingCondition;
 	private String suggestedChange;
 	private String reasonForChange;
 	private String remarks;
-	private String dueDate;
-	private String requestName,currInCharge;
+	private ZonedDateTime dueDate;
+	private String filesPaths;
 	private ZonedDateTime submitTime;
-	private Stage[] allStages = new Stage[5];
-	private boolean[] isExtended = new boolean[5];
-	private ArrayList<Stage> repeated;
-	private int indexOfCurrentStage;
-	private ArrayList<AttachedFile> attachedFiles;
-	private ITEngineer[] incharge = new ITEngineer[5];
+	private String incharges;
+	
+	
+	public String getCurrentStage() {
+		return currentStage;
+	}
 
-	/**
-	 *
-	 * @author: Ira Goor
-	 * @apiNote
-	 * Constructors purpose:new Change Request (after submitted)
-	 *
-	 * @param requestID
-	 * @param infoSysytem
-	 * @param existingCondition
-	 * @param suggestedChange
-	 * @param reasonForChange
-	 * @param remarks
-	 */
-	public ChangeRequest(User initiator,String requestID, String infoSysytem, String existingCondition, String suggestedChange,
-			String reasonForChange, String remarks,ArrayList<AttachedFile> attachedFiles,String status) {
+
+	public void setCurrentStage(String currentStage) {
+		this.currentStage = currentStage;
+	}
+
+
+	public String getFilesPaths() {
+		return filesPaths;
+	}
+
+
+	public void setFilesPaths(String filesPaths) {
+		this.filesPaths = filesPaths;
+	}
+
+
+	public String getIncharges() {
+		return incharges;
+	}
+
+
+	public void setIncharges(String incharges) {
+		this.incharges = incharges;
+	}
+
+
+
+	public ChangeRequest(String initiator, String intiatorType, String status, int requestID, String infoSystem,
+			String existingCondition, String suggestedChange, String reasonForChange, String remarks,
+			ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage,String filesPaths,String incharges) {
 		this.initiator=initiator;
-		this.requestID = requestID;
-		this.infoSystem = infoSysytem;
-		this.existingCondition = existingCondition;
-		this.suggestedChange = suggestedChange;
-		this.reasonForChange = reasonForChange;
-		this.remarks = remarks;
-		this.submitTime=ZonedDateTime.now();
-		this.attachedFiles=attachedFiles;
-		this.status= status;
-
-	}
-
-	/**
-	 * @apiNote
-	 * constructor purpose:
-	 * save info about specific request on data table from requests viewing
-	 *
-	 *
-	 * @param requestID
-	 * @param requestName
-	 * @param departarmentID
-	 * @param existingCondition
-	 * @param descripitionsTextArea
-	 * @param dueDateLabel
-	 * @param currInCharge
-	 */
-	public ChangeRequest(String requestID, String requestName, String departarmentID, String existingCondition,
-			String descripitionsTextArea, String dueDateLabel, String currInCharge,String status) {
-		this.requestName = requestName;
-		this.requestID = requestID;
-		this.infoSystem = departarmentID;
-		this.existingCondition = existingCondition;
-		this.remarks = descripitionsTextArea;
-		this.dueDate=dueDateLabel;
-		this.currInCharge=currInCharge;
-		this.status= status;
-
-	}
-
-	/**
-	 * @author: Ira Goor
-	 * @apiNote
-	 * Constructors purpose: after incharge assignment (gets an incharge ITEngineer list)
-	 *
-	 * @param initiator
-	 * @param status
-	 * @param requestID
-	 * @param infoSystem
-	 * @param existingCondition
-	 * @param suggestedChange
-	 * @param reasonForChange
-	 * @param remarks
-	 * @param submitTime
-	 * @param attachedFiles
-	 * @param incharge
-	 * @param evaluator
-	 */
-	public ChangeRequest(User initiator, String status, String requestID, String infoSystem,
-			String existingCondition, String suggestedChange, String reasonForChange, String remarks,
-			ZonedDateTime submitTime,ArrayList<AttachedFile> attachedFiles, ITEngineer[] incharge
-			,ITEngineer evaluator) {
-		this.initiator = initiator;
-		this.status = status;
-		this.requestID = requestID;
+		this.intiatorType=intiatorType;
+		this.status=status;
+		this.requestID=requestID;
 		this.infoSystem = infoSystem;
 		this.existingCondition = existingCondition;
 		this.suggestedChange = suggestedChange;
 		this.reasonForChange = reasonForChange;
 		this.remarks = remarks;
+		this.dueDate = dueDate;
 		this.submitTime = submitTime;
-		this.attachedFiles = attachedFiles;
-		this.incharge = incharge;
-		this.repeated= new ArrayList<Stage>();
-		initiliazeAllStages(evaluator);
-	}
-
-
-
-	/**
-	 *
-	 * @author: Ira Goor
-	 * @apiNote
-	 * Constructors purpose: existing change Request in DB
-	 *
-	 * @param initiator
-	 * @param status
-	 * @param requestID
-	 * @param infoSystem
-	 * @param existingCondition
-	 * @param suggestedChange
-	 * @param reasonForChange
-	 * @param remarks
-	 * @param submitTime
-	 * @param allStages
-	 * @param isExtended
-	 * @param repeated
-	 * @param indexOfCurrentStage
-	 * @param attachedFiles
-	 * @param incharge
-	 */
-
-	
-	public ChangeRequest(User initiator, String status, String requestID, String infoSystem,
-			String existingCondition, String suggestedChange, String reasonForChange, String remarks,
-			ZonedDateTime submitTime, Stage[] allStages, boolean[] isExtended, ArrayList<Stage> repeated,
-			int indexOfCurrentStage, ArrayList<AttachedFile> attachedFiles, ITEngineer[] incharge) {
-		this.initiator = initiator;
-		this.status = status;
-		this.requestID = requestID;
-		this.infoSystem = infoSystem;
-		this.existingCondition = existingCondition;
-		this.suggestedChange = suggestedChange;
-		this.reasonForChange = reasonForChange;
-		this.remarks = remarks;
-		this.submitTime = submitTime;
-		this.allStages = allStages;
-		this.isExtended = isExtended;
-		this.repeated = repeated;
-		this.indexOfCurrentStage = indexOfCurrentStage;
-		this.attachedFiles = attachedFiles;
-		this.incharge = incharge;
-	}
-
-
-
-	/**
-	 * 
-	 * @author Ira Goor
-	 * @apiNote 
-	 * method purpose: after incharge ITEnigineers have been submitted initialize stages 
-	 *
-	 */
-
-
-	protected void initiliazeAllStages(ITEngineer evaluator)
-	{
-		this.indexOfCurrentStage=0;
-		this.allStages[0]=new Evaluation(this, StageName.EVALUATION,evaluator , true);
-		for(int i=0;i<5;i++)
-			isExtended[i]=true;
-	}
-	
-	/**
-	 * 
-	 * @author Ira Goor
-	 * @apiNote 
-	 * method purpose: close current stage and set next stage
-	 *
-	 *
-	 */
-	
-	private void closeCurrentStage() {
-		if(allStages[indexOfCurrentStage].closeStage())
-		{
-			//maybe unneeded: add allStages[this.indexOfCurrentStage] to delayed table
-			
-		}
-		this.indexOfCurrentStage=allStages[indexOfCurrentStage].result();
-		
+		this.currentStage = currentStage;
+		this.filesPaths = filesPaths;
+		this.incharges =incharges;
 		
 	}
-	
-	/**
-	 * 
-	 * @author Ira Goor
-	 * @apiNote 
-	 * method purpose: get new Stage 
-	 *
-	 * @return
-	 */
-	
-	protected Stage newStage(ITEngineer execurtioner,long days)
-	{
-		Stage stage=null;
-		switch(indexOfCurrentStage)
-		{
-		case 0: 
-			stage= new Evaluation(this,StageName.EVALUATION,execurtioner,isExtended[indexOfCurrentStage]);
-			break;
-		case 1:
-			//placeHolder:
-			//stage = new Decision();
-			break;
-		case 2:
-			//placeHolder:
-			//stage= new Execution();
-			break;
-		case 3:
-			//placeHolder:
-			//stage= new Validation();
-			break;
-		case 4:
-			//placeHolder:
-			//stage= new Closure();
-			break;
-			
-		}
-		return stage;
-	}
-	
-	
-	
-	
-	
-	
-	
-
-	
-
 
 
 	/**
 	 * @return the requestID
 	 */
-	public String getRequestID() {
+	public int getRequestID() {
 		return requestID;
 	}
 
@@ -326,12 +150,6 @@ public class ChangeRequest {
 		return remarks;
 	}
 
-	/**
-	 * @return the currentStage
-	 */
-	public Stage getCurrentStage() {
-		return allStages[indexOfCurrentStage];
-	}
 
 	/**
 	 * 
@@ -340,11 +158,9 @@ public class ChangeRequest {
 	 *
 	 * @return
 	 */
-	public User getInitiator() {
+	public String getInitiator() {
 		return this.initiator;
 	}
-
-
 
 	/**
 	 * @return the infoSystem
@@ -356,23 +172,51 @@ public class ChangeRequest {
 	/**
 	 * @return the dueDate
 	 */
-	public String getDueDate() {
+	public ZonedDateTime getDueDate() {
 		return dueDate;
 	}
+	
 
-	/**
-	 * @return the requestName
-	 */
-	public String getRequestName() {
-		return requestName;
+	public void setInitiator(String initiator) {
+		this.initiator = initiator;
 	}
 
-	/**
-	 * @return the currInCharge
-	 */
-	public String getCurrInCharge() {
-		return currInCharge;
+	public void setIntiatorType(String intiatorType) {
+		this.intiatorType = intiatorType;
 	}
+
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
+	}
+
+	public void setInfoSystem(String infoSystem) {
+		this.infoSystem = infoSystem;
+	}
+
+	public void setExistingCondition(String existingCondition) {
+		this.existingCondition = existingCondition;
+	}
+
+	public void setSuggestedChange(String suggestedChange) {
+		this.suggestedChange = suggestedChange;
+	}
+
+	public void setReasonForChange(String reasonForChange) {
+		this.reasonForChange = reasonForChange;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public void setDueDate(ZonedDateTime dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public void setSubmitTime(ZonedDateTime submitTime) {
+		this.submitTime = submitTime;
+	}
+
 
 	/**
 	 * @return the submitTime
@@ -381,46 +225,8 @@ public class ChangeRequest {
 		return submitTime;
 	}
 
-	/**
-	 * @return the allStages
-	 */
-	public Stage[] getAllStages() {
-		return allStages;
-	}
 
-	/**
-	 * @return the isExtended
-	 */
-	public boolean[] getIsExtended() {
-		return isExtended;
+	public String getIntiatorType() {
+		return intiatorType;
 	}
-
-	/**
-	 * @return the repeated
-	 */
-	public ArrayList<Stage> getRepeated() {
-		return repeated;
-	}
-
-	/**
-	 * @return the indexOfCurrentStage
-	 */
-	public int getIndexOfCurrentStage() {
-		return indexOfCurrentStage;
-	}
-
-	/**
-	 * @return the attachedFiles
-	 */
-	public ArrayList<AttachedFile> getAttachedFiles() {
-		return attachedFiles;
-	}
-
-	/**
-	 * @return the incharge
-	 */
-	public ITEngineer[] getIncharge() {
-		return incharge;
-	}
-
 }

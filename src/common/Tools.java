@@ -1,13 +1,18 @@
 package common;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
+
+import common.entity.StageName;
 
 public class Tools {
 
@@ -53,5 +58,53 @@ public class Tools {
 
 		return map;
 	}
-	
+	/**
+	 * 
+	 * @author Ira Goor 
+	 * method purpose:convert String from DB to Enum StageName
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static StageName convertStringToStageName(String str)
+	{
+		String name=str.toUpperCase();
+		if(name.equals("EVALUATION"))
+			return StageName.EVALUATION;
+		else if(name.equals("DECISION"))
+			return StageName.DECISION;
+		else if(name.equals("EXECUTION"))
+			return StageName.EXECUTION;
+		else if(name.equals("VALIDATION"))
+			return StageName.VALIDATION;
+		else if(name.equals("CLOUSRE"))
+			return StageName.CLOUSRE;
+		else
+			return StageName.INIT;
+		
+	}
+	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate)
+	{
+		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
+		return t;
+	}
+	public static int convertStageNameToInt(StageName name)
+	{
+		switch(name)
+		{
+		case EVALUATION:
+			return 0;
+		case DECISION:
+			return 1;
+		case EXECUTION:
+			return 2;
+		case VALIDATION:
+			return 3;
+		case CLOUSRE:
+			return 4;
+			default:
+				return -1;
+		
+		}
+	}
 }

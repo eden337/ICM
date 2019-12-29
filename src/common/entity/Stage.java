@@ -1,5 +1,6 @@
 package common.entity;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
@@ -14,22 +15,23 @@ import java.time.ZonedDateTime;
  *         interfaces: StageName
  *
  */
-public abstract class Stage {
+public class Stage implements Serializable {
 
 	/**
 	 * 
 	 * 
 	 * 
 	 */
-	private ChangeRequest request;
+	private int requestID;
 	private StageName stageName;
 	private ZonedDateTime startTime;
 	private ZonedDateTime endTime;
 	private ZonedDateTime deadline;
 	private long daysDelayed;
-	private ITEngineer executionEngineer;
+	private String executionEngineer;
+	private String incharge;
 	private boolean canBeExtend;
-
+	
 	private boolean delayed;
 	/**
 	 * @author Ira Goor
@@ -44,37 +46,40 @@ public abstract class Stage {
 	 * @param days
 	 * @param canBeExtend
 	 */
-	public Stage(ChangeRequest request, StageName stageName, ITEngineer executionEngineer, long days,
+	public Stage(int request, StageName stageName, String executionEngineer,String incharge, long days,
 			boolean canBeExtend) {
-		this.request = request;
+		this.requestID = request;
 		this.stageName = stageName;
 		this.canBeExtend = canBeExtend;
 		this.executionEngineer = executionEngineer;
+		this.incharge=incharge;
 		daysDelayed = 0;
 		delayed=false;
 		startTime = ZonedDateTime.now();
 		deadline = startTime.plusDays(days);
+		
 	}
 	
 	
-	/**
-	 * @author Ira Goor
-	 * 
-	 * @apiNote
-	 * Constructor purpose: initialize new  evaluation stage
-	 * used in: creating a new evaluation stage
-	 * 
-	 * @param request
-	 * @param stageName
-	 * @param executionEngineer
-	 * @param canBeExtend
-	 */
-
-	public Stage(ChangeRequest request, StageName stageName, ITEngineer executionEngineer,boolean canBeExtend) {
-		this.request = request;
-		this.stageName = stageName;
-		this.executionEngineer = executionEngineer;
-		this.canBeExtend=canBeExtend;
+	public String toString() {
+		switch(this.stageName)
+		{
+		case EVALUATION:
+			return "EVALUATION";
+		case DECISION:
+			return "DECISION";
+		case EXECUTION:
+			return "EXECUTION";
+		case VALIDATION:
+			return "VALIDATION";
+		case CLOUSRE:
+			return "CLOUSRE";
+		case INIT:
+			return "INIT";
+			default:
+				
+			return null;
+		}
 	}
 	
 	/**
@@ -91,19 +96,21 @@ public abstract class Stage {
 	 * @param executionEngineer
 	 * @param canBeExtend
 	 * @param delay
+	 * @param active
 	 */
 
 
 
 
-	public Stage(ChangeRequest request, StageName stageName, ZonedDateTime startTime,
-			ZonedDateTime deadline, ITEngineer executionEngineer, boolean canBeExtend,
+	public Stage(int request, StageName stageName, ZonedDateTime startTime,
+			ZonedDateTime deadline, String executionEngineer,String incharge ,boolean canBeExtend,
 			boolean delay) {
-		this.request = request;
+		this.requestID = request;
 		this.stageName = stageName;
 		this.startTime = startTime;
 		this.deadline = deadline;
 		this.executionEngineer = executionEngineer;
+		this.incharge=incharge;
 		this.canBeExtend = canBeExtend;
 		this.delayed =checkDelay(delay);
 		
@@ -118,7 +125,7 @@ public abstract class Stage {
 	 *
 	 * @return
 	 */
-	public abstract int result();
+	
 	/**
 	 * 
 	 * @author Ira Goor 
@@ -155,6 +162,7 @@ public abstract class Stage {
 			setDayDelayed();
 		return delay;
 	}
+	
 	
 	/**
 	 * 
@@ -233,9 +241,42 @@ public abstract class Stage {
 		this.daysDelayed = temp > 0 ? temp : 0;
 	}
 	
+
+	public ZonedDateTime getEndTime() {
+		return endTime;
+	}
+
+
+
+
+	public void setEndTime(ZonedDateTime endTime) {
+		this.endTime = endTime;
+	}
 	
-	
-	
+	public StageName getStageName() {
+		return stageName;
+	}
+
+
+
+
+	public void setStageName(StageName stageName) {
+		this.stageName = stageName;
+	}
+
+
+
+
+	public boolean isCanBeExtend() {
+		return canBeExtend;
+	}
+
+
+
+
+	public void setCanBeExtend(boolean canBeExtend) {
+		this.canBeExtend = canBeExtend;
+	}
 	
 
 }

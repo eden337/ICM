@@ -119,18 +119,18 @@ public class ViewRequestController extends AppController implements Initializabl
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty()) {
 					// submitBtn.setDisable(false);
-					selectedRequestInstance = new ChangeRequest(row.getItem().getId(), row.getItem().getName(),
-							row.getItem().getSystemID(), row.getItem().getExistChange(), row.getItem().getComments(),
-							row.getItem().getDueDate(), row.getItem().getCurrResponsible(),row.getItem().getStatus());
-				
-					requestID.setText(selectedRequestInstance.getRequestID());
-					existingCondition.setText(selectedRequestInstance.getExistingCondition());
-					descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
-					dueDateLabel.setText(selectedRequestInstance.getDueDate());
-					requestNameLabel.setText(selectedRequestInstance.getRequestName());
-					// status.setValue(row.getItem().getStatus());
-					inchargeTF.setText(selectedRequestInstance.getCurrInCharge());
-					departmentID.setText(selectedRequestInstance.getInfoSystem());
+//					selectedRequestInstance = new ChangeRequest(row.getItem().getId(), row.getItem().getName(),
+//							row.getItem().getSystemID(), row.getItem().getExistChange(), row.getItem().getComments(),
+//							row.getItem().getDueDate(), row.getItem().getCurrResponsible(),row.getItem().getStatus());
+//
+//					requestID.setText(selectedRequestInstance.getRequestID());
+//					existingCondition.setText(selectedRequestInstance.getExistingCondition());
+//					descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
+//					dueDateLabel.setText(selectedRequestInstance.getDueDate());
+//					requestNameLabel.setText(selectedRequestInstance.getRequestName());
+//					// status.setValue(row.getItem().getStatus());
+//					inchargeTF.setText(selectedRequestInstance.getCurrInCharge());
+//					departmentID.setText(selectedRequestInstance.getInfoSystem());
 				}
 			});
 
