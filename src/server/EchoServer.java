@@ -7,6 +7,7 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
+import server.controllers.ServerController;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -63,6 +64,7 @@ public class EchoServer extends AbstractServer {
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message m = (Message) msg;
+        //ServerController.instance.startDBService();
         boolean res;
         ResultSet rs;
         String query;

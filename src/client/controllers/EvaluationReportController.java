@@ -122,9 +122,11 @@ public class EvaluationReportController extends AppController implements Initial
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 
-		if(!thisRequest.getCurrentStage().equals("EVALUATION")) // Watching only
+		if(!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
 			SbmtEvlBtn.setVisible(false);
+			timeEvlBox.setDisable(true);
 
+		}
 		requestID.setText(thisRequest.getRequestID()+"");
 		departmentID.setText(thisRequest.getInfoSystem());
 		requestNameLabel.setText(thisRequest.getInitiator());
