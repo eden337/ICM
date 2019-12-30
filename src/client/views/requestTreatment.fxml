@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
       <HBox>
          <children>
@@ -37,7 +37,7 @@
                         </Text>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0" visible="false">
+                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0">
                      <children>
                         <Text fx:id="idText" layoutX="35.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
                         <Text fx:id="requestID" layoutX="48.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
@@ -45,7 +45,7 @@
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
-                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="578.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="153.0" text="Submit Update" />
+                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="578.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Submit Update" />
                         <TextArea fx:id="existingCondition" editable="false" layoutX="33.0" layoutY="218.0" prefHeight="59.0" prefWidth="466.0" />
                         <Text layoutX="33.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
                         <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="33.0" layoutY="307.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
@@ -80,9 +80,13 @@
                         <Button fx:id="executionBtn" layoutX="248.0" layoutY="450.0" mnemonicParsing="false" onAction="#exeButtonClick" prefHeight="38.0" prefWidth="98.0" text="Execution" />
                         <Button fx:id="validationBtn" layoutX="359.0" layoutY="450.0" mnemonicParsing="false" onAction="#validButtonClick" prefHeight="38.0" prefWidth="98.0" text="Validation" />
                         <Button fx:id="closureBtn" layoutX="472.0" layoutY="450.0" mnemonicParsing="false" onAction="#closureButtonClick" prefHeight="38.0" prefWidth="79.0" text="Closure" />
-                        <Button fx:id="freezeBtn" layoutX="311.0" layoutY="578.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" text="Freeze Treatment" />
-                        <Button fx:id="refrshBtn" layoutX="24.0" layoutY="15.0" mnemonicParsing="false" onAction="#refrshBtn" prefHeight="25.0" prefWidth="124.0" text="Refresh" />
+                        <Button fx:id="freezeBtn" layoutX="311.0" layoutY="578.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" styleClass="warning" text="Freeze Treatment" />
                         <Text layoutX="237.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Request" wrappingWidth="98.0" />
+                        <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="14.0" onDragDetected="#refrshBtn" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@img/icons/icon_refresh.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Freezed" layoutY="510.0" prefHeight="200.0" prefWidth="579.0" style="-fx-background-color: #f2ffff;" visible="false">
@@ -104,7 +108,7 @@
                         </Pane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="rightPane_Init" prefHeight="710.0" prefWidth="579.0">
+                  <AnchorPane fx:id="rightPane_Init" prefHeight="710.0" prefWidth="579.0" visible="false">
                      <children>
                         <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Shuld be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
                            <font>

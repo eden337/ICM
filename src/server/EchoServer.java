@@ -7,6 +7,7 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
+import server.controllers.EmailSender;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -105,8 +106,9 @@ public class EchoServer extends AbstractServer {
                                     rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"));
                         }
                         rs.close();
-                        sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
+                      //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
 
+                        sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
                     } else
                         sendToClient(new Message(OperationType.LoginResult, null), client);
 

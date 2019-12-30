@@ -19,7 +19,8 @@ public enum OperationType {
 	User_getOrgRole,
 	updateRequestStatus,
 	EVAL_GetAllReportsByRID,
-	DECISION_GetAllReportsByRID
+	DECISION_GetAllReportsByRID,
+
 	;
 
 }

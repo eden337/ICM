@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.EvaluationReportController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.EvaluationReportController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -78,41 +79,49 @@
             </Pane>
             <AnchorPane prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Label alignment="CENTER" layoutX="181.0" layoutY="14.0" text="Evalutaion Report" textAlignment="CENTER">
+                  <Label alignment="CENTER" layoutX="198.0" layoutY="14.0" text="Evalutaion Report" textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="24.0" layoutY="126.0" prefHeight="24.0" prefWidth="251.0" text="*Required change location and description:">
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="173.0" prefHeight="24.0" prefWidth="251.0" text="*Required change location and description:">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="24.0" layoutY="240.0" prefHeight="20.0" prefWidth="99.0" text="*Expected result:">
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="287.0" prefHeight="20.0" prefWidth="99.0" text="*Expected result:">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="24.0" layoutY="353.0" prefHeight="24.0" prefWidth="74.0" text="Constraints:">
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="400.0" prefHeight="24.0" prefWidth="74.0" text="Constraints:">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Button fx:id="SbmtEvlBtn" layoutX="208.0" layoutY="594.0" mnemonicParsing="false" onAction="#SbmtEvlBtnClick" prefHeight="35.0" prefWidth="134.0" text="Submit Evaluation" />
-                  <Label alignment="CENTER" layoutX="24.0" layoutY="469.0" prefHeight="20.0" prefWidth="115.0" text="*Time Evaluation:">
+                  <Button fx:id="SbmtEvlBtn" layoutX="198.0" layoutY="611.0" mnemonicParsing="false" onAction="#SbmtEvlBtnClick" prefHeight="35.0" prefWidth="134.0" styleClass="primary" text="Submit Evaluation" />
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="516.0" prefHeight="20.0" prefWidth="115.0" text="*Time Evaluation:">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <DatePicker fx:id="timeEvlBox" layoutX="25.0" layoutY="496.0" prefHeight="24.0" prefWidth="146.0" />
-                  <TextArea fx:id="reqChngTXT" layoutX="24.0" layoutY="159.0" prefHeight="71.0" prefWidth="447.0" />
-                  <TextArea fx:id="expResTXT" layoutX="24.0" layoutY="262.0" prefHeight="83.0" prefWidth="447.0" />
-                  <TextArea fx:id="cnstrntTXT" layoutX="24.0" layoutY="377.0" prefHeight="83.0" prefWidth="447.0" />
-                  <Text fx:id="msgFix" fill="#da0000" layoutX="24.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Evaluation stage. Seems like you need to fix your last Evaluation-Report.">
-                     <font>
-                        <Font name="System Italic" size="13.0" />
-                     </font>
-                  </Text>
+                  <DatePicker fx:id="timeEvlBox" layoutX="15.0" layoutY="543.0" prefHeight="24.0" prefWidth="146.0" />
+                  <TextArea fx:id="reqChngTXT" layoutX="14.0" layoutY="206.0" prefHeight="71.0" prefWidth="544.0" />
+                  <TextArea fx:id="expResTXT" layoutX="14.0" layoutY="309.0" prefHeight="83.0" prefWidth="544.0" />
+                  <TextArea fx:id="cnstrntTXT" layoutX="14.0" layoutY="424.0" prefHeight="83.0" prefWidth="544.0" />
+                  <TitledPane fx:id="titledPane" animated="false" layoutX="14.0" layoutY="74.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Evaluation stage. Seems like you need to fix your last Evaluation-Report.">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </TitledPane>
                </children>
             </AnchorPane>
          </children>

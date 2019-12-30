@@ -17,11 +17,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -90,6 +87,9 @@ public class EvaluationReportController extends AppController implements Initial
 	private Text msgFix;
 
 	@FXML
+	private TitledPane titledPane;
+
+	@FXML
 	void SbmtEvlBtnClick(ActionEvent event) {
 
 		if(departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()||  timeEvlBox.getValue() == null)
@@ -128,10 +128,14 @@ public class EvaluationReportController extends AppController implements Initial
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 
 		if(!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
+			titledPane.getStyleClass().remove("danger");
+			titledPane.getStyleClass().add("success");
+			titledPane.setCollapsible(false);
+			titledPane.setText("This stage is done.");
 			SbmtEvlBtn.setVisible(false);
 			timeEvlBox.setDisable(true);
-			msgFix.setText("This stage is done. You have only a viewing permission.");
-			msgFix.setFill(Color.BLUE);
+			msgFix.setText("You have only a viewing permission.");
+			msgFix.setFill(Color.FORESTGREEN);
 			msgFix.setVisible(true);
 
 		}

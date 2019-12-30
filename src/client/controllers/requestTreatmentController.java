@@ -111,12 +111,6 @@ public class requestTreatmentController extends AppController implements Initial
     private Button freezeBtn;
 
     @FXML
-    private Button refrshBtn;
-
-    @FXML
-    private Button personalAllocationBtn;
-
-    @FXML
     private Button btnUnfreeze;
 
     @FXML
@@ -127,6 +121,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     private Button btnInit;
+
 
     ObservableList<ChangeRequest> o;
 
