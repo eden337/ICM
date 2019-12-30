@@ -191,7 +191,9 @@ public class EchoServer extends AbstractServer {
                 case EVAL_GetAllReportsByRID:
                     rs = mysql.getQuery(m.getObject().toString());
                     ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();
+                   
                     while (rs.next()) {
+                    	
                         EvaluationReport IndividualReport = new EvaluationReport(
                                 rs.getInt("Report_ID"),
                                 rs.getString("RequestID"),
@@ -200,9 +202,11 @@ public class EchoServer extends AbstractServer {
                                 rs.getString("Expected_Result"),
                                 rs.getString("Expected_Risks"),
                                 rs.getDate("Estimated_Time"),
-                                rs.getDate("TIMESTAMP")
+                                rs.getTimestamp("TIMESTAMP")
                         );
+                        
 						reportsToReturn.add(IndividualReport);
+						System.out.println(reportsToReturn);
                     } // while
 					System.out.println(reportsToReturn);
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);

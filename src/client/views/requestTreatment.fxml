@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
       <HBox>
          <children>
@@ -81,7 +81,6 @@
                         <Button fx:id="validationBtn" layoutX="359.0" layoutY="450.0" mnemonicParsing="false" onAction="#validButtonClick" prefHeight="38.0" prefWidth="98.0" text="Validation" />
                         <Button fx:id="closureBtn" layoutX="472.0" layoutY="450.0" mnemonicParsing="false" onAction="#closureButtonClick" prefHeight="38.0" prefWidth="79.0" text="Closure" />
                         <Button fx:id="freezeBtn" layoutX="311.0" layoutY="578.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" styleClass="warning" text="Freeze Treatment" />
-                        <Text layoutX="237.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Request" wrappingWidth="98.0" />
                         <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="14.0" onDragDetected="#refrshBtn" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@img/icons/icon_refresh.png" />

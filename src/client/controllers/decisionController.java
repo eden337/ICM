@@ -110,7 +110,7 @@ public class decisionController extends AppController implements Initializable {
 
 	private void setFieldsData(){
 		OperationType ot = OperationType.DECISION_GetAllReportsByRID;
-		String query= "SELECT * FROM `EvaluationReports` WHERE Report_ID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1";
+		String query= "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1;";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 
@@ -139,6 +139,7 @@ public class decisionController extends AppController implements Initializable {
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
 		declineBtn.setDisable(true);
+		loadPage("requestTreatment");
 	}
 
 	@FXML
@@ -151,6 +152,7 @@ public class decisionController extends AppController implements Initializable {
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
 		declineBtn.setDisable(true);
+		loadPage("requestTreatment");
 	}
 
 	@FXML
@@ -163,7 +165,7 @@ public class decisionController extends AppController implements Initializable {
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
 		declineBtn.setDisable(true);
-
+		loadPage("requestTreatment");
 	}
 
 	public void queryResult(Object object) {

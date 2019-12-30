@@ -1,5 +1,10 @@
 package client.controllers;
 
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
@@ -11,17 +16,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class requestTreatmentController extends AppController implements Initializable {
 
@@ -186,7 +192,7 @@ public class requestTreatmentController extends AppController implements Initial
                         descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
                         departmentID.setText(selectedRequestInstance.getInfoSystem());
                         requestNameLabel.setText(selectedRequestInstance.getInitiator());
-
+                        dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
                         if (selectedRequestInstance.getStatus().equals("FREEZED")) {
                             rightPane_Freezed.setVisible(true);
                             rightPane_requestTreatment.setDisable(true);
@@ -272,17 +278,13 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     void exeButtonClick(ActionEvent event) {
-        loadPage("EvaluationForm");
+        loadPage("Execution");
     }
 
-    @FXML
-    void unfreezeButtonClick(ActionEvent event) {
-    }
 
     @FXML
     void validButtonClick(ActionEvent event) {
-        ValidationController valControl = new ValidationController();
-        valControl.start(new Stage());
+        loadPage("Validation");
     }
 
     /* Freezing methods */

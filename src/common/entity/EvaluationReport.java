@@ -2,6 +2,8 @@ package common.entity;
 import java.io.Serializable;
 import java.sql.Date;
 
+
+import java.sql.*;
 public class EvaluationReport implements Serializable {
 	private int reportID;
 	private String requestID;
@@ -10,10 +12,10 @@ public class EvaluationReport implements Serializable {
 	private String expected_result;
 	private String expected_risks;
 	private Date estimated_time;
-	private Date timestamp;
+	private Timestamp timestamp;
 
 
-	public EvaluationReport(int reportID, String requestID, String system_id, String required_change, String expected_result, String expected_risks, Date estimated_time, Date timestamp) {
+	public EvaluationReport(int reportID, String requestID, String system_id, String required_change, String expected_result, String expected_risks, Date estimated_time, Timestamp timestamp) {
 		this.reportID = reportID;
 		this.requestID = requestID;
 		this.system_id = system_id;
@@ -66,7 +68,7 @@ public class EvaluationReport implements Serializable {
 		this.estimated_time = estimated_time;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -98,7 +100,7 @@ public class EvaluationReport implements Serializable {
 		return estimated_time;
 	}
 
-	public Date getTimestamp() {
+	public Timestamp getTimestamp() {
 		return timestamp;
 	}
 }

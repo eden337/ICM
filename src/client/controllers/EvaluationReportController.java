@@ -117,6 +117,11 @@ public class EvaluationReportController extends AppController implements Initial
 
 		OperationType ot = OperationType.InsertEvaluation;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'DECISION' WHERE RequestID = '"
+				+ thisRequest.getRequestID() + "'";
+		OperationType ot1 = OperationType.updateRequestStatus;
+		App.client.handleMessageFromClientUI(new Message(ot1, query1));
+		//showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
 		loadPage("requestTreatment");
 		}
 
@@ -137,6 +142,10 @@ public class EvaluationReportController extends AppController implements Initial
 			msgFix.setText("You have only a viewing permission.");
 			msgFix.setFill(Color.FORESTGREEN);
 			msgFix.setVisible(true);
+			reqChngTXT.setEditable(false);
+			expResTXT.setEditable(false);
+			cnstrntTXT.setEditable(false);
+			timeEvlBox.setEditable(false);
 
 		}
 		requestID.setText(thisRequest.getRequestID()+"");
