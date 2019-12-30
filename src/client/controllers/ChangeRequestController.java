@@ -4,13 +4,18 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
+import common.entity.ChangeRequest;
 import common.entity.MyFile;
+import common.entity.RequestStatus;
+import common.entity.StageName;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,6 +37,7 @@ import javafx.stage.Stage;
 
 public class ChangeRequestController extends AppController implements Initializable {
 	public static ChangeRequestController instance;
+	protected ChangeRequest thisRequest;
 	@FXML
 	private ComboBox<String> infoSystemCombo;
 
@@ -132,18 +138,26 @@ public class ChangeRequestController extends AppController implements Initializa
 	 * 
 	 */
 	private void insertDataToDB() {
-		//int index = 1;
-		//String i = Integer.toString(index);
+		 Calendar currenttime = Calendar.getInstance();               //creates the Calendar object of the current time
+    	 Date current = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
+    	// Date dueDate   =  Date.valueOf(thisRequest.getDueDate().toLocalDate());
 		try {
 			String pathServerFiles = printNameFiles(filelist);
 			System.out.println(pathServerFiles);
 			// TODO:CURR_RESPONSE,DUE TIME,TREATMENT_PHASE
-			String query = "INSERT INTO `Requests`(`USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`, `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`, `Due_Date`,`FILE`)"
-					+ "VALUES" + "('"+App.user.getUserName() + "','" + App.user.getPosition() + "','"
-					+ App.user.getEmail() + "','" + ExistingConditionText.getText() + "','" + suggestedText.getText()
-					+ "','" + "init" + "','" + "ACTIVE" + "','" + reasonText.getText() + "','" + "Curr_Responsible"
-					+ "','" + infoSystemCombo.getValue() + "','" + remarksText.getText() + "','" + getToday() + "','"
-					+ "Due_Date" + "','" + pathServerFiles + "');";
+			String query = "INSERT INTO `Requests`(`USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`, `Treatment_Phase`, `Status`, `Reason`, `SystemID`, `Comments`, `Date`,`FILE`)"
+					+ "VALUES" + "('"+App.user.getUserName()	      + "','" 
+									+ App.user.getPosition()	      + "','"
+									+ App.user.getEmail()    		  + "','" 
+									+ ExistingConditionText.getText() + "','" 
+									+ suggestedText.getText()         + "','"
+									+ StageName.INIT.toString()       + "','" 
+									+ RequestStatus.ACTIVE.toString() + "','" 
+									+ reasonText.getText()            + "','" 
+									+ infoSystemCombo.getValue()      + "','" 
+									+ remarksText.getText()           + "','" 
+									+ current                         + "','"
+									+ pathServerFiles                 + "');";
 
 			OperationType ot = OperationType.InsertRequirement;
 

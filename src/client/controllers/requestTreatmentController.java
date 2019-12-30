@@ -1,8 +1,11 @@
 package client.controllers;
 
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import client.App;
@@ -10,6 +13,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
+import common.entity.StageName;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -278,6 +282,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     void exeButtonClick(ActionEvent event) {
+    	InsertStartStage(StageName.EXECUTION.toString());
         loadPage("Execution");
     }
 
@@ -309,5 +314,17 @@ public class requestTreatmentController extends AppController implements Initial
         initialize(null, null);
 
     }
+    
+    public void InsertStartStage(String stageName) {
+        Calendar currenttime = Calendar.getInstance();               //creates the Calendar object of the current time
+      	 Date starttime = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
+      	 LocalDate duedate = LocalDate.of(selectedRequestInstance.getDueDate().getYear(), selectedRequestInstance.getDueDate().getMonthValue(), selectedRequestInstance.getDueDate().getDayOfMonth());
+      	// System.out.println(Date.valueOf(duedate.toString()));
+      	 String query = "INSERT INTO `Stage` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"+ "VALUES"+ 
+      	 "('"+selectedRequestInstance.getRequestID()+"', '"+stageName+"', '"+starttime+"', NULL, '"+duedate.toString()+"', '', '', '0', '1');";
+    							
+      		OperationType ot = OperationType.InsertStartStage;
+      		App.client.handleMessageFromClientUI(new Message(ot, query));
+        }
 
 }

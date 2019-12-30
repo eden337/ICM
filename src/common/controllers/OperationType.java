@@ -8,7 +8,8 @@ public enum OperationType {
 	LoginAsEmployee,
 	InsertEvaluation,
 	getViewRequestData,
-
+	InsertStartStage,
+	UpdateStage,
 	// Results:
 
 	LoginResult, ChangeRequest_File,
@@ -19,7 +20,7 @@ public enum OperationType {
 	User_getOrgRole,
 	updateRequestStatus,
 	EVAL_GetAllReportsByRID,
-	DECISION_GetAllReportsByRID,
+	DECISION_GetAllReportsByRID, 
 
 	;
 

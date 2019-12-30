@@ -71,6 +71,11 @@ public class ClientMessages {
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
+                
+            case InsertStartStage:
+            case UpdateStage:
+            	ExecutionController.instance.queryResult(m.getObject());
+            	break;
             default:
                 break;
 

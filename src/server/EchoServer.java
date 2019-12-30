@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import client.controllers.ExecutionController;
+
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com
 
@@ -212,6 +214,12 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
+                //need for considerations...    
+                case InsertStartStage:
+                case UpdateStage:
+                	res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.UpdateStage, res), client);
+                	break;
                 default:
                     break;
             }
