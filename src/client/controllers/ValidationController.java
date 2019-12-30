@@ -1,8 +1,6 @@
 package client.controllers;
 
-import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -10,20 +8,14 @@ import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
-import common.entity.EvaluationReport;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class ValidationController extends AppController implements Initializable {
 
@@ -70,71 +62,67 @@ public class ValidationController extends AppController implements Initializable
 	private Text dueDateLabel;
 
 	@FXML
-	private TextField reqChngTXT;
+	private Button validateBtn;
 
 	@FXML
-	private TextField expResTXT;
+	private Button failureReportBtn;
 
 	@FXML
-	private TextField cnstrntTXT;
+	private Text idText11;
 
 	@FXML
-	private Button SbmtEvlBtn;
+	private Button noBtn;
 
 	@FXML
-	private DatePicker timeEvlBox;
-
-	public void start(Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Validation.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Validation");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load Validation prompt");
-			e.printStackTrace();
-		}
-	}
+	private Text failReportLabel;
 
 	@FXML
-	void SbmtEvlBtnClick(ActionEvent event) {
-		String reportID, systemID, requiredChange, expectedResult, expectedRisk, estimatedTime;
-		reportID = "15";
-		systemID = this.departmentID.getText();
-		requiredChange = this.reqChngTXT.getText();
-		expectedResult = this.expResTXT.getText();
-		expectedRisk = this.cnstrntTXT.getText();
-		LocalDate date = this.timeEvlBox.getValue();
-		estimatedTime = date.toString();
-
-
-		String query= "INSERT INTO `Evaluation Reports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
-				
-				+ "'"+thisRequest.getRequestID()+"', "
-				+ "'"+systemID+"', "
-				+ "'"+requiredChange+"', "
-				+ "'"+expectedResult+"', "
-				+ "'"+expectedRisk+"', "
-				+ "'"+estimatedTime+"');";
-		OperationType ot = OperationType.InsertEvaluation;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-
-	}
+	private TextArea failReportTextArea;
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) { 
+	public void initialize(URL location, ResourceBundle resources) {
 		dueDateLabel.setVisible(true);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		requestID.setText(thisRequest.getRequestID()+"");
+		requestID.setText(thisRequest.getRequestID() + "");
 		departmentID.setText(thisRequest.getInfoSystem());
 		requestNameLabel.setText(thisRequest.getInitiator());
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
 		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().toString());
+		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+		failReportLabel.setVisible(false);
+		failReportTextArea.setVisible(false);
+		failureReportBtn.setDisable(true);
+	}
+	//in this case we need to color validation back to red  because it is incomplete
+	@FXML
+	void failureReportBtnClicked(ActionEvent event) {
+		String query = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
+				+ thisRequest.getRequestID() + "'";
+		OperationType ot = OperationType.updateRequestStatus;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		showAlert(AlertType.ERROR, "Execution Failed!", "Please notify the execution leader for re-execution", null);
+		loadPage("requestTreatment");
+	}
+
+	@FXML
+	void noBtnClick(ActionEvent event) {
+		failReportLabel.setVisible(true);
+		failReportTextArea.setVisible(true);
+		failureReportBtn.setDisable(false);
+		validateBtn.setDisable(true);
+		noBtn.setDisable(true);
+	}
+
+	@FXML
+	void validateBtnClicked(ActionEvent event) {
+		String query = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+				+ thisRequest.getRequestID() + "'";
+		OperationType ot = OperationType.updateRequestStatus;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		showAlert(AlertType.INFORMATION, "Execution Validated!", "The Request moved to closure phase...", null);
+		loadPage("requestTreatment");
 	}
 
 }

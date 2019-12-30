@@ -26,6 +26,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -186,9 +187,17 @@ public class requestTreatmentController extends AppController implements Initial
                     rightPane_selectRequest.setVisible(false);
                     if (row.getItem().getCurrentStage().equals("INIT")) {
                         rightPane_Init.setVisible(true);
-                        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+                        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
 							btnInit.setVisible(true);
+                        }
+                        
                     } else { // ACTIVE request
+                    	if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+							existingCondition.setEditable(true);
+							descripitionsTextArea.setEditable(true);
+							inchargeTF.setEditable(true);
+							submitBtn.setDisable(false);
+                    	}
                         rightPane_requestTreatment.setVisible(true);
 
                         requestID.setText("" + selectedRequestInstance.getRequestID());
@@ -265,8 +274,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     void closureButtonClick(ActionEvent event) {
-        ClosureController closureControl = new ClosureController();
-        closureControl.start(new Stage());
+       loadPage("Closure");
 
     }
 
@@ -326,5 +334,10 @@ public class requestTreatmentController extends AppController implements Initial
       		OperationType ot = OperationType.InsertStartStage;
       		App.client.handleMessageFromClientUI(new Message(ot, query));
         }
+    
+    @FXML
+    void submitBtnClicked(ActionEvent event) {
+    	showAlert(AlertType.INFORMATION, "Mock Button", "Need to import a query for updating the request tuple in the DB table", null);
+    }
 
 }

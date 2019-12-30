@@ -1,28 +1,21 @@
 package client.controllers;
 
-import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
-import common.entity.EvaluationReport;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class ClosureController extends AppController implements Initializable {
 
@@ -35,67 +28,44 @@ public class ClosureController extends AppController implements Initializable {
 
 	protected ChangeRequest thisRequest;
 
-	@FXML
-	private Text idText;
+    @FXML
+    private Text idText;
 
-	@FXML
-	private Text requestID;
+    @FXML
+    private Text requestID;
 
-	@FXML
-	private TextArea existingCondition;
+    @FXML
+    private TextArea existingCondition;
 
-	@FXML
-	private TextArea descripitionsTextArea;
+    @FXML
+    private TextArea descripitionsTextArea;
 
-	@FXML
-	private Text msg;
+    @FXML
+    private Text msg;
 
-	@FXML
-	private TextField inchargeTF;
+    @FXML
+    private TextField inchargeTF;
 
-	@FXML
-	private Text departmentID;
+    @FXML
+    private Text departmentID;
 
-	@FXML
-	private Text idText1;
+    @FXML
+    private Text idText1;
 
-	@FXML
-	private Text requestNameLabel;
+    @FXML
+    private Text requestNameLabel;
 
-	@FXML
-	private Text idText2;
+    @FXML
+    private Text idText2;
 
-	@FXML
-	private Text dueDateLabel;
+    @FXML
+    private Text dueDateLabel;
 
-	@FXML
-	private TextField reqChngTXT;
+    @FXML
+    private Button closeProcessBtn;
 
-	@FXML
-	private TextField expResTXT;
-
-	@FXML
-	private TextField cnstrntTXT;
-
-	@FXML
-	private Button SbmtEvlBtn;
-
-	@FXML
-	private DatePicker timeEvlBox;
-
-	public void start(Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Closure.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Closure");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load closure prompt");
-			e.printStackTrace();
-		}
-	}
+    @FXML
+    private TextField finishedStatusTF;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -108,8 +78,25 @@ public class ClosureController extends AppController implements Initializable {
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
 		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().toString());
+		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+
 	}
+	
+	/**
+	 * @apiNote
+	 * 	need to check if the process succeed or not and send an appropriate message:
+	 * use finishedStatusTF
+	 * @param event
+	 */
+    @FXML
+    void closeProcessBtnClicked(ActionEvent event) {
+    	String query = "UPDATE Requests SET STATUS = 'DONE' WHERE RequestID = '"
+				+ thisRequest.getRequestID() + "'";
+		OperationType ot = OperationType.updateRequestStatus;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		showAlert(AlertType.INFORMATION, "Process Finished!", "Notification has been sent to user's email and SMS", null);
+		loadPage("requestTreatment");
+    }
 
 
 }

@@ -45,7 +45,7 @@
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
-                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="578.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Submit Update" />
+                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="578.0" mnemonicParsing="false" onAction="#submitBtnClicked" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Submit Update" />
                         <TextArea fx:id="existingCondition" editable="false" layoutX="33.0" layoutY="218.0" prefHeight="59.0" prefWidth="466.0" />
                         <Text layoutX="33.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
                         <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="33.0" layoutY="307.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />

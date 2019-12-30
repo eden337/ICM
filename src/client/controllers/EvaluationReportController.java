@@ -3,6 +3,7 @@ package client.controllers;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -154,7 +155,7 @@ public class EvaluationReportController extends AppController implements Initial
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
 		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().toString());
+		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 		setFieldsData();
 	}
 
