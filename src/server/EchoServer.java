@@ -80,11 +80,12 @@ public class EchoServer extends AbstractServer {
                     break;
 
                 case getViewRequestData:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
-                    sendToClient(new Message(OperationType.getViewRequestData, ma1), client);
-                    rs.close();
-                    break;
+                	rs = mysql.getQuery(m.getObject().toString());
+    				//Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
+    				ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
+    				sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
+    				rs.close();
+    				break;
 
                 case InsertRequirement:
                     res = mysql.insertOrUpdate(m.getObject().toString());
