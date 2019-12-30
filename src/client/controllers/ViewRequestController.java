@@ -1,6 +1,7 @@
 package client.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -9,6 +10,7 @@ import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import common.entity.OrganizationRole;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,18 +34,18 @@ public class ViewRequestController extends AppController implements Initializabl
 
 	protected ChangeRequest selectedRequestInstance;
 	
-	private Map<String, List<Object>> m;
+	//private Map<String, List<Object>> m;
 	@FXML
-	private TableView<ModelTable> table;
+	private TableView<ChangeRequest> table;
 
 	@FXML
-	private TableColumn<ModelTable, String> colId;
+	private TableColumn<ChangeRequest, Integer> colId;
 
 	@FXML
-	private TableColumn<ModelTable, String> colExisitCond;
+	private TableColumn<ChangeRequest, String> colExisitCond;
 
 	@FXML
-	private TableColumn<ModelTable, String> colStatus;
+	private TableColumn<ChangeRequest, String> colStatus;
 
 	@FXML
 	private Text idText;
@@ -93,6 +95,8 @@ public class ViewRequestController extends AppController implements Initializabl
 
     @FXML
     private Circle circleClosure;
+    
+    ObservableList<ChangeRequest> o;
 	
 	//suggestion: array for the progress
     
@@ -108,37 +112,62 @@ public class ViewRequestController extends AppController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 		Instance = this;
 
-		//submitBtn.setDisable(true);
-		msg.setVisible(false);
-		
+		/*
+		 * //submitBtn.setDisable(true); msg.setVisible(false);
+		 * 
+		 * // request data from server getDatafromServer(); // event when user click on
+		 * row table.setRowFactory(tv -> { TableRow<ModelTable> row = new TableRow<>();
+		 * row.setOnMouseClicked(event -> { if (!row.isEmpty()) { //
+		 * submitBtn.setDisable(false); // selectedRequestInstance = new
+		 * ChangeRequest(row.getItem().getId(), row.getItem().getName(), //
+		 * row.getItem().getSystemID(), row.getItem().getExistChange(),
+		 * row.getItem().getComments(), // row.getItem().getDueDate(),
+		 * row.getItem().getCurrResponsible(),row.getItem().getStatus()); // //
+		 * requestID.setText(selectedRequestInstance.getRequestID()); //
+		 * existingCondition.setText(selectedRequestInstance.getExistingCondition()); //
+		 * descripitionsTextArea.setText(selectedRequestInstance.getRemarks()); //
+		 * dueDateLabel.setText(selectedRequestInstance.getDueDate()); //
+		 * requestNameLabel.setText(selectedRequestInstance.getRequestName()); // //
+		 * status.setValue(row.getItem().getStatus()); //
+		 * inchargeTF.setText(selectedRequestInstance.getCurrInCharge()); //
+		 * departmentID.setText(selectedRequestInstance.getInfoSystem()); } });
+		 * 
+		 * return row; });
+		 */
 		// request data from server
-		getDatafromServer();
-		// event when user click on row
-		table.setRowFactory(tv -> {
-			TableRow<ModelTable> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-				if (!row.isEmpty()) {
-					// submitBtn.setDisable(false);
-//					selectedRequestInstance = new ChangeRequest(row.getItem().getId(), row.getItem().getName(),
-//							row.getItem().getSystemID(), row.getItem().getExistChange(), row.getItem().getComments(),
-//							row.getItem().getDueDate(), row.getItem().getCurrResponsible(),row.getItem().getStatus());
-//
-//					requestID.setText(selectedRequestInstance.getRequestID());
-//					existingCondition.setText(selectedRequestInstance.getExistingCondition());
-//					descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
-//					dueDateLabel.setText(selectedRequestInstance.getDueDate());
-//					requestNameLabel.setText(selectedRequestInstance.getRequestName());
-//					// status.setValue(row.getItem().getStatus());
-//					inchargeTF.setText(selectedRequestInstance.getCurrInCharge());
-//					departmentID.setText(selectedRequestInstance.getInfoSystem());
-				}
-			});
+				getDatafromServer();
 
-			return row;
-		});
+				// event when user click on a row
+				table.setRowFactory(tv -> {
+					TableRow<ChangeRequest> row = new TableRow<>();
+					row.setOnMouseClicked(event -> {
+						if (!row.isEmpty()) {
+
+
+							if(row.getItem().getCurrentStage().equals("INIT")) {
+
+							}
+
+							selectedRequestInstance = row.getItem();
+
+							requestID.setText("" + selectedRequestInstance.getRequestID());
+							existingCondition.setText(selectedRequestInstance.getExistingCondition());
+							descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
+							departmentID.setText(selectedRequestInstance.getInfoSystem());
+							requestNameLabel.setText(selectedRequestInstance.getInitiator());
+
+							if (selectedRequestInstance.getStatus().equals("FREEZED")) {
+
+						
+							}
+						}
+					});
+
+					return row;
+				});
 	}
 
-	private ObservableList<ModelTable> getModelTable(Map<String, List<Object>> m) {
+/*	private ObservableList<ModelTable> getModelTable(Map<String, List<Object>> m) {
 		ObservableList<ModelTable> items = FXCollections.observableArrayList();
 		try {
 			for (int i = 0; i < m.get("RequestID").size(); i++) {
@@ -157,18 +186,20 @@ public class ViewRequestController extends AppController implements Initializabl
 //		}
 		return items;
 	}
+	
+	*/
 
 	@SuppressWarnings("unchecked")
 	public void setDataTable(Object object) {
 		// System.out.println("--> setDataTable");
-		m = ((Map<String, List<Object>>) object);
-		ObservableList<ModelTable> o = getModelTable(m);
-
-
-		colId.setCellValueFactory(new PropertyValueFactory<ModelTable, String>("id"));
-		colExisitCond.setCellValueFactory(new PropertyValueFactory<ModelTable, String>("name"));
-		colStatus.setCellValueFactory(new PropertyValueFactory<ModelTable, String>("status"));
-
+		
+		ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
+		o = FXCollections.observableArrayList(info);
+		
+		colId.setCellValueFactory(new PropertyValueFactory<>("requestID"));
+		colExisitCond.setCellValueFactory(new PropertyValueFactory<>("initiator"));
+		colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+		
 		table.setItems(o);
 	}
 

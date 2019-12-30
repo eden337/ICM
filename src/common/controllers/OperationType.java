@@ -17,8 +17,9 @@ public enum OperationType {
 	User_SetStageRole,
 	User_getStageRoleObject,
 	User_getOrgRole,
-	FreezeRequest,
+	updateRequestStatus,
 	EVAL_GetAllReportsByRID,
+	DECISION_GetAllReportsByRID
 	;
 
 }

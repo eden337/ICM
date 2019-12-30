@@ -62,11 +62,14 @@ public class ClientMessages {
             case User_getOrgRole:
                 App.user.setOrgRoleServerResponse(m.getObject());
                 break;
-            case FreezeRequest:
+            case updateRequestStatus:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
+                break;
+            case DECISION_GetAllReportsByRID:
+                decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
             default:
                 break;

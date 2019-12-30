@@ -195,7 +195,7 @@ public class requestTreatmentController extends AppController implements Initial
                         if (selectedRequestInstance.getStatus().equals("FREEZED")) {
                             rightPane_Freezed.setVisible(true);
                             rightPane_requestTreatment.setDisable(true);
-                            if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+                            if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)  || true)
                                 btnUnfreeze.setVisible(true);
                         } else {
                             rightPane_Freezed.setVisible(false);
@@ -267,19 +267,16 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     void decButtonClick(ActionEvent event) {
-        DecisionController decControl = new DecisionController();
-        decControl.start(new Stage());
+        loadPage("Decision");
     }
 
     @FXML
     void evalButtonClick(ActionEvent event) {
-        EvaluationReportController evaReport = new EvaluationReportController();
         loadPage("EvaluationForm");
     }
 
     @FXML
     void exeButtonClick(ActionEvent event) {
-        ExecutionController exeControl = new ExecutionController();
         loadPage("EvaluationForm");
     }
 
@@ -300,14 +297,14 @@ public class requestTreatmentController extends AppController implements Initial
         String query = "UPDATE Requests SET Status = 'FREEZED' WHERE RequestID = '" + getCurrentRequest().getRequestID()
                 + "'";
         System.out.println(query);
-        App.client.handleMessageFromClientUI(new Message(OperationType.FreezeRequest, query));
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     @FXML
     void unfreeze(ActionEvent event) {
         String query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + getCurrentRequest().getRequestID()
                 + "'";
-        App.client.handleMessageFromClientUI(new Message(OperationType.FreezeRequest, query));
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     public void freezeServerResponse(Object object) {

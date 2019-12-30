@@ -7,7 +7,6 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
-import server.controllers.ServerController;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -181,11 +180,11 @@ public class EchoServer extends AbstractServer {
                     System.out.println(resOrgRole);
                     sendToClient(new Message(OperationType.User_getOrgRole, resOrgRole), client);
                     break;
-                case FreezeRequest:
+                case updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.FreezeRequest, res), client);
+                    sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
-
+                case DECISION_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
                     rs = mysql.getQuery(m.getObject().toString());
                     ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();
@@ -203,7 +202,7 @@ public class EchoServer extends AbstractServer {
 						reportsToReturn.add(IndividualReport);
                     } // while
 					System.out.println(reportsToReturn);
-                    sendToClient(new Message(OperationType.EVAL_GetAllReportsByRID, reportsToReturn), client);
+                    sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
                 default:
