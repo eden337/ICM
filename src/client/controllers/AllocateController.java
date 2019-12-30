@@ -2,6 +2,7 @@ package client.controllers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -99,6 +100,7 @@ public class AllocateController extends AppController implements Initializable {
     }
 
 
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         txtWarning.setVisible(false);
@@ -110,7 +112,7 @@ public class AllocateController extends AppController implements Initializable {
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
 		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().toString());
+		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         getUsersFromServer();
 
     }
