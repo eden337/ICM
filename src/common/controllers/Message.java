@@ -48,6 +48,6 @@ public class Message implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "Massage [operationtype=" + operationtype + ", object=" + object + "]";
+		return "Message [operationtype=" + operationtype + ", object=" + object + "]";
 	}
 }

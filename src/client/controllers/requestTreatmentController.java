@@ -209,7 +209,7 @@ public class requestTreatmentController extends AppController implements Initial
                         if (selectedRequestInstance.getStatus().equals("FREEZED")) {
                             rightPane_Freezed.setVisible(true);
                             rightPane_requestTreatment.setDisable(true);
-                            if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)  || true)
+                            if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
                                 btnUnfreeze.setVisible(true);
                         } else {
                             rightPane_Freezed.setVisible(false);

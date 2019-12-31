@@ -8,19 +8,20 @@ import common.entity.EvaluationReport;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public class decisionController extends AppController implements Initializable {
 
@@ -77,9 +78,6 @@ public class decisionController extends AppController implements Initializable {
 	private TextArea constraintText;
 
 	@FXML
-	private Text msgFix;
-
-	@FXML
 	private Text timeEvaluationText;
 
 	@FXML
@@ -91,14 +89,27 @@ public class decisionController extends AppController implements Initializable {
 	@FXML
 	private Button declineBtn;
 
+	@FXML
+	private TitledPane titledPane;
+
+	@FXML
+	private Text titledPane_Text;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		msgFix.setVisible(false);
+
 		dueDateLabel.setVisible(false);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+		titledPane.setCollapsible(false);
+		titledPane.setText("This stage is done");
 
+		if(!thisRequest.getCurrentStage().equals("DECISION")){
+			titledPane.setText("This stage is done");
+			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
+			titledPane.getStyleClass().remove("danger");
+			titledPane.getStyleClass().add("success");
+		}
 		requestID.setText(thisRequest.getRequestID()+"");
 		departmentID.setText(thisRequest.getInfoSystem());
 		requestNameLabel.setText(thisRequest.getInitiator());
@@ -119,10 +130,41 @@ public class decisionController extends AppController implements Initializable {
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
 		if(reports.size() > 0)
 		{
-			if(!thisRequest.getCurrentStage().equals("DECISION"))
-				msgFix.setVisible(true);
+			//SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
 			EvaluationReport individualReport = reports.get(0);
+			Date reportDate = individualReport.getTimestamp() ;
+			Calendar reportDateCal = Calendar.getInstance();
+			reportDateCal.setTime(reportDate);
+			reportDateCal.add(Calendar.DATE, 7);
+			reportDateCal.set(Calendar.HOUR_OF_DAY,0);
+			reportDateCal.set(Calendar.MINUTE,0);
+			reportDateCal.set(Calendar.SECOND,0);
+			reportDateCal.set(Calendar.MILLISECOND,0);
 
+			Date today = new Date(System.currentTimeMillis());
+			Calendar todayCal = Calendar.getInstance();
+			todayCal.set(Calendar.HOUR_OF_DAY,0);
+			todayCal.set(Calendar.MINUTE,0);
+			todayCal.set(Calendar.SECOND,0);
+			todayCal.set(Calendar.MILLISECOND,0);
+
+			long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
+			long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+			if(thisRequest.getCurrentStage().equals("DECISION")){
+				titledPane.setText("Stage in Process");
+				if(daysDiff >= 0) {
+					titledPane_Text.setText(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
+					titledPane.getStyleClass().removeAll();
+					titledPane.getStyleClass().add("info");
+				}
+				else{
+					titledPane_Text.setText("Stage in "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
+					titledPane.getStyleClass().removeAll();
+					titledPane.getStyleClass().add("danger");
+				}
+
+			}
 			requiredChangeText.setText(individualReport.getRequired_change());
 			expectedResultText.setText(individualReport.getExpected_result());
 			constraintText.setText(individualReport.getExpected_risks());
