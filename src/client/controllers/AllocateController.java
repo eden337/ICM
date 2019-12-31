@@ -88,6 +88,12 @@ public class AllocateController extends AppController implements Initializable {
                 "('" + thisRequest.getRequestID() + "','" + cbTester.getValue() + "','TESTER')," +
                 "('" + thisRequest.getRequestID() + "','" + cbIncharge.getValue() + "','INCHARGE')";
         App.client.handleMessageFromClientUI(new Message(ot, query));
+
+        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
+                + thisRequest.getRequestID() + "'";
+        OperationType ot2 = OperationType.updateRequestStatus;
+        App.client.handleMessageFromClientUI(new Message(ot2, query2));
+        loadPage("requestTreatment");
     }
 
     @FXML
