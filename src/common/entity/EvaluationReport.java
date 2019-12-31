@@ -1,84 +1,106 @@
-/**
- * 
- */
 package common.entity;
+import java.io.Serializable;
+import java.sql.Date;
 
-/**
- * @author yudah
- *	This class represents the reports generated from evaluation stage 
- */
-public class EvaluationReport {
-	private String reportID;
-	private String systemID;
-	private String requiredChange;
-	private String expectedResult;
-	private String expectedRisks;
-	private String estimatedTime;
-	
-	/**
-	 * @param systemID
-	 * @param requiredChange
-	 * @param expectedResult
-	 * @param expectedRisks
-	 * @param estimatedTime
-	 */
-	public EvaluationReport(String systemID, String requiredChange, String expectedResult, String expectedRisks,
-			String estimatedTime) {
-		this.systemID = systemID;
-		this.requiredChange = requiredChange;
-		this.expectedResult = expectedResult;
-		this.expectedRisks = expectedRisks;
-		this.estimatedTime = estimatedTime;
+
+import java.sql.*;
+public class EvaluationReport implements Serializable {
+	private int reportID;
+	private String requestID;
+	private String system_id;
+	private String required_change;
+	private String expected_result;
+	private String expected_risks;
+	private Date estimated_time;
+	private Timestamp timestamp;
+
+
+	public EvaluationReport(int reportID, String requestID, String system_id, String required_change, String expected_result, String expected_risks, Date estimated_time, Timestamp timestamp) {
+		this.reportID = reportID;
+		this.requestID = requestID;
+		this.system_id = system_id;
+		this.required_change = required_change;
+		this.expected_result = expected_result;
+		this.expected_risks = expected_risks;
+		this.estimated_time = estimated_time;
+		this.timestamp = timestamp;
 	}
 
-	/**
-	 * @return the reportID
-	 */
-	public String getReportID() {
-		return reportID;
+	@Override
+	public String toString() {
+		return "EvaluationReport{" +
+				"reportID=" + reportID +
+				", requestID='" + requestID + '\'' +
+				", system_id='" + system_id + '\'' +
+				", required_change='" + required_change + '\'' +
+				", expected_result='" + expected_result + '\'' +
+				", expected_risks='" + expected_risks + '\'' +
+				", estimated_time='" + estimated_time + '\'' +
+				", timestamp=" + timestamp +
+				'}';
 	}
 
-	/**
-	 * @param reportID the reportID to set
-	 */
-	public void setReportID(String reportID) {
+	public void setReportID(int reportID) {
 		this.reportID = reportID;
 	}
 
-	/**
-	 * @return the systemID
-	 */
-	public String getSystemID() {
-		return systemID;
+	public void setRequestID(String requestID) {
+		this.requestID = requestID;
 	}
 
-	/**
-	 * @return the requiredChange
-	 */
-	public String getRequiredChange() {
-		return requiredChange;
+	public void setSystem_id(String system_id) {
+		this.system_id = system_id;
 	}
 
-	/**
-	 * @return the expectedResult
-	 */
-	public String getExpectedResult() {
-		return expectedResult;
+	public void setRequired_change(String required_change) {
+		this.required_change = required_change;
 	}
 
-	/**
-	 * @return the expectedRisks
-	 */
-	public String getExpectedRisks() {
-		return expectedRisks;
+	public void setExpected_result(String expected_result) {
+		this.expected_result = expected_result;
 	}
 
-	/**
-	 * @return the estimatedTime
-	 */
-	public String getEstimatedTime() {
-		return estimatedTime;
+	public void setExpected_risks(String expected_risks) {
+		this.expected_risks = expected_risks;
 	}
-	
 
+	public void setEstimated_time(Date estimated_time) {
+		this.estimated_time = estimated_time;
+	}
+
+	public void setTimestamp(Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public int getReportID() {
+		return reportID;
+	}
+
+	public String getRequestID() {
+		return requestID;
+	}
+
+	public String getSystem_id() {
+		return system_id;
+	}
+
+	public String getRequired_change() {
+		return required_change;
+	}
+
+	public String getExpected_result() {
+		return expected_result;
+	}
+
+	public String getExpected_risks() {
+		return expected_risks;
+	}
+
+	public Date getEstimated_time() {
+		return estimated_time;
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
 }
