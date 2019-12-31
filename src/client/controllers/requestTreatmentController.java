@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -213,7 +214,7 @@ public class requestTreatmentController extends AppController implements Initial
                         }
                     }
 
-
+                    resetStageImgStyleClass();
                     switch (row.getItem().getCurrentStage()) {
                         case "EVALUATION":
                             imgStage_setAsCurrent(stage1);
@@ -253,14 +254,13 @@ public class requestTreatmentController extends AppController implements Initial
                         default:
                             break;
                     }
-
                 }// row selected
             });
 
             return row;
         });
 
-        resetStageImgStyleClass();
+
 
 
 
@@ -268,27 +268,43 @@ public class requestTreatmentController extends AppController implements Initial
 
 
     private void resetStageImgStyleClass() {
-        stage1.getStyleClass().removeAll();
-        stage2.getStyleClass().removeAll();
-        stage3.getStyleClass().removeAll();
-        stage4.getStyleClass().removeAll();
-        stage5.getStyleClass().removeAll();
+        stage1.getStyleClass().remove("img_stage_blocked");
+        stage1.getStyleClass().remove("img_stage_passed");
+        stage1.getStyleClass().remove("img_stage_current");
+        stage1.setOnMouseClicked(this::evalButtonClick);
+
+        stage2.getStyleClass().remove("img_stage_blocked");
+        stage2.getStyleClass().remove("img_stage_passed");
+        stage2.getStyleClass().remove("img_stage_current");
+        stage3.setOnMouseClicked(this::decButtonClick);
+
+        stage3.getStyleClass().remove("img_stage_blocked");
+        stage3.getStyleClass().remove("img_stage_passed");
+        stage3.getStyleClass().remove("img_stage_current");
+        stage3.setOnMouseClicked(this::exeButtonClick);
+
+        stage4.getStyleClass().remove("img_stage_blocked");
+        stage4.getStyleClass().remove("img_stage_passed");
+        stage4.getStyleClass().remove("img_stage_current");
+        stage4.setOnMouseClicked(this::evalButtonClick);
+
+        stage5.getStyleClass().remove("img_stage_blocked");
+        stage5.getStyleClass().remove("img_stage_passed");
+        stage5.getStyleClass().remove("img_stage_current");
+        stage5.setOnMouseClicked(this::closureButtonClick);
 
     }
 
     private void imgStage_setAsBlocked(ImageView img) {
-        img.getStyleClass().removeAll();
         img.getStyleClass().add("img_stage_blocked");
         img.setOnMouseClicked(null);
     }
 
     private void imgStage_setAsPassed(ImageView img) {
-        img.getStyleClass().removeAll();
         img.getStyleClass().add("img_stage_passed");
     }
 
     private void imgStage_setAsCurrent(ImageView img) {
-        img.getStyleClass().removeAll();
         img.getStyleClass().add("img_stage_current");
     }
 
@@ -337,7 +353,6 @@ public class requestTreatmentController extends AppController implements Initial
         // alloControl.start(new Stage());
         mainController.instance.loadPage("Allocate",
                 "Request #" + selectedRequestInstance.getRequestID() + " Treatment | Roles Allocation");
-
     }
 
     @FXML
@@ -361,7 +376,6 @@ public class requestTreatmentController extends AppController implements Initial
         InsertStartStage(StageName.EXECUTION.toString());
         loadPage("Execution");
     }
-
 
     @FXML
     void validButtonClick(ActionEvent event) {

@@ -52,6 +52,7 @@
 }
 .img_stage_current{
 	-fx-opacity : 1;
+	-fx-effect: dropshadow( three-pass-box , #919191, 30, 0, 0, 0);
 }
 .img_stage_blocked{
 	-fx-opacity : 0.15;
