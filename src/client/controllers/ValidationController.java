@@ -94,6 +94,8 @@ public class ValidationController extends AppController implements Initializable
 		failReportLabel.setVisible(false);
 		failReportTextArea.setVisible(false);
 		failureReportBtn.setDisable(true);
+		failureReportBtn.setVisible(false);
+
 	}
 	//in this case we need to color validation back to red  because it is incomplete
 	@FXML
@@ -110,6 +112,7 @@ public class ValidationController extends AppController implements Initializable
 	void noBtnClick(ActionEvent event) {
 		failReportLabel.setVisible(true);
 		failReportTextArea.setVisible(true);
+		failureReportBtn.setVisible(true);
 		failureReportBtn.setDisable(false);
 		validateBtn.setDisable(true);
 		noBtn.setDisable(true);

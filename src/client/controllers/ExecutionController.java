@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
@@ -108,8 +109,8 @@ public class ExecutionController extends AppController implements Initializable 
 		requestNameLabel.setText(thisRequest.getInitiator());
 		existingCondition.setText(thisRequest.getExistingCondition());
 		descripitionsTextArea.setText(thisRequest.getRemarks());
+		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().toString());
 	}
 	
 	@FXML

@@ -161,7 +161,7 @@ public class EvaluationReportController extends AppController implements Initial
 
 	private void setFieldsData(){
 		OperationType ot = OperationType.EVAL_GetAllReportsByRID;
-		String query= "SELECT * FROM `EvaluationReports` WHERE Report_ID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1";
+		String query= "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 

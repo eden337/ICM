@@ -152,7 +152,6 @@ public class decisionController extends AppController implements Initializable {
 			long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
 			if(thisRequest.getCurrentStage().equals("DECISION")){
-				titledPane.setText("Stage in Process");
 				if(daysDiff >= 0) {
 					titledPane_Text.setText(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
 					titledPane.getStyleClass().removeAll();
