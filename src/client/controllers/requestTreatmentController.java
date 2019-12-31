@@ -1,13 +1,5 @@
 package client.controllers;
 
-import java.net.URL;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.ResourceBundle;
-
 import client.App;
 import common.controllers.Message;
 import common.controllers.OperationType;
@@ -20,19 +12,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.ResourceBundle;
 
 public class requestTreatmentController extends AppController implements Initializable {
 
@@ -104,21 +100,6 @@ public class requestTreatmentController extends AppController implements Initial
     private Text dueDateLabel;
 
     @FXML
-    private Button evaluationBtn;
-
-    @FXML
-    private Button decisionBtn;
-
-    @FXML
-    private Button executionBtn;
-
-    @FXML
-    private Button validationBtn;
-
-    @FXML
-    private Button closureBtn;
-
-    @FXML
     private Button freezeBtn;
 
     @FXML
@@ -132,6 +113,21 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     private Button btnInit;
+
+    @FXML
+    private ImageView stage1;
+
+    @FXML
+    private ImageView stage2;
+
+    @FXML
+    private ImageView stage3;
+
+    @FXML
+    private ImageView stage4;
+
+    @FXML
+    private ImageView stage5;
 
 
     ObservableList<ChangeRequest> o;
@@ -187,17 +183,17 @@ public class requestTreatmentController extends AppController implements Initial
                     rightPane_selectRequest.setVisible(false);
                     if (row.getItem().getCurrentStage().equals("INIT")) {
                         rightPane_Init.setVisible(true);
-                        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-							btnInit.setVisible(true);
+                        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+                            btnInit.setVisible(true);
                         }
-                        
+
                     } else { // ACTIVE request
-                    	if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-							existingCondition.setEditable(true);
-							descripitionsTextArea.setEditable(true);
-							inchargeTF.setEditable(true);
-							submitBtn.setDisable(false);
-                    	}
+                        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+                            existingCondition.setEditable(true);
+                            descripitionsTextArea.setEditable(true);
+                            inchargeTF.setEditable(true);
+                            submitBtn.setDisable(false);
+                        }
                         rightPane_requestTreatment.setVisible(true);
 
                         requestID.setText("" + selectedRequestInstance.getRequestID());
@@ -216,13 +212,85 @@ public class requestTreatmentController extends AppController implements Initial
                             rightPane_requestTreatment.setDisable(false);
                         }
                     }
-                }
+
+
+                    switch (row.getItem().getCurrentStage()) {
+                        case "EVALUATION":
+                            imgStage_setAsCurrent(stage1);
+                            imgStage_setAsBlocked(stage2);
+                            imgStage_setAsBlocked(stage3);
+                            imgStage_setAsBlocked(stage4);
+                            imgStage_setAsBlocked(stage5);
+                            break;
+                        case "DECISION":
+                            imgStage_setAsPassed(stage1);
+                            imgStage_setAsCurrent(stage2);
+                            imgStage_setAsBlocked(stage3);
+                            imgStage_setAsBlocked(stage4);
+                            imgStage_setAsBlocked(stage5);
+                            break;
+                        case "EXECUTION":
+                            imgStage_setAsPassed(stage1);
+                            imgStage_setAsPassed(stage2);
+                            imgStage_setAsCurrent(stage3);
+                            imgStage_setAsBlocked(stage4);
+                            imgStage_setAsBlocked(stage5);
+                            break;
+                        case "VALIDATION":
+                            imgStage_setAsPassed(stage1);
+                            imgStage_setAsPassed(stage2);
+                            imgStage_setAsPassed(stage3);
+                            imgStage_setAsCurrent(stage4);
+                            imgStage_setAsBlocked(stage5);
+                            break;
+                        case "CLOSURE":
+                            imgStage_setAsPassed(stage1);
+                            imgStage_setAsPassed(stage2);
+                            imgStage_setAsPassed(stage3);
+                            imgStage_setAsPassed(stage4);
+                            imgStage_setAsCurrent(stage5);
+                            break;
+                        default:
+                            break;
+                    }
+
+                }// row selected
             });
 
             return row;
         });
+
+        resetStageImgStyleClass();
+
+
+
+    }// initialize
+
+
+    private void resetStageImgStyleClass() {
+        stage1.getStyleClass().removeAll();
+        stage2.getStyleClass().removeAll();
+        stage3.getStyleClass().removeAll();
+        stage4.getStyleClass().removeAll();
+        stage5.getStyleClass().removeAll();
+
     }
 
+    private void imgStage_setAsBlocked(ImageView img) {
+        img.getStyleClass().removeAll();
+        img.getStyleClass().add("img_stage_blocked");
+        img.setOnMouseClicked(null);
+    }
+
+    private void imgStage_setAsPassed(ImageView img) {
+        img.getStyleClass().removeAll();
+        img.getStyleClass().add("img_stage_passed");
+    }
+
+    private void imgStage_setAsCurrent(ImageView img) {
+        img.getStyleClass().removeAll();
+        img.getStyleClass().add("img_stage_current");
+    }
 
     public void setDataTable(Object object) {
         ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
@@ -250,7 +318,7 @@ public class requestTreatmentController extends AppController implements Initial
     }
 
     @FXML
-    void refrshBtn(ActionEvent event) {
+    void refrshBtn(MouseEvent event) {
         getDatafromServer();
 
         FadeTransition ft = new FadeTransition(Duration.millis(1000), msg);
@@ -273,24 +341,24 @@ public class requestTreatmentController extends AppController implements Initial
     }
 
     @FXML
-    void closureButtonClick(ActionEvent event) {
-       loadPage("Closure");
+    void closureButtonClick(MouseEvent event) {
+        loadPage("Closure");
 
     }
 
     @FXML
-    void decButtonClick(ActionEvent event) {
+    void decButtonClick(MouseEvent event) {
         loadPage("Decision");
     }
 
     @FXML
-    void evalButtonClick(ActionEvent event) {
+    void evalButtonClick(MouseEvent event) {
         loadPage("EvaluationForm");
     }
 
     @FXML
-    void exeButtonClick(ActionEvent event) {
-    	InsertStartStage(StageName.EXECUTION.toString());
+    void exeButtonClick(MouseEvent event) {
+        InsertStartStage(StageName.EXECUTION.toString());
         loadPage("Execution");
     }
 
@@ -322,22 +390,22 @@ public class requestTreatmentController extends AppController implements Initial
         initialize(null, null);
 
     }
-    
+
     public void InsertStartStage(String stageName) {
         Calendar currenttime = Calendar.getInstance();               //creates the Calendar object of the current time
-      	 Date starttime = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
-      	 LocalDate duedate = LocalDate.of(selectedRequestInstance.getDueDate().getYear(), selectedRequestInstance.getDueDate().getMonthValue(), selectedRequestInstance.getDueDate().getDayOfMonth());
-      	// System.out.println(Date.valueOf(duedate.toString()));
-      	 String query = "INSERT INTO `Stage` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"+ "VALUES"+ 
-      	 "('"+selectedRequestInstance.getRequestID()+"', '"+stageName+"', '"+starttime+"', NULL, '"+duedate.toString()+"', '', '', '0', '1');";
-    							
-      		OperationType ot = OperationType.InsertStartStage;
-      		App.client.handleMessageFromClientUI(new Message(ot, query));
-        }
-    
+        Date starttime = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
+        LocalDate duedate = LocalDate.of(selectedRequestInstance.getDueDate().getYear(), selectedRequestInstance.getDueDate().getMonthValue(), selectedRequestInstance.getDueDate().getDayOfMonth());
+        // System.out.println(Date.valueOf(duedate.toString()));
+        String query = "INSERT INTO `Stage` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)" + "VALUES" +
+                "('" + selectedRequestInstance.getRequestID() + "', '" + stageName + "', '" + starttime + "', NULL, '" + duedate.toString() + "', '', '', '0', '1');";
+
+        OperationType ot = OperationType.InsertStartStage;
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+    }
+
     @FXML
     void submitBtnClicked(ActionEvent event) {
-    	showAlert(AlertType.INFORMATION, "Mock Button", "Need to import a query for updating the request tuple in the DB table", null);
+        showAlert(AlertType.INFORMATION, "Mock Button", "Need to import a query for updating the request tuple in the DB table", null);
     }
 
 }

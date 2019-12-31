@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ReportGenerateController">
+   <children>
+      <HBox prefHeight="500.0" prefWidth="710.0">
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffb3b3;" stylesheets="@css/theme.css">
+               <children>
+                  <RadioButton fx:id="radioActivty" layoutX="123.0" layoutY="102.0" mnemonicParsing="false" text="Activtiy">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="ReportType" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="radioPerformences" layoutX="124.0" layoutY="175.0" mnemonicParsing="false" text="Performences" toggleGroup="$ReportType" />
+                  <RadioButton fx:id="radioDelays" layoutX="125.0" layoutY="242.0" mnemonicParsing="false" text="Delays" toggleGroup="$ReportType" />
+                  <Button fx:id="btnSelectType" layoutX="122.0" layoutY="389.0" mnemonicParsing="false" onAction="#chooseReportType" text="SelectType" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffffb3;" stylesheets="@css/theme.css">
+               <children>
+                  <DatePicker layoutX="79.0" layoutY="93.0" />
+                  <DatePicker layoutX="82.0" layoutY="238.0" />
+                  <Button fx:id="btnSelectDates" layoutX="113.0" layoutY="394.0" mnemonicParsing="false" onAction="#ChooseDates" prefHeight="26.0" prefWidth="88.0" text="SelectDates" />
+                  <Button fx:id="btnChangeType1" layoutX="116.0" layoutY="344.0" mnemonicParsing="false" onAction="#changeType" text="Change Type" />
+                  <Label layoutX="84.0" layoutY="73.0" text="From" />
+                  <Label layoutX="84.0" layoutY="218.0" text="To" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #bbff99;" stylesheets="@css/theme.css">
+               <children>
+                  <TextArea fx:id="reportInfo" layoutX="67.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" />
+                  <Button fx:id="btnSubmit" layoutX="129.0" layoutY="395.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="89.0" text="Submit" />
+                  <Button fx:id="btnChangeDates" layoutX="202.0" layoutY="345.0" mnemonicParsing="false" onAction="#changeDates" text="Change Dates" />
+                  <Button fx:id="btnChangeType1" layoutX="58.0" layoutY="344.0" mnemonicParsing="false" text="Change Type" />
+                  <Label layoutX="68.0" layoutY="59.0" text="Your Report" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" stylesheets="@css/theme.css">
+         <children>
+            <Button fx:id="btnViewReports" layoutX="445.0" layoutY="86.0" mnemonicParsing="false" onAction="#viewReports" text="ViewReports" />
+            <Separator layoutX="1.0" layoutY="-12.0" prefHeight="13.0" prefWidth="998.0" style="-fx-background-color: #e6e6e6;" stylesheets="@css/theme.css" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

@@ -37,7 +37,7 @@
                         </Text>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0" visible="false">
+                  <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0">
                      <children>
                         <Text fx:id="idText" layoutX="35.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
                         <Text fx:id="requestID" layoutX="48.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
@@ -45,7 +45,7 @@
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
-                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="578.0" mnemonicParsing="false" onAction="#submitBtnClicked" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Submit Update" />
+                        <Button fx:id="submitBtn" disable="true" layoutX="86.0" layoutY="604.0" mnemonicParsing="false" onAction="#submitBtnClicked" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Submit Update" />
                         <TextArea fx:id="existingCondition" editable="false" layoutX="33.0" layoutY="218.0" prefHeight="59.0" prefWidth="466.0" />
                         <Text layoutX="33.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
                         <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="33.0" layoutY="307.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
@@ -75,17 +75,61 @@
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
-                        <Button fx:id="evaluationBtn" layoutX="23.0" layoutY="450.0" mnemonicParsing="false" onAction="#evalButtonClick" prefHeight="38.0" prefWidth="98.0" text="Evaluation" />
-                        <Button fx:id="decisionBtn" layoutX="136.0" layoutY="450.0" mnemonicParsing="false" onAction="#decButtonClick" prefHeight="38.0" prefWidth="98.0" text="Decision" />
-                        <Button fx:id="executionBtn" layoutX="248.0" layoutY="450.0" mnemonicParsing="false" onAction="#exeButtonClick" prefHeight="38.0" prefWidth="98.0" text="Execution" />
-                        <Button fx:id="validationBtn" layoutX="359.0" layoutY="450.0" mnemonicParsing="false" onAction="#validButtonClick" prefHeight="38.0" prefWidth="98.0" text="Validation" />
-                        <Button fx:id="closureBtn" layoutX="472.0" layoutY="450.0" mnemonicParsing="false" onAction="#closureButtonClick" prefHeight="38.0" prefWidth="79.0" text="Closure" />
-                        <Button fx:id="freezeBtn" layoutX="311.0" layoutY="578.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" styleClass="warning" text="Freeze Treatment" />
-                        <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="14.0" onDragDetected="#refrshBtn" pickOnBounds="true" preserveRatio="true">
+                        <Button fx:id="freezeBtn" layoutX="314.0" layoutY="604.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" styleClass="warning" text="Freeze Treatment" />
+                        <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="14.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@img/icons/icon_refresh.png" />
                            </image>
                         </ImageView>
+                        <HBox layoutX="46.0" layoutY="458.0" prefHeight="80.0" prefWidth="481.0">
+                           <children>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="stage1" fitHeight="80.0" fitWidth="112.0" layoutX="5.0" onMouseClicked="#evalButtonClick" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/stages/stage%20(1).png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="stage2" fitHeight="80.0" fitWidth="112.0" layoutX="5.0" onMouseClicked="#decButtonClick" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/stages/stage%20(2).png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="stage3" fitHeight="80.0" fitWidth="112.0" layoutX="5.0" onMouseClicked="#exeButtonClick" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/stages/stage%20(3).png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="stage4" fitHeight="80.0" fitWidth="112.0" layoutX="5.0" onKeyPressed="#validButtonClick" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/stages/stage%20(4).png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="stage5" fitHeight="80.0" fitWidth="112.0" layoutX="5.0" onMouseClicked="#closureButtonClick" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@img/stages/stage%20(5).png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Freezed" layoutY="510.0" prefHeight="200.0" prefWidth="579.0" style="-fx-background-color: #f2ffff;" visible="false">
