@@ -109,14 +109,14 @@
                                  <font>
                                     <Font name="System Bold Italic" size="14.0" />
                                  </font></Text>
-                              <Spinner fx:id="evaluationTime" layoutX="340.0" layoutY="123.0" prefHeight="30.0" prefWidth="169.0" />
+                              <Spinner fx:id="evaluationTime" editable="true" layoutX="340.0" layoutY="123.0" prefHeight="30.0" prefWidth="169.0" />
                               <Spinner fx:id="decisionTime" layoutX="340.0" layoutY="203.0" prefHeight="30.0" prefWidth="169.0" />
                               <Spinner fx:id="executionTime" layoutX="340.0" layoutY="273.0" prefHeight="30.0" prefWidth="169.0" />
                               <Spinner fx:id="ValidationTime" layoutX="340.0" layoutY="346.0" prefHeight="30.0" prefWidth="169.0" />
                               <Text layoutX="340.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Evaluation:" />
-                              <Text layoutX="340.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Evaluation:" />
-                              <Text layoutX="340.0" layoutY="262.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Evaluation:" />
-                              <Text layoutX="344.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Evaluation:" />
+                              <Text layoutX="340.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Decision:" />
+                              <Text layoutX="340.0" layoutY="262.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Execution:" />
+                              <Text layoutX="344.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time for Validation:" />
                            </children>
                         </Pane>
                      </children>

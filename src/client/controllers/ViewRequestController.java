@@ -172,7 +172,7 @@ public class ViewRequestController extends AppController implements Initializabl
 		o = FXCollections.observableArrayList(info);
 
 		colId.setCellValueFactory(new PropertyValueFactory<>("requestID"));
-		colExisitCond.setCellValueFactory(new PropertyValueFactory<>("initiator"));
+		colExisitCond.setCellValueFactory(new PropertyValueFactory<>("existingCondition"));
 		colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
 		table.setItems(o);
