@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -93,9 +94,9 @@ public class EvaluationReportController extends AppController implements Initial
 	@FXML
 	void SbmtEvlBtnClick(ActionEvent event) {
 
-		if(departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()||  timeEvlBox.getValue() == null)
-		{
-			showAlert(AlertType.WARNING,"EvaluationReport", "You must fill all required fields.",null);
+		if (departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()
+				|| timeEvlBox.getValue() == null) {
+			showAlert(AlertType.WARNING, "EvaluationReport", "You must fill all required fields.", null);
 			return;
 		}
 
@@ -107,14 +108,10 @@ public class EvaluationReportController extends AppController implements Initial
 		LocalDate date = this.timeEvlBox.getValue();
 		estimatedTime = date.toString();
 
-		String query= "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
-				
-				+ "'"+thisRequest.getRequestID()+"', "
-				+ "'"+systemID+"', "
-				+ "'"+requiredChange+"', "
-				+ "'"+expectedResult+"', "
-				+ "'"+expectedRisk+"', "
-				+ "'"+estimatedTime+"');";
+		String query = "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
+
+				+ "'" + thisRequest.getRequestID() + "', " + "'" + systemID + "', " + "'" + requiredChange + "', " + "'"
+				+ expectedResult + "', " + "'" + expectedRisk + "', " + "'" + estimatedTime + "');";
 
 		OperationType ot = OperationType.InsertEvaluation;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
@@ -122,9 +119,10 @@ public class EvaluationReportController extends AppController implements Initial
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot1 = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
-		//showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
+		// showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to
+		// execution phase...", null);
 		loadPage("requestTreatment");
-		}
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -133,7 +131,7 @@ public class EvaluationReportController extends AppController implements Initial
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 
-		if(!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
+		if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
 			titledPane.getStyleClass().remove("danger");
 			titledPane.getStyleClass().add("success");
 			titledPane.setCollapsible(false);
@@ -149,27 +147,22 @@ public class EvaluationReportController extends AppController implements Initial
 			timeEvlBox.setEditable(false);
 
 		}
-		requestID.setText(thisRequest.getRequestID()+"");
-		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getInitiator());
-		existingCondition.setText(thisRequest.getExistingCondition());
-		descripitionsTextArea.setText(thisRequest.getRemarks());
-		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
 		setFieldsData();
 	}
 
-	private void setFieldsData(){
+	private void setFieldsData() {
 		OperationType ot = OperationType.EVAL_GetAllReportsByRID;
-		String query= "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1";
+		String query = "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID()
+				+ " ORDER BY Report_ID DESC LIMIT 1";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 
-	public void setFieldsData_ServerResponse(Object object){
+	public void setFieldsData_ServerResponse(Object object) {
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
-		if(reports.size() > 0)
-		{
-			if(thisRequest.getCurrentStage().equals("EVALUATION"))
+		if (reports.size() > 0) {
+			if (thisRequest.getCurrentStage().equals("EVALUATION"))
 				msgFix.setVisible(true);
 			EvaluationReport individualReport = reports.get(0);
 			reqChngTXT.setText(individualReport.getRequired_change());

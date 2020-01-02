@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -20,6 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -72,6 +74,19 @@ public class AllocateController extends AppController implements Initializable {
     private Text requestNameLabel;
     
     @FXML
+    private Spinner<Integer> evaluationTime;
+
+    @FXML
+    private Spinner<Integer> decisionTime;
+
+    @FXML
+    private Spinner<Integer> executionTime;
+
+    @FXML
+    private Spinner<Integer> ValidationTime;
+
+    
+    @FXML
     void submitForm(ActionEvent event) {
         if (cbEvaluator.getValue() == null  || cbExecuter.getValue() == null ||
                 cbTester.getValue() == null || cbIncharge.getValue() == null)
@@ -102,7 +117,7 @@ public class AllocateController extends AppController implements Initializable {
         assert cbExecuter != null : "fx:id=\"cbExecuter\" was not injected: check your FXML file 'Allocate.fxml'.";
         assert cbTester != null : "fx:id=\"cbTester\" was not injected: check your FXML file 'Allocate.fxml'.";
         assert cbIncharge != null : "fx:id=\"cbIncharge\" was not injected: check your FXML file 'Allocate.fxml'.";
-
+        //We have to do something with the spinners!!!!
     }
 
 
@@ -112,13 +127,7 @@ public class AllocateController extends AppController implements Initializable {
         txtWarning.setVisible(false);
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		requestID.setText(thisRequest.getRequestID()+"");
-		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getInitiator());
-		existingCondition.setText(thisRequest.getExistingCondition());
-		descripitionsTextArea.setText(thisRequest.getRemarks());
-		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
         getUsersFromServer();
 
     }

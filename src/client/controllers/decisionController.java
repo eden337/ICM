@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -33,7 +34,6 @@ public class decisionController extends AppController implements Initializable {
 	public static decisionController instance;
 
 	protected ChangeRequest thisRequest;
-
 
 	@FXML
 	private Text idText;
@@ -104,61 +104,57 @@ public class decisionController extends AppController implements Initializable {
 		titledPane.setCollapsible(false);
 		titledPane.setText("This stage is done");
 
-		if(!thisRequest.getCurrentStage().equals("DECISION")){
+		if (!thisRequest.getCurrentStage().equals("DECISION")) {
 			titledPane.setText("This stage is done");
 			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
 			titledPane.getStyleClass().remove("danger");
 			titledPane.getStyleClass().add("success");
 		}
-		requestID.setText(thisRequest.getRequestID()+"");
-		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getInitiator());
-		existingCondition.setText(thisRequest.getExistingCondition());
-		descripitionsTextArea.setText(thisRequest.getRemarks());
-		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
 		setFieldsData();
 	}
 
-	private void setFieldsData(){
+	private void setFieldsData() {
 		OperationType ot = OperationType.DECISION_GetAllReportsByRID;
-		String query= "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1;";
+		String query = "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID()
+				+ " ORDER BY Report_ID DESC LIMIT 1;";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 
-	public void setFieldsData_ServerResponse(Object object){
+	public void setFieldsData_ServerResponse(Object object) {
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
-		if(reports.size() > 0)
-		{
-			//SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+		if (reports.size() > 0) {
+			// SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
 			EvaluationReport individualReport = reports.get(0);
-			Date reportDate = individualReport.getTimestamp() ;
+			Date reportDate = individualReport.getTimestamp();
 			Calendar reportDateCal = Calendar.getInstance();
 			reportDateCal.setTime(reportDate);
 			reportDateCal.add(Calendar.DATE, 7);
-			reportDateCal.set(Calendar.HOUR_OF_DAY,0);
-			reportDateCal.set(Calendar.MINUTE,0);
-			reportDateCal.set(Calendar.SECOND,0);
-			reportDateCal.set(Calendar.MILLISECOND,0);
+			reportDateCal.set(Calendar.HOUR_OF_DAY, 0);
+			reportDateCal.set(Calendar.MINUTE, 0);
+			reportDateCal.set(Calendar.SECOND, 0);
+			reportDateCal.set(Calendar.MILLISECOND, 0);
 
 			Date today = new Date(System.currentTimeMillis());
 			Calendar todayCal = Calendar.getInstance();
-			todayCal.set(Calendar.HOUR_OF_DAY,0);
-			todayCal.set(Calendar.MINUTE,0);
-			todayCal.set(Calendar.SECOND,0);
-			todayCal.set(Calendar.MILLISECOND,0);
+			todayCal.set(Calendar.HOUR_OF_DAY, 0);
+			todayCal.set(Calendar.MINUTE, 0);
+			todayCal.set(Calendar.SECOND, 0);
+			todayCal.set(Calendar.MILLISECOND, 0);
 
 			long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
 			long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-			if(thisRequest.getCurrentStage().equals("DECISION")){
-				if(daysDiff >= 0) {
-					titledPane_Text.setText(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
+			if (thisRequest.getCurrentStage().equals("DECISION")) {
+				if (daysDiff >= 0) {
+					titledPane_Text.setText(
+							TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
 					titledPane.getStyleClass().removeAll();
 					titledPane.getStyleClass().add("info");
-				}
-				else{
-					titledPane_Text.setText("Stage in "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
+				} else {
+					titledPane_Text
+							.setText("Stage in " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
 					titledPane.getStyleClass().removeAll();
 					titledPane.getStyleClass().add("danger");
 				}

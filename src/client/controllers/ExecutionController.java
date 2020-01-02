@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -104,13 +105,7 @@ public class ExecutionController extends AppController implements Initializable 
 		dueDateLabel.setVisible(true);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		requestID.setText(thisRequest.getRequestID()+"");
-		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getInitiator());
-		existingCondition.setText(thisRequest.getExistingCondition());
-		descripitionsTextArea.setText(thisRequest.getRemarks());
-		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-		inchargeTF.setText("");
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
 	}
 	
 	@FXML
