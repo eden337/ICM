@@ -139,7 +139,6 @@ public class ChangeRequestController extends AppController implements Initializa
                 str.append(i.getName());
                 str.append("\n");
             }
-            System.out.println(str.toString());
         }
         return str.toString();
     }
