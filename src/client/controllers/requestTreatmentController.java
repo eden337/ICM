@@ -10,6 +10,8 @@ import common.entity.StageName;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -130,6 +132,9 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	private ImageView stage5;
+	
+	@FXML
+	private TextField searchBoxTF;
 
 	ObservableList<ChangeRequest> o;
 
@@ -170,7 +175,7 @@ public class requestTreatmentController extends AppController implements Initial
 		getDatafromServer();
 		rightPane_selectRequest.setVisible(true);
 		initPanes();
-
+		searchBoxTF.setVisible(true);
 		// event when user click on a row
 		table.setRowFactory(tv -> {
 			TableRow<ChangeRequest> row = new TableRow<>();
@@ -255,7 +260,40 @@ public class requestTreatmentController extends AppController implements Initial
 		colStage.setCellValueFactory(new PropertyValueFactory<>("currentStage"));
 		colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-		table.setItems(o);
+		FilteredList<ChangeRequest> filteredData = new FilteredList<>(o, b -> true);
+		searchBoxTF.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(request -> {
+				// If filter text is empty, display all persons.
+
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				// Compare first name and last name of every person with filter text.
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if (request.getInitiator().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches first name.
+				} else if (request.getCurrentStage().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches last name.
+				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1)
+					return true;
+				else
+					return false; // Does not match.
+			});
+		});
+		// 3. Wrap the FilteredList in a SortedList.
+		SortedList<ChangeRequest> sortedData = new SortedList<>(filteredData);
+
+		// 4. Bind the SortedList comparator to the TableView comparator.
+		// Otherwise, sorting the TableView would have no effect.
+		sortedData.comparatorProperty().bind(table.comparatorProperty());
+
+		// 5. Add sorted (and filtered) data to the table.
+		table.setItems(sortedData);
+
+		//table.setItems(o);
+		
 	}
 
 	public void alertMsg(Object object) {
