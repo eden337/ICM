@@ -106,6 +106,7 @@ public class ChangeRequestController extends AppController implements Initializa
             try {
                 zipFile(files, myZip);
                 UploadRequestFilesToServer(myZip);
+                myZip.deleteOnExit();
             } catch (Exception e) {
                 showAlert(AlertType.ERROR, "Error!", "Files Compressions Error.", null);
             }
