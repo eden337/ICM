@@ -26,6 +26,7 @@
             </TableView>
             <AnchorPane prefHeight="711.0" prefWidth="579.0">
                <children>
+                  <TextField fx:id="searchBoxTF" layoutX="33.0" layoutY="31.0" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
                   <Text fx:id="idText" layoutX="35.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
                   <Text fx:id="requestID" layoutX="48.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
                      <font>

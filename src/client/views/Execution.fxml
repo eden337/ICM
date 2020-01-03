@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -76,19 +77,49 @@
                   </VBox>
                </children>
             </Pane>
-            <AnchorPane prefHeight="710.0" prefWidth="585.0">
+            <AnchorPane prefHeight="710.0" prefWidth="596.0">
                <children>
-                  <Button fx:id="SbmtExecBtn" layoutX="182.0" layoutY="552.0" mnemonicParsing="false" onAction="#submitExecution" prefHeight="112.0" prefWidth="207.0" text="Submit Time">
+                  <Button fx:id="SbmtExecBtn" layoutX="78.0" layoutY="544.0" mnemonicParsing="false" onAction="#submitExecution" prefHeight="47.0" prefWidth="179.0" text="Submit Executer">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Button>
-                  <DatePicker fx:id="DeadlinetimeExec" layoutX="65.0" layoutY="73.0" prefHeight="45.0" prefWidth="227.0" />
-                  <Label layoutX="65.0" layoutY="47.0" text="Estimated time">
+                  <DatePicker fx:id="DeadlinetimeExec" disable="true" layoutX="209.0" layoutY="277.0" prefHeight="34.0" prefWidth="191.0" />
+                  <Label layoutX="58.0" layoutY="235.0" text="Days of Duration :">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </Label>
+                  <Text layoutX="230.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="workDone" layoutX="332.0" layoutY="544.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" text="work done!">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Button>
+                  <TextField fx:id="daysTxt" layoutX="209.0" layoutY="236.0" prefHeight="26.0" prefWidth="188.0" />
+                  <TitledPane fx:id="titledPane" animated="false" layoutX="28.0" layoutY="83.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome  back to Execution stage. ">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </TitledPane>
+                  <AnchorPane fx:id="SupervisorPane" layoutX="106.0" layoutY="317.0" prefHeight="51.0" prefWidth="378.0">
+                     <children>
+                        <Button fx:id="submitAgree" layoutX="106.0" layoutY="-2.0" minWidth="43.0" mnemonicParsing="false" onAction="#submitAgree" prefHeight="34.0" prefWidth="65.0" text="Agree" />
+                        <Button fx:id="submitDisagree" layoutX="208.0" layoutY="-2.0" minWidth="43.0" mnemonicParsing="false" onAction="#submitDisagree" prefHeight="34.0" prefWidth="94.0" text="Disagree" />
+                     </children>
+                  </AnchorPane>
                </children></AnchorPane>
          </children>
       </HBox>

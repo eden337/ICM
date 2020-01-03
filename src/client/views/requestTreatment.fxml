@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
       <HBox>
          <children>
@@ -130,6 +130,7 @@
                               </Pane>
                            </children>
                         </HBox>
+                        <TextField fx:id="searchBoxTF" layoutX="33.0" layoutY="18.0" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Freezed" layoutY="510.0" prefHeight="200.0" prefWidth="579.0" style="-fx-background-color: #f2ffff;" visible="false">
@@ -153,7 +154,7 @@
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Init" prefHeight="710.0" prefWidth="579.0" visible="false">
                      <children>
-                        <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Shuld be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
+                        <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Should be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
                            <font>
                               <Font size="17.0" />
                            </font>
