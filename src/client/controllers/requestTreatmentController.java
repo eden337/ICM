@@ -349,7 +349,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void exeButtonClick(MouseEvent event) {
-		InsertStartStage(StageName.EXECUTION.toString());
+		//InsertStartStage(StageName.EXECUTION.toString());
 		loadPage("Execution");
 	}
 
@@ -381,7 +381,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-	public void InsertStartStage(String stageName) {
+	/*public void InsertStartStage(String stageName) {
 		Calendar currenttime = Calendar.getInstance(); // creates the Calendar object of the current time
 		Date starttime = new Date((currenttime.getTime()).getTime()); // creates the sql Date of the above created
 																		// object
@@ -395,8 +395,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 		OperationType ot = OperationType.InsertStartStage;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}
-
+	}*/
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
 		showAlert(AlertType.INFORMATION, "Mock Button",
