@@ -106,7 +106,6 @@ public class ChangeRequestController extends AppController implements Initializa
             try {
                 zipFile(files, myZip);
                 UploadRequestFilesToServer(myZip);
-                myZip.deleteOnExit();
             } catch (Exception e) {
                 showAlert(AlertType.ERROR, "Error!", "Files Compressions Error.", null);
             }
@@ -218,6 +217,10 @@ public class ChangeRequestController extends AppController implements Initializa
             bis.read(myFile.getMybytearray(), 0, mybytearray.length);
             msgToServer = new Message(OperationType.ChangeRequest_File, myFile);
             App.client.handleMessageFromClientUI(msgToServer);
+            fis.close();
+            bis.close();
+            file.delete();
+
             return true;
         } catch (Exception e) {
             System.out.println("Error file in client: ");
