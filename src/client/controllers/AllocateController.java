@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import client.App;
@@ -43,10 +44,7 @@ public class AllocateController extends AppController implements Initializable {
     private ComboBox<String> cbExecuter;
 
     @FXML
-    private ComboBox<String> cbTester;
-
-    @FXML
-    private ComboBox<String> cbIncharge;
+    private ComboBox<String> cbValidator;
 
     @FXML
     private Text txtWarning;
@@ -68,7 +66,7 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     private Text dueDateLabel;
-    
+
 
     @FXML
     private Text requestNameLabel;
@@ -89,7 +87,7 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     void submitForm(ActionEvent event) {
         if (cbEvaluator.getValue() == null  || cbExecuter.getValue() == null ||
-                cbTester.getValue() == null || cbIncharge.getValue() == null)
+                cbValidator.getValue() == null)
         {
             txtWarning.setVisible(true);
             return;
@@ -97,11 +95,12 @@ public class AllocateController extends AppController implements Initializable {
 
         OperationType ot = OperationType.Allocate_SetRoles;
         String query;
-        query = "INSERT INTO UserRoleInStage (REQUEST_ID,USERNAME, ROLE) VALUES " +
-                "('" + thisRequest.getRequestID() + "','" + cbEvaluator.getValue() + "','EVALUATOR')," +
-                "('" + thisRequest.getRequestID() + "','" + cbExecuter.getValue() + "','EXECUTER')," +
-                "('" + thisRequest.getRequestID() + "','" + cbTester.getValue() + "','TESTER')," +
-                "('" + thisRequest.getRequestID() + "','" + cbIncharge.getValue() + "','INCHARGE')";
+        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
+                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue()   + "')," +
+                "('" + thisRequest.getRequestID() + "','DECISION','"   + ""                       + "')," +
+                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue()     + "')," +
+                "('" + thisRequest.getRequestID() + "','VALIDATION','" + cbValidator.getValue()    + "')," +
+                "('" + thisRequest.getRequestID() + "','CLOSURE','" + ""    + "')";
         App.client.handleMessageFromClientUI(new Message(ot, query));
 
         String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
@@ -111,17 +110,6 @@ public class AllocateController extends AppController implements Initializable {
         loadPage("requestTreatment");
     }
 
-    @FXML
-    void initialize() {
-        assert cbEvaluator != null : "fx:id=\"cbEvaluator\" was not injected: check your FXML file 'Allocate.fxml'.";
-        assert cbExecuter != null : "fx:id=\"cbExecuter\" was not injected: check your FXML file 'Allocate.fxml'.";
-        assert cbTester != null : "fx:id=\"cbTester\" was not injected: check your FXML file 'Allocate.fxml'.";
-        assert cbIncharge != null : "fx:id=\"cbIncharge\" was not injected: check your FXML file 'Allocate.fxml'.";
-        //We have to do something with the spinners!!!!
-    }
-
-
-    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         txtWarning.setVisible(false);
@@ -143,30 +131,22 @@ public class AllocateController extends AppController implements Initializable {
     public void setComboBoxesData(Object object) {
         List<String> listOfUsers = (List<String>) object;
         ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
+        int size = oblist.size();
+        Random r = new Random(size);
+
         cbEvaluator.setItems(oblist);
         cbExecuter.setItems(oblist);
-        cbTester.setItems(oblist);
-        cbIncharge.setItems(oblist);
+        cbValidator.setItems(oblist);
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
-        new AutoCompleteBox<String>(cbTester);
-        new AutoCompleteBox<String>(cbIncharge);
+        new AutoCompleteBox<String>(cbValidator);
+         int rand = r.nextInt(size);
+        //System.out.println(rand);
+        //oblist.get(rand)
+       //cbEvaluator.getSelectionModel().select(2);
+
     }
-    
-    public void start(Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Allocate.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Allocate Responsible Team");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load allocate prompt");
-			e.printStackTrace();
-		}
-	}
-    
+
     public void showResult(Object object) {
         boolean res = (boolean) object;
         showAlert(Alert.AlertType.INFORMATION, "Role Appointment", res ? "Done!" : "Failed", null);

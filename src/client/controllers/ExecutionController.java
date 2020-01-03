@@ -119,7 +119,7 @@ public class ExecutionController extends AppController implements Initializable 
     	 Date endtime = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
     	 
     	  
-    	String query="UPDATE `Stage` SET `EndTime` = '"+endtime+"', `Deadline` = '"+deadLine+"', `Handlers` = 'handler', `Incharge` = 'incharge' WHERE `Stage`.`RequestID` = "+thisRequest.getRequestID()+" AND `Stage`.`StageName` = '"+StageName.EXECUTION+"'";
+    	String query="UPDATE `Stages` SET `EndTime` = '"+endtime+"', `Deadline` = '"+deadLine+"', `Handlers` = 'handler', `Incharge` = 'incharge' WHERE `Stage`.`RequestID` = "+thisRequest.getRequestID()+" AND `Stage`.`StageName` = '"+StageName.EXECUTION+"'";
 		OperationType ot = OperationType.UpdateStage;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		

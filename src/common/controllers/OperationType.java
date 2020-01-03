@@ -20,8 +20,11 @@ public enum OperationType {
 	User_getOrgRole,
 	updateRequestStatus,
 	EVAL_GetAllReportsByRID,
-	DECISION_GetAllReportsByRID, 
-
+	DECISION_GetAllReportsByRID,
+	EVAL_GetInitData,
+	PreEVAL_SetInitStat,
+	PreEVAL_SetConfirmationStatus,
+	PreEVAL_getData
 	;
 
 }

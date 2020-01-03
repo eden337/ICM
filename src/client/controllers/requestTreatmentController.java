@@ -306,6 +306,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void evalButtonClick(MouseEvent event) {
+
 		loadPage("EvaluationForm");
 	}
 
@@ -351,7 +352,7 @@ public class requestTreatmentController extends AppController implements Initial
 				selectedRequestInstance.getDueDate().getMonthValue(),
 				selectedRequestInstance.getDueDate().getDayOfMonth());
 		// System.out.println(Date.valueOf(duedate.toString()));
-		String query = "INSERT INTO `Stage` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
+		String query = "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
 				+ "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" + stageName + "', '" + starttime
 				+ "', NULL, '" + duedate.toString() + "', '', '', '0', '1');";
 

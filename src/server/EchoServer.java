@@ -143,26 +143,23 @@ public class EchoServer extends AbstractServer {
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
                     // stages permission:
-                    query = "SELECT * FROM UserRoleInStage WHERE USERNAME = '" + u1.getUserName() + "'";
+                    query = "SELECT * FROM Stage WHERE Incharge = '" + u1.getUserName() + "'";
                     int r_id = 0;
                     rs = mysql.getQuery(query);
                     StageRole role;
                     Map<Integer, List<StageRole>> stagesRoles = new HashMap<>();
                     if (rs != null) {
                         while (rs.next()) {
-                            r_id = rs.getInt("REQUEST_ID");
-                            switch (rs.getString("ROLE")) {
-                                case "EXECUTER":
+                            r_id = rs.getInt("RequestID");
+                            switch (rs.getString("StageName")) {
+                                case "EXECUTION":
                                     role = StageRole.EXECUTER;
                                     break;
-                                case "TESTER":
+                                case "VALIDATION":
                                     role = StageRole.TESTER;
                                     break;
-                                case "EVALUATOR":
+                                case "EVALUATION":
                                     role = StageRole.EVALUATOR;
-                                    break;
-                                case "INCHARGE":
-                                    role = StageRole.INCHARGE;
                                     break;
                                 default:
                                     throw new IllegalStateException("Unexpected value: " + rs.getString("ROLE"));
@@ -212,9 +209,7 @@ public class EchoServer extends AbstractServer {
                         );
 
                         reportsToReturn.add(IndividualReport);
-                        System.out.println(reportsToReturn);
                     } // while
-                    System.out.println(reportsToReturn);
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
@@ -224,6 +219,48 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.UpdateStage, res), client);
                     break;
+                case EVAL_GetInitData:
+                    List<Boolean> init_res = new ArrayList<Boolean>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    while (rs.next()) {
+                        init_res.add(rs.getBoolean("init"));
+                        init_res.add(rs.getBoolean("init_confirmed"));
+                    }
+                    if (rs == null) {
+                        init_res.add(false);
+                        init_res.add(false);
+                    }
+                    sendToClient(new Message(OperationType.EVAL_GetInitData, init_res), client);
+                    rs.close();
+                    break;
+                case PreEVAL_SetInitStat:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.PreEVAL_SetInitStat, res), client);
+                    break;
+                case PreEVAL_SetConfirmationStatus:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.PreEVAL_SetConfirmationStatus, res), client);
+                    break;
+                case PreEVAL_getData:
+                    List<Integer> res3 = new ArrayList<Integer>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    if (rs != null) {
+
+                        while (rs.next()) {
+                            res3.add(rs.getInt("requestedDays"));
+                            res3.add(rs.getInt("init"));
+                            res3.add(rs.getInt("init_confirmed"));
+                        }
+                    }
+                    else{
+                        res3.add(0);
+                        res3.add(0);
+                        res3.add(0);
+                    }
+                    sendToClient(new Message(OperationType.PreEVAL_getData, res3), client);
+                    rs.close();
+                    break;
+
                 default:
                     break;
             }
@@ -259,11 +296,9 @@ public class EchoServer extends AbstractServer {
             parts = parts[1].split(".zip");
             String requestID = parts[0]; // #.zip
 
-            String qry ="UPDATE `Requests` SET `FILE`= '"+fileName+"' WHERE RequestID = "+ requestID;
-            System.out.println(qry);
+            String qry = "UPDATE `Requests` SET `FILE`= '" + fileName + "' WHERE RequestID = " + requestID;
             boolean res = mysql.insertOrUpdate(qry);
-            if(!res)
-            {
+            if (!res) {
                 System.out.println(requestID + "Update Error");
                 return false;
             }

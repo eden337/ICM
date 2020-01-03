@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -12,11 +11,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.AllocateController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.PreEvaluationController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
-            <Pane prefHeight="200.0" prefWidth="420.0">
+            <Pane>
                <children>
                   <VBox prefHeight="710.0" prefWidth="420.0" style="-fx-background-color: #fffaee;">
                      <children>
@@ -62,57 +61,40 @@
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" />
-                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" visible="false" />
+                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" visible="false">
                                        <font>
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
                                     </Text>
                                  </children>
                               </AnchorPane>
-                           </children></Pane>
+                           </children>
+                        </Pane>
                      </children>
                   </VBox>
                </children>
             </Pane>
-            <Pane prefHeight="710.0" prefWidth="580.0">
+            <AnchorPane prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <VBox prefHeight="710.0" prefWidth="580.0">
-                     <children>
-                        <Pane prefHeight="47.0" prefWidth="580.0" styleClass="bg_color6">
-                           <children>
-                              <Text layoutX="157.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Allocate Stage Treatment Roles">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </Pane>
-                        <Pane prefHeight="668.0" prefWidth="580.0">
-                           <children>
-                              <Text layoutX="82.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Evaluation Stage:" />
-                              <ComboBox fx:id="cbEvaluator" layoutX="82.0" layoutY="123.0" prefWidth="195.0" />
-                              <Text layoutX="82.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Execution Stage:" />
-                              <ComboBox fx:id="cbExecuter" layoutX="82.0" layoutY="198.0" prefWidth="195.0" />
-                              <Text layoutX="82.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Validation Stage:" />
-                              <ComboBox fx:id="cbValidator" layoutX="82.0" layoutY="271.0" prefWidth="194.0" />
-                              <Button layoutX="244.0" layoutY="493.0" mnemonicParsing="false" onAction="#submitForm" styleClass="primary" text="Submit" />
-                              <Text fx:id="txtWarning" fill="#ff1c1c" layoutX="82.0" layoutY="373.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*You must allocate all roles">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Text>
-                              <Text fill="#da0a0a" layoutX="82.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All fields are required">
-                                 <font>
-                                    <Font name="System Bold Italic" size="14.0" />
-                                 </font></Text>
-                           </children>
-                        </Pane>
-                     </children>
-                  </VBox>
+                  <Label alignment="CENTER" layoutX="198.0" layoutY="14.0" text="Pre-Evalutaion Stage " textAlignment="CENTER">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="27.0" layoutY="113.0" prefHeight="24.0" prefWidth="152.0" text="Days for Evaluation stage:">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="btnSubmit" layoutX="225.0" layoutY="355.0" mnemonicParsing="false" onAction="#SubmitDaysRequest" prefHeight="35.0" prefWidth="134.0" styleClass="primary" text="Submit Request" />
+                  <Button fx:id="btnAccept" layoutX="91.0" layoutY="433.0" mnemonicParsing="false" onAction="#AcceptPreEval" prefHeight="35.0" prefWidth="134.0" styleClass="success" text="Accept" />
+                  <Button fx:id="btnDeny" layoutX="359.0" layoutY="433.0" mnemonicParsing="false" onAction="#DenyPreEval" prefHeight="35.0" prefWidth="134.0" styleClass="danger" text="Deny" />
+                  <TextField fx:id="tfDays" layoutX="29.0" layoutY="148.0" prefWidth="52.0" text="0" />
+                  <Text fx:id="txtMsg" layoutX="134.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pre-Evaluation stage is waiting for Supervision confirmation" />
                </children>
-            </Pane>
+            </AnchorPane>
          </children>
       </HBox>
    </children>
-</Pane>
+</AnchorPane>

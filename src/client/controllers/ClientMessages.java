@@ -76,6 +76,17 @@ public class ClientMessages {
             case UpdateStage:
             	ExecutionController.instance.queryResult(m.getObject());
             	break;
+
+            case EVAL_GetInitData:
+                EvaluationReportController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
+            case PreEVAL_SetInitStat:
+            case PreEVAL_SetConfirmationStatus:
+                PreEvaluationController.instance.updateStatus_serverResponse(m.getObject());
+                break;
+            case PreEVAL_getData:
+                PreEvaluationController.instance.getCurrentReqestedDays_ServerResponse(m.getObject());
+                break;
             default:
                 break;
 
