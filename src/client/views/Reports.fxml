@@ -15,7 +15,7 @@
    <children>
       <HBox prefHeight="500.0" prefWidth="710.0">
          <children>
-            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffb3b3;" stylesheets="@css/theme.css">
+            <AnchorPane fx:id="reportTypePane" prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffb3b3;">
                <children>
                   <RadioButton fx:id="radioActivty" layoutX="123.0" layoutY="102.0" mnemonicParsing="false" text="Activtiy">
                      <toggleGroup>
@@ -27,31 +27,31 @@
                   <Button fx:id="btnSelectType" layoutX="122.0" layoutY="389.0" mnemonicParsing="false" onAction="#chooseReportType" text="SelectType" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffffb3;" stylesheets="@css/theme.css">
+            <AnchorPane fx:id="datesPane" prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #ffffb3;">
                <children>
-                  <DatePicker layoutX="79.0" layoutY="93.0" />
-                  <DatePicker layoutX="82.0" layoutY="238.0" />
-                  <Button fx:id="btnSelectDates" layoutX="113.0" layoutY="394.0" mnemonicParsing="false" onAction="#ChooseDates" prefHeight="26.0" prefWidth="88.0" text="SelectDates" />
-                  <Button fx:id="btnChangeType1" layoutX="116.0" layoutY="344.0" mnemonicParsing="false" onAction="#changeType" text="Change Type" />
+                  <DatePicker fx:id="fromDatePic" layoutX="79.0" layoutY="93.0" />
+                  <DatePicker fx:id="toDatePic" layoutX="82.0" layoutY="238.0" />
+                  <Button fx:id="btnSelectDates" layoutX="113.0" layoutY="394.0" mnemonicParsing="false" onAction="#ChooseDates" prefHeight="32.0" prefWidth="90.0" text="SelectDates" />
+                  <Button fx:id="btnChangeType1" layoutX="116.0" layoutY="344.0" mnemonicParsing="false" onAction="#changeType" prefHeight="26.0" prefWidth="90.0" text="Change Type" />
                   <Label layoutX="84.0" layoutY="73.0" text="From" />
                   <Label layoutX="84.0" layoutY="218.0" text="To" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #bbff99;" stylesheets="@css/theme.css">
+            <AnchorPane fx:id="submitPane" prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #bbff99;">
                <children>
                   <TextArea fx:id="reportInfo" layoutX="67.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" />
-                  <Button fx:id="btnSubmit" layoutX="129.0" layoutY="395.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="89.0" text="Submit" />
+                  <Button fx:id="btnSubmit" layoutX="129.0" layoutY="395.0" mnemonicParsing="false" onAction="#submit" prefHeight="26.0" prefWidth="89.0" text="Submit" />
                   <Button fx:id="btnChangeDates" layoutX="202.0" layoutY="345.0" mnemonicParsing="false" onAction="#changeDates" text="Change Dates" />
-                  <Button fx:id="btnChangeType1" layoutX="58.0" layoutY="344.0" mnemonicParsing="false" text="Change Type" />
+                  <Button fx:id="btnChangeType1" layoutX="58.0" layoutY="344.0" mnemonicParsing="false" onAction="#changeType" text="Change Type" />
                   <Label layoutX="68.0" layoutY="59.0" text="Your Report" />
                </children>
             </AnchorPane>
          </children>
       </HBox>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" stylesheets="@css/theme.css">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;">
          <children>
             <Button fx:id="btnViewReports" layoutX="445.0" layoutY="86.0" mnemonicParsing="false" onAction="#viewReports" text="ViewReports" />
-            <Separator layoutX="1.0" layoutY="-12.0" prefHeight="13.0" prefWidth="998.0" style="-fx-background-color: #e6e6e6;" stylesheets="@css/theme.css" />
+            <Separator layoutX="1.0" layoutY="-12.0" prefHeight="13.0" prefWidth="998.0" style="-fx-background-color: #e6e6e6;" />
          </children>
       </AnchorPane>
    </children>
