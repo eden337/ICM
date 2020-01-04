@@ -32,6 +32,7 @@ public enum OperationType {
 	VALID_UpdateDB,
 	EVAL_UpdateDB,
 	DECI_UpdateDB,
+	ChangeRequest_DownloadFile,
 	;
 
 }

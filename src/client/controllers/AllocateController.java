@@ -5,6 +5,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -132,9 +133,13 @@ public class AllocateController extends AppController implements Initializable {
         new AutoCompleteBox<String>(cbValidator);
         int rand = r.nextInt(size);
         //System.out.println(rand);
-        //oblist.get(rand)
-        //cbEvaluator.getSelectionModel().select(2);
-
+       // oblist.get(rand);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                cbEvaluator.getSelectionModel().select(2);
+            }
+        });
     }
 
     public void showResult(Object object) {

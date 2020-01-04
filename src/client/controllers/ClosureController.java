@@ -68,8 +68,8 @@ public class ClosureController extends AppController implements Initializable {
 
 	@FXML
 	private TextField finishedStatusTF;
-
-	// public static String previousStage;
+	
+	//public static String previousStage = "";
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

@@ -8,9 +8,7 @@ import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
@@ -264,7 +262,30 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), res3), client);
                     rs.close();
                     break;
+                case ChangeRequest_DownloadFile:
+                    String fileToSend = "Request_"+m.getObject() + ".zip";
+                    String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir")).append("\\serverFiles\\").append(fileToSend).toString();
+                    try {
+                        File newFile = new File(LocalfilePath);
+                        MyFile msgFile = new MyFile(LocalfilePath, fileToSend);
+                        byte[] mybytearray = new byte[(int) newFile.length()];
+                        FileInputStream fis = new FileInputStream(newFile);
+                        BufferedInputStream bis = new BufferedInputStream(fis);
 
+                        msgFile.initArray(mybytearray.length);
+                        msgFile.setSize(mybytearray.length);
+
+                        bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
+                        sendToClient(new Message(m.getOperationtype(), msgFile), client);
+                    }
+                    catch(FileNotFoundException e)
+                    {
+                        sendToClient(new Message(m.getOperationtype(), null), client);
+
+                        e.printStackTrace();
+                    }
+
+                    break;
                 default:
                     break;
             }

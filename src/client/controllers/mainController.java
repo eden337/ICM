@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.App;
+import client.BypassedApp;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -24,6 +25,7 @@ import java.util.ResourceBundle;
  */
 public class mainController extends AppController implements Initializable {
     public static mainController instance;
+    public static Stage primaryStage;
 
     @FXML
     private ResourceBundle resources;
@@ -166,6 +168,7 @@ public class mainController extends AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        primaryStage = BypassedApp.stage;
         setUser();
         gotoHome(null);
 
