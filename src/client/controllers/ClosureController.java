@@ -30,82 +30,97 @@ public class ClosureController extends AppController implements Initializable {
 
 	protected ChangeRequest thisRequest;
 
-    @FXML
-    private Text idText;
+	@FXML
+	private Text idText;
 
-    @FXML
-    private Text requestID;
+	@FXML
+	private Text requestID;
 
-    @FXML
-    private TextArea existingCondition;
+	@FXML
+	private TextArea existingCondition;
 
-    @FXML
-    private TextArea descripitionsTextArea;
+	@FXML
+	private TextArea descripitionsTextArea;
 
-    @FXML
-    private Text msg;
+	@FXML
+	private Text msg;
 
-    @FXML
-    private TextField inchargeTF;
+	@FXML
+	private TextField inchargeTF;
 
-    @FXML
-    private Text departmentID;
+	@FXML
+	private Text departmentID;
 
-    @FXML
-    private Text idText1;
+	@FXML
+	private Text idText1;
 
-    @FXML
-    private Text requestNameLabel;
+	@FXML
+	private Text requestNameLabel;
 
-    @FXML
-    private Text idText2;
+	@FXML
+	private Text idText2;
 
-    @FXML
-    private Text dueDateLabel;
+	@FXML
+	private Text dueDateLabel;
 
-    @FXML
-    private Button closeProcessBtn;
+	@FXML
+	private Button closeProcessBtn;
 
-    @FXML
-    private TextField finishedStatusTF;
+	@FXML
+	private TextField finishedStatusTF;
+
+	public static String previousStage;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		dueDateLabel.setVisible(true);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
+		if (previousStage.equals("DECISION")) {
+			finishedStatusTF.setText("FAILED");
+		} else // else if prevStage == Validation
+			finishedStatusTF.setText("Request Processed Correctly");
 	}
-	
+
 	/**
-	 * @apiNote
-	 * 	need to check if the process succeed or not and send an appropriate message:
-	 * use finishedStatusTF
+	 * @apiNote need to check if the process succeed or not and send an appropriate
+	 *          message: use finishedStatusTF
 	 * @param event
 	 */
-    @FXML
-    void closeProcessBtnClicked(ActionEvent event) {
-    	String query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "'";
+
+	@FXML
+	void closeProcessBtnClicked(ActionEvent event) {
+		String query;
+		if (previousStage.equals("DECISION")) {
+			query = "UPDATE Requests SET Treatment_Phase = 'CANCELED' , STATUS = 'CANCELED' WHERE RequestID = '"
+					+ thisRequest.getRequestID() + "'";
+
+		} else {
+			query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
+					+ thisRequest.getRequestID() + "'";
+		}
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 
-    }
+	}
 
-    private static int c = 0;
-    public void queryResult(Object object) {
-        c++;
-        boolean res = (boolean) object;
-        if (c == 1) { // TODO : Add EMAIL REQUEST.
-            if (res) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadPage("requestTreatment");
-                    }
-                });
-            } else
-                showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
-        }
-    }
+	private static int c = 0;
+
+	public void queryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 1) { // TODO : Add EMAIL REQUEST.
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+		}
+	}
 }

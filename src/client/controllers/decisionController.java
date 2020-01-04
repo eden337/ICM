@@ -208,6 +208,7 @@ public class decisionController extends AppController implements Initializable {
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		ClosureController.instance.previousStage="DECISION";
 		showAlert(AlertType.ERROR, "Evaluation Declined", "Request moved to closure phase...", null);
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
