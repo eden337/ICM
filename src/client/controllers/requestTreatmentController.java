@@ -298,9 +298,9 @@ public class requestTreatmentController extends AppController implements Initial
 				String lowerCaseFilter = newValue.toLowerCase();
 
 				if (request.getInitiator().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-					return true; // Filter matches first name.
+					return true; // Filter matches initiator name.
 				} else if (request.getCurrentStage().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-					return true; // Filter matches last name.
+					return true; // Filter matches current stage.
 				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1)
 					return true;
 				else

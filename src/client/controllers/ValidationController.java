@@ -130,6 +130,7 @@ public class ValidationController extends AppController implements Initializable
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
+		ClosureController.instance.previousStage="VALIDATION";
 
 
 	}
