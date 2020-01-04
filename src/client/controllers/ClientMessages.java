@@ -105,6 +105,9 @@ public class ClientMessages {
             case EVAL_UpdateDB:
                 EvaluationReportController.instance.queryResult(m.getObject());
                 break;
+            case ChangeRequest_DownloadFile:
+                requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
+                break;
             default:
                 break;
 
