@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -11,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ValidationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ValidationController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -82,20 +83,33 @@
                         <Font size="30.0" />
                      </font>
                   </Text>
-                  <Button fx:id="validateBtn" layoutX="60.0" layoutY="179.0" mnemonicParsing="false" onAction="#validateBtnClicked" prefHeight="74.0" prefWidth="123.0" styleClass="success" text="Yes" />
+                  <Button fx:id="validateBtn" layoutX="60.0" layoutY="204.0" mnemonicParsing="false" onAction="#validateBtnClicked" prefHeight="74.0" prefWidth="123.0" styleClass="success" text="Yes" />
                   <Button fx:id="failureReportBtn" disable="true" layoutX="60.0" layoutY="596.0" mnemonicParsing="false" onAction="#failureReportBtnClicked" prefHeight="32.0" prefWidth="170.0" styleClass="primary" text="Submit Failure Report" />
                   <TextArea fx:id="failReportTextArea" layoutX="59.0" layoutY="314.0" prefHeight="269.0" prefWidth="465.0" />
-                  <Text fx:id="idText11" layoutX="59.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is the Execution process complete?">
+                  <Text fx:id="idText11" layoutX="59.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Is the Execution process complete?">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Text>
-                  <Button fx:id="noBtn" layoutX="204.0" layoutY="179.0" mnemonicParsing="false" onAction="#noBtnClick" prefHeight="74.0" prefWidth="123.0" styleClass="danger" text="No" />
+                  <Button fx:id="noBtn" layoutX="204.0" layoutY="204.0" mnemonicParsing="false" onAction="#noBtnClick" prefHeight="74.0" prefWidth="123.0" styleClass="danger" text="No" />
                   <Text fx:id="failReportLabel" layoutX="59.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter your failure report:">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Text>
+                  <TitledPane fx:id="titledPane" animated="false" layoutX="27.0" layoutY="64.0" prefHeight="83.0" prefWidth="529.0" styleClass="info" text="untitled">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="66.0" prefWidth="513.0">
+                           <children>
+                              <Text fx:id="titledPane_Text" fill="#0058d9" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Report has Been Approved">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </TitledPane>
                </children></AnchorPane>
          </children>
       </HBox>

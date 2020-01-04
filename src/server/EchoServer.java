@@ -191,6 +191,7 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
                 case DECISION_GetAllReportsByRID:
+                case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
                     rs = mysql.getQuery(m.getObject().toString());
                     ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();

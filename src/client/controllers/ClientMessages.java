@@ -72,7 +72,11 @@ public class ClientMessages {
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-
+                
+            case VAL_GetAllReportsByRID:
+                ValidationController.instance.setFieldsData_ServerResponse(m.getObject());
+                break;
+            
             case EXE_UpdateDB:
                 ExecutionController.instance.queryResult(m.getObject());
                 break;

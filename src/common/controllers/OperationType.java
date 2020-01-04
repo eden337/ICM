@@ -19,6 +19,7 @@ public enum OperationType {
 	updateRequestStatus,
 	EVAL_GetAllReportsByRID,
 	DECISION_GetAllReportsByRID,
+	VAL_GetAllReportsByRID,
 	EVAL_GetInitData,
 	EXE_GetInitData,
 	PreEVAL_SetInitStat,

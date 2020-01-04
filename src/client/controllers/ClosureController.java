@@ -69,7 +69,7 @@ public class ClosureController extends AppController implements Initializable {
 	@FXML
 	private TextField finishedStatusTF;
 
-	public static String previousStage;
+	// public static String previousStage;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -78,7 +78,7 @@ public class ClosureController extends AppController implements Initializable {
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-		if (previousStage.equals("DECISION")) {
+		if (thisRequest.getPrevStage().equals("DECISION")) {
 			finishedStatusTF.setText("FAILED");
 		} else // else if prevStage == Validation
 			finishedStatusTF.setText("Request Processed Correctly");
@@ -93,7 +93,7 @@ public class ClosureController extends AppController implements Initializable {
 	@FXML
 	void closeProcessBtnClicked(ActionEvent event) {
 		String query;
-		if (previousStage.equals("DECISION")) {
+		if (thisRequest.getPrevStage().equals("DECISION")) {
 			query = "UPDATE Requests SET Treatment_Phase = 'CANCELED' , STATUS = 'CANCELED' WHERE RequestID = '"
 					+ thisRequest.getRequestID() + "'";
 
