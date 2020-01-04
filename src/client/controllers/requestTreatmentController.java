@@ -1,12 +1,15 @@
 package client.controllers;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import client.App;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
-import common.entity.StageName;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,23 +19,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
-import java.net.URL;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.ResourceBundle;
 
 public class requestTreatmentController extends AppController implements Initializable {
 
@@ -132,10 +132,12 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	private ImageView stage5;
-	
+
 	@FXML
 	private TextField searchBoxTF;
 
+	@FXML
+	private HBox stageProgressHBox;
 	ObservableList<ChangeRequest> o;
 
 	protected ChangeRequest getCurrentRequest() {
@@ -204,11 +206,13 @@ public class requestTreatmentController extends AppController implements Initial
 						if (selectedRequestInstance.getStatus().equals("FREEZED")) {
 							rightPane_Freezed.setVisible(true);
 							rightPane_requestTreatment.setDisable(true);
+							stageProgressHBox.setVisible(false);
 							if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
 								btnUnfreeze.setVisible(true);
 						} else {
 							rightPane_Freezed.setVisible(false);
 							rightPane_requestTreatment.setDisable(false);
+							stageProgressHBox.setVisible(true);
 						}
 					}
 
@@ -249,7 +253,6 @@ public class requestTreatmentController extends AppController implements Initial
 		stage5.setOnMouseClicked(this::closureButtonClick);
 
 	}
-
 
 	public void setDataTable(Object object) {
 		ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
@@ -292,8 +295,8 @@ public class requestTreatmentController extends AppController implements Initial
 		// 5. Add sorted (and filtered) data to the table.
 		table.setItems(sortedData);
 
-		//table.setItems(o);
-		
+		// table.setItems(o);
+
 	}
 
 	public void alertMsg(Object object) {
@@ -350,7 +353,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void exeButtonClick(MouseEvent event) {
-		//InsertStartStage(StageName.EXECUTION.toString());
+		// InsertStartStage(StageName.EXECUTION.toString());
 		loadPage("Execution");
 	}
 
@@ -382,21 +385,23 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-	/*public void InsertStartStage(String stageName) {
-		Calendar currenttime = Calendar.getInstance(); // creates the Calendar object of the current time
-		Date starttime = new Date((currenttime.getTime()).getTime()); // creates the sql Date of the above created
-																		// object
-		LocalDate duedate = LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
-				selectedRequestInstance.getDueDate().getMonthValue(),
-				selectedRequestInstance.getDueDate().getDayOfMonth());
-		// System.out.println(Date.valueOf(duedate.toString()));
-		String query = "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
-				+ "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" + stageName + "', '" + starttime
-				+ "', NULL, '" + duedate.toString() + "', '', '', '0', '1');";
-
-		OperationType ot = OperationType.InsertStartStage;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}*/
+	/*
+	 * public void InsertStartStage(String stageName) { Calendar currenttime =
+	 * Calendar.getInstance(); // creates the Calendar object of the current time
+	 * Date starttime = new Date((currenttime.getTime()).getTime()); // creates the
+	 * sql Date of the above created // object LocalDate duedate =
+	 * LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
+	 * selectedRequestInstance.getDueDate().getMonthValue(),
+	 * selectedRequestInstance.getDueDate().getDayOfMonth()); //
+	 * System.out.println(Date.valueOf(duedate.toString())); String query =
+	 * "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
+	 * + "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" +
+	 * stageName + "', '" + starttime + "', NULL, '" + duedate.toString() +
+	 * "', '', '', '0', '1');";
+	 * 
+	 * OperationType ot = OperationType.InsertStartStage;
+	 * App.client.handleMessageFromClientUI(new Message(ot, query)); }
+	 */
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
 		showAlert(AlertType.INFORMATION, "Mock Button",

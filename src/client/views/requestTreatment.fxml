@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -18,14 +19,19 @@
    <children>
       <HBox>
          <children>
-            <TableView fx:id="table" prefHeight="192.0" prefWidth="420.0">
-              <columns>
-                <TableColumn fx:id="colId" prefWidth="61.0" text="ID" />
-                <TableColumn fx:id="colIntitator" prefWidth="107.0" text="Initiator " />
-                  <TableColumn fx:id="colStage" prefWidth="130.0" text="Stage" />
-                  <TableColumn fx:id="colStatus" prefWidth="121.0" text="Status" />
-              </columns>
-            </TableView>
+            <VBox prefHeight="711.0" prefWidth="417.0">
+               <children>
+                  <TextField fx:id="searchBoxTF" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
+                  <TableView fx:id="table" prefHeight="727.0" prefWidth="178.0">
+                    <columns>
+                      <TableColumn fx:id="colId" prefWidth="61.0" text="ID" />
+                      <TableColumn fx:id="colIntitator" prefWidth="107.0" text="Initiator " />
+                        <TableColumn fx:id="colStage" prefWidth="130.0" text="Stage" />
+                        <TableColumn fx:id="colStatus" prefWidth="121.0" text="Status" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <AnchorPane fx:id="rightPane_selectRequest" prefHeight="710.0" prefWidth="579.0" visible="false">
@@ -81,7 +87,7 @@
                               <Image url="@img/icons/icon_refresh.png" />
                            </image>
                         </ImageView>
-                        <HBox layoutX="46.0" layoutY="458.0" prefHeight="80.0" prefWidth="481.0">
+                        <HBox fx:id="stageProgressHBox" layoutX="46.0" layoutY="458.0" prefHeight="80.0" prefWidth="481.0">
                            <children>
                               <Pane prefHeight="200.0" prefWidth="200.0">
                                  <children>
@@ -130,7 +136,6 @@
                               </Pane>
                            </children>
                         </HBox>
-                        <TextField fx:id="searchBoxTF" layoutX="33.0" layoutY="18.0" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Freezed" layoutY="510.0" prefHeight="200.0" prefWidth="579.0" style="-fx-background-color: #f2ffff;" visible="false">
