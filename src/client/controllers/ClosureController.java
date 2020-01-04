@@ -9,6 +9,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -84,13 +85,27 @@ public class ClosureController extends AppController implements Initializable {
 	 */
     @FXML
     void closeProcessBtnClicked(ActionEvent event) {
-    	String query = "UPDATE Requests SET STATUS = 'DONE' WHERE RequestID = '"
+    	String query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-		showAlert(AlertType.INFORMATION, "Process Finished!", "Notification has been sent to user's email and SMS", null);
-		loadPage("requestTreatment");
+
     }
 
-
+    private static int c = 0;
+    public void queryResult(Object object) {
+        c++;
+        boolean res = (boolean) object;
+        if (c == 1) { // TODO : Add EMAIL REQUEST.
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+        }
+    }
 }

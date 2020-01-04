@@ -9,23 +9,18 @@ import common.entity.EvaluationReport;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -93,8 +88,9 @@ public class EvaluationReportController extends AppController implements Initial
     @FXML
     private TitledPane titledPane;
 
-	@FXML
-	private AnchorPane rightPane;
+    @FXML
+    private AnchorPane rightPane;
+
 
     @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
@@ -132,9 +128,12 @@ public class EvaluationReportController extends AppController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		rightPane.setVisible(false);
+        rightPane.setVisible(false);
         msgFix.setVisible(false);
         dueDateLabel.setVisible(false);
+        titledPane.setCollapsible(false);
+        titledPane.setText("Welcome");
+
         instance = this;
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
@@ -155,35 +154,45 @@ public class EvaluationReportController extends AppController implements Initial
 
         if (init_confirmed && init) {
             formInit();
-			rightPane.setVisible(true);
+            rightPane.setVisible(true);
             return;
         }
-		Platform.runLater(new Runnable() {
+        Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
-				loadPage("PreEvaluation");
-			}
-		});
+            @Override
+            public void run() {
+                loadPage("PreEvaluation");
+            }
+        });
 
     }
 
 
     private void formInit() {
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
+            Platform.runLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    titledPane.getStyleClass().add("success");
+                    titledPane.setText("This stage is done.");
+                    SbmtEvlBtn.setVisible(false);
+                    timeEvlBox.setDisable(true);
+                    msgFix.setText("You have only a viewing permission.");
+                    msgFix.setFill(Color.FORESTGREEN);
+                    msgFix.setVisible(true);
+                    reqChngTXT.setEditable(false);
+                    expResTXT.setEditable(false);
+                    cnstrntTXT.setEditable(false);
+                    timeEvlBox.setEditable(false);
+                }
+            });
+
+        }
+        else{ // currently doing this stage
             titledPane.getStyleClass().remove("danger");
-            titledPane.getStyleClass().add("success");
-            titledPane.setCollapsible(false);
-            titledPane.setText("This stage is done.");
-            SbmtEvlBtn.setVisible(false);
-            timeEvlBox.setDisable(true);
-            msgFix.setText("You have only a viewing permission.");
-            msgFix.setFill(Color.FORESTGREEN);
-            msgFix.setVisible(true);
-            reqChngTXT.setEditable(false);
-            expResTXT.setEditable(false);
-            cnstrntTXT.setEditable(false);
-            timeEvlBox.setEditable(false);
+            titledPane.getStyleClass().add("info");
+            titledPane.setText("Fill in Evaluation report.");
         }
         setFieldsData();
     }
@@ -209,12 +218,43 @@ public class EvaluationReportController extends AppController implements Initial
 
     }
 
-    public void queryResult(Object object) {
+    public void insertNewRequestResult(Object object) {
         boolean res = (boolean) object;
 
-        if (res)
-            showAlert(AlertType.INFORMATION, "Evaluation Success", "Report updated", null);
-        else
+        if (res) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Calendar c = Calendar.getInstance();
+            Date today = new Date(System.currentTimeMillis());
+            c.setTime(today);
+            c.add(Calendar.DATE, 7);
+            Date deadlineDate = c.getTime();
+
+            String query1 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+            String query2 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today) + "' , `Deadline` = '" + dateFormat.format(deadlineDate) + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+
+            OperationType ot1 = OperationType.EVAL_UpdateDB;
+            App.client.handleMessageFromClientUI(new Message(ot1, query1));
+            App.client.handleMessageFromClientUI(new Message(ot1, query2));
+        } else
             showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+    }
+
+    private static int c = 0;
+
+    public void queryResult(Object object) {
+        c++;
+        boolean res = (boolean) object;
+        if (c == 2) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAlert(AlertType.INFORMATION, "Evaluation Success", "Report updated", null);
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Data Error.", null);
+        }
     }
 }

@@ -213,34 +213,38 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
-                //need for considerations...    
-                case InsertStartStage:
-                case UpdateStage:
+                //need for considerations...
+                case DECI_UpdateDB:
+                case EVAL_UpdateDB:
+                case VALID_UpdateDB:
+                case EXE_UpdateDB:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.UpdateStage, res), client);
+                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case EXE_GetInitData:
                 case EVAL_GetInitData:
                     List<Boolean> init_res = new ArrayList<Boolean>();
                     rs = mysql.getQuery(m.getObject().toString());
-                    while (rs.next()) {
-                        init_res.add(rs.getBoolean("init"));
-                        init_res.add(rs.getBoolean("init_confirmed"));
+                    if (rs != null) {
+                        while (rs.next()) {
+                            init_res.add(rs.getBoolean("init"));
+                            init_res.add(rs.getBoolean("init_confirmed"));
+                        }
                     }
-                    if (rs == null) {
-                        init_res.add(false);
-                        init_res.add(false);
-                    }
-                    sendToClient(new Message(OperationType.EVAL_GetInitData, init_res), client);
+                    init_res.add(false);
+                    init_res.add(false);
+
+                    sendToClient(new Message(m.getOperationtype(), init_res), client);
                     rs.close();
                     break;
+                case PreEXE_SetInitStat:
                 case PreEVAL_SetInitStat:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.PreEVAL_SetInitStat, res), client);
-                    break;
+                case PreEXE_SetConfirmationStatus:
                 case PreEVAL_SetConfirmationStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.PreEVAL_SetConfirmationStatus, res), client);
+                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case PreEXE_getData:
                 case PreEVAL_getData:
                     List<Integer> res3 = new ArrayList<Integer>();
                     rs = mysql.getQuery(m.getObject().toString());
@@ -252,24 +256,22 @@ public class EchoServer extends AbstractServer {
                             res3.add(rs.getInt("init_confirmed"));
                         }
                     }
-                    else{
-                        res3.add(0);
-                        res3.add(0);
-                        res3.add(0);
-                    }
-                    sendToClient(new Message(OperationType.PreEVAL_getData, res3), client);
+                    res3.add(0);
+                    res3.add(0);
+                    res3.add(0);
+
+                    sendToClient(new Message(m.getOperationtype(), res3), client);
                     rs.close();
                     break;
 
                 default:
                     break;
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
-            // TODO: handle exception
         }
 
-        // this.sendToAllClients(msg);
     }
 
     /**

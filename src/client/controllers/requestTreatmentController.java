@@ -241,7 +241,7 @@ public class requestTreatmentController extends AppController implements Initial
 		stage4.getStyleClass().remove("img_stage_blocked");
 		stage4.getStyleClass().remove("img_stage_passed");
 		stage4.getStyleClass().remove("img_stage_current");
-		stage4.setOnMouseClicked(this::evalButtonClick);
+		stage4.setOnMouseClicked(this::validButtonClick);
 
 		stage5.getStyleClass().remove("img_stage_blocked");
 		stage5.getStyleClass().remove("img_stage_passed");
@@ -355,7 +355,7 @@ public class requestTreatmentController extends AppController implements Initial
 	}
 
 	@FXML
-	void validButtonClick(ActionEvent event) {
+	void validButtonClick(MouseEvent event) {
 		loadPage("Validation");
 	}
 

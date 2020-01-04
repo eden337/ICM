@@ -23,9 +23,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PreEvaluationController extends AppController implements Initializable {
+public class PreExecutionController extends AppController implements Initializable {
 
-    public static PreEvaluationController instance;
+    public static PreExecutionController instance;
     private ChangeRequest thisRequest;
 
     @FXML
@@ -77,7 +77,7 @@ public class PreEvaluationController extends AppController implements Initializa
     private Text txtMsg;
 
     @FXML
-    void AcceptPreEval(ActionEvent event) {
+    void AcceptPreExe(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Calendar c = Calendar.getInstance();
         Date today = new Date(System.currentTimeMillis());
@@ -86,21 +86,21 @@ public class PreEvaluationController extends AppController implements Initializa
         Date dedlineDate = c.getTime();
         System.out.println(dateFormat.format(dedlineDate));
 
-        OperationType ot = OperationType.PreEVAL_SetConfirmationStatus;
+        OperationType ot = OperationType.PreEXE_SetConfirmationStatus;
 
         String query = "UPDATE `Stage` SET" +
                 " `init_confirmed` = true ," +
                 " `StartTime` = '" + dateFormat.format(today) + "'," +
                 " `Deadline` = '" + dateFormat.format(dedlineDate) + "'" +
-                " where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+                " where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
     @FXML
-    void DenyPreEval(ActionEvent event) {
-        OperationType ot = OperationType.PreEVAL_SetConfirmationStatus;
-        String query = "UPDATE `Stage` SET `init` = false where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
+    void DenyPreExe(ActionEvent event) {
+        OperationType ot = OperationType.PreEXE_SetConfirmationStatus;
+        String query = "UPDATE `Stage` SET `init` = false where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
@@ -118,8 +118,8 @@ public class PreEvaluationController extends AppController implements Initializa
         }
 
         if (flag) {
-            OperationType ot = OperationType.PreEVAL_SetInitStat;
-            String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
+            OperationType ot = OperationType.PreEXE_SetInitStat;
+            String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
         }
     }
@@ -148,8 +148,8 @@ public class PreEvaluationController extends AppController implements Initializa
     }
 
     private void getCurrentReqestedDays() {
-        OperationType ot = OperationType.PreEVAL_getData;
-        String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EVALUATION' AND `RequestID`= '" + thisRequest.getRequestID() + "'";
+        OperationType ot = OperationType.PreEXE_getData;
+        String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EXECUTION' AND `RequestID`= '" + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 

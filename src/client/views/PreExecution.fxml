@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.PreExecutionController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -62,8 +61,8 @@
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" />
-                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" visible="false" />
+                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" visible="false">
                                        <font>
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
@@ -76,47 +75,25 @@
                   </VBox>
                </children>
             </Pane>
-            <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="596.0">
+            <AnchorPane prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Text layoutX="230.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                  <Label alignment="CENTER" layoutX="198.0" layoutY="14.0" text="Pre-Execution Stage " textAlignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
-                  </Text>
-                  <TitledPane fx:id="titledPane" animated="false" layoutX="28.0" layoutY="83.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </TitledPane>
-                  <Button fx:id="workDone" layoutX="202.0" layoutY="430.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Button>
-                  <Text layoutX="28.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
+                  </Label>
+                  <Label alignment="CENTER" layoutX="27.0" layoutY="113.0" prefHeight="24.0" prefWidth="152.0" text="Days for Execution stage:">
                      <font>
                         <Font size="13.0" />
                      </font>
-                  </Text>
-                  <Text layoutX="28.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have to finish this stage until:">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="105.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="373.29296875">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Text>
-               </children></AnchorPane>
+                  </Label>
+                  <Button fx:id="btnSubmit" layoutX="225.0" layoutY="355.0" mnemonicParsing="false" onAction="#SubmitDaysRequest" prefHeight="35.0" prefWidth="134.0" styleClass="primary" text="Submit Request" />
+                  <Button fx:id="btnAccept" layoutX="91.0" layoutY="433.0" mnemonicParsing="false" onAction="#AcceptPreExe" prefHeight="35.0" prefWidth="134.0" styleClass="success" text="Accept" />
+                  <Button fx:id="btnDeny" layoutX="359.0" layoutY="433.0" mnemonicParsing="false" onAction="#DenyPreExe" prefHeight="35.0" prefWidth="134.0" styleClass="danger" text="Deny" />
+                  <TextField fx:id="tfDays" layoutX="29.0" layoutY="148.0" prefWidth="52.0" text="0" />
+                  <Text fx:id="txtMsg" layoutX="136.0" layoutY="269.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pre-Execution stage is waiting for Supervision confirmation" />
+               </children>
+            </AnchorPane>
          </children>
       </HBox>
    </children>

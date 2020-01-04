@@ -1,12 +1,5 @@
 package client.controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
-
 import client.App;
 import common.Tools;
 import common.controllers.Message;
@@ -16,17 +9,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+
+import java.net.URL;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
 
 public class AllocateController extends AppController implements Initializable {
     public static AllocateController instance;
@@ -48,13 +38,13 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     private Text txtWarning;
-    
+
     @FXML
     private TextField inchargeTF;
 
     @FXML
     private Text departmentID;
-    
+
     @FXML
     private Text requestID;
 
@@ -70,7 +60,7 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     private Text requestNameLabel;
-    
+
     @FXML
     private Spinner<Integer> evaluationTime;
 
@@ -83,12 +73,11 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private Spinner<Integer> ValidationTime;
 
-    
+
     @FXML
     void submitForm(ActionEvent event) {
-        if (cbEvaluator.getValue() == null  || cbExecuter.getValue() == null ||
-                cbValidator.getValue() == null)
-        {
+        if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null ||
+                cbValidator.getValue() == null) {
             txtWarning.setVisible(true);
             return;
         }
@@ -96,15 +85,16 @@ public class AllocateController extends AppController implements Initializable {
         OperationType ot = OperationType.Allocate_SetRoles;
         String query;
         query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
-                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue()   + "')," +
-                "('" + thisRequest.getRequestID() + "','DECISION','"   + ""                       + "')," +
-                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue()     + "')," +
-                "('" + thisRequest.getRequestID() + "','VALIDATION','" + cbValidator.getValue()    + "')," +
-                "('" + thisRequest.getRequestID() + "','CLOSURE','" + ""    + "')";
+                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
+                "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
+                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
+                "('" + thisRequest.getRequestID() + "','VALIDATION','" + cbValidator.getValue() + "')," +
+                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
         App.client.handleMessageFromClientUI(new Message(ot, query));
 
         String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
                 + thisRequest.getRequestID() + "'";
+
         OperationType ot2 = OperationType.updateRequestStatus;
         App.client.handleMessageFromClientUI(new Message(ot2, query2));
         loadPage("requestTreatment");
@@ -140,10 +130,10 @@ public class AllocateController extends AppController implements Initializable {
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
         new AutoCompleteBox<String>(cbValidator);
-         int rand = r.nextInt(size);
+        int rand = r.nextInt(size);
         //System.out.println(rand);
         //oblist.get(rand)
-       //cbEvaluator.getSelectionModel().select(2);
+        //cbEvaluator.getSelectionModel().select(2);
 
     }
 
@@ -152,3 +142,4 @@ public class AllocateController extends AppController implements Initializable {
         showAlert(Alert.AlertType.INFORMATION, "Role Appointment", res ? "Done!" : "Failed", null);
     }
 }
+

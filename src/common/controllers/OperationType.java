@@ -8,8 +8,6 @@ public enum OperationType {
 	LoginAsEmployee,
 	InsertEvaluation,
 	getViewRequestData,
-	InsertStartStage,
-	UpdateStage,
 	// Results:
 
 	LoginResult, ChangeRequest_File,
@@ -22,9 +20,17 @@ public enum OperationType {
 	EVAL_GetAllReportsByRID,
 	DECISION_GetAllReportsByRID,
 	EVAL_GetInitData,
+	EXE_GetInitData,
 	PreEVAL_SetInitStat,
 	PreEVAL_SetConfirmationStatus,
-	PreEVAL_getData
+	PreEVAL_getData,
+	PreEXE_SetConfirmationStatus,
+	PreEXE_SetInitStat,
+	PreEXE_getData,
+	EXE_UpdateDB,
+	VALID_UpdateDB,
+	EVAL_UpdateDB,
+	DECI_UpdateDB,
 	;
 
 }

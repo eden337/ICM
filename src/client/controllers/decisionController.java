@@ -6,6 +6,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -169,15 +171,35 @@ public class decisionController extends AppController implements Initializable {
 
 	@FXML
 	void approveBtnClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
-		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
+		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+
+		OperationType ot = OperationType.DECI_UpdateDB;
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
+
 		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
+	}
+
+	private static int c = 0;
+	public void queryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 2) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+		}
 	}
 
 	@FXML
@@ -206,12 +228,4 @@ public class decisionController extends AppController implements Initializable {
 		loadPage("requestTreatment");
 	}
 
-	public void queryResult(Object object) {
-		boolean res = (boolean) object;
-
-		if (res)
-			showAlert(AlertType.INFORMATION, "Evaluation Success", "Report updated", null);
-		else
-			showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
-	}
 }
