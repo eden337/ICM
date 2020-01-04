@@ -7,11 +7,8 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
-import server.controllers.EmailSender;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
@@ -19,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import client.controllers.ExecutionController;
 
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com
@@ -82,16 +77,23 @@ public class EchoServer extends AbstractServer {
                     break;
 
                 case getViewRequestData:
-                	rs = mysql.getQuery(m.getObject().toString());
-    				//Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
-    				ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
-    				sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
-    				rs.close();
-    				break;
+                    rs = mysql.getQuery(m.getObject().toString());
+                    //Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
+                    ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
+                    sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
+                    rs.close();
+                    break;
 
                 case InsertRequirement:
+                    int current_rid = -1;
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.InsertRequirement, res), client);
+                    rs = mysql.getQuery("SELECT `RequestID` FROM `Requests` WHERE 1 ORDER BY RequestID DESC LIMIT 1");
+                    while (rs.next()) {
+                        current_rid = rs.getInt(1);
+                    }
+                    if (!(res && current_rid > 0))
+                        current_rid = -1;
+                    sendToClient(new Message(OperationType.InsertRequirement, current_rid), client);
                     break;
 
                 case InsertEvaluation:
@@ -109,7 +111,7 @@ public class EchoServer extends AbstractServer {
                                     rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"));
                         }
                         rs.close();
-                      //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
+                        //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
 
                         sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
                     } else
@@ -139,26 +141,23 @@ public class EchoServer extends AbstractServer {
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
                     // stages permission:
-                    query = "SELECT * FROM UserRoleInStage WHERE USERNAME = '" + u1.getUserName() + "'";
+                    query = "SELECT * FROM Stage WHERE Incharge = '" + u1.getUserName() + "'";
                     int r_id = 0;
                     rs = mysql.getQuery(query);
                     StageRole role;
                     Map<Integer, List<StageRole>> stagesRoles = new HashMap<>();
                     if (rs != null) {
                         while (rs.next()) {
-                            r_id = rs.getInt("REQUEST_ID");
-                            switch (rs.getString("ROLE")) {
-                                case "EXECUTER":
+                            r_id = rs.getInt("RequestID");
+                            switch (rs.getString("StageName")) {
+                                case "EXECUTION":
                                     role = StageRole.EXECUTER;
                                     break;
-                                case "TESTER":
+                                case "VALIDATION":
                                     role = StageRole.TESTER;
                                     break;
-                                case "EVALUATOR":
+                                case "EVALUATION":
                                     role = StageRole.EVALUATOR;
-                                    break;
-                                case "INCHARGE":
-                                    role = StageRole.INCHARGE;
                                     break;
                                 default:
                                     throw new IllegalStateException("Unexpected value: " + rs.getString("ROLE"));
@@ -190,12 +189,13 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
                 case DECISION_GetAllReportsByRID:
+                case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
                     rs = mysql.getQuery(m.getObject().toString());
                     ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();
-                   
+
                     while (rs.next()) {
-                    	
+
                         EvaluationReport IndividualReport = new EvaluationReport(
                                 rs.getInt("Report_ID"),
                                 rs.getString("RequestID"),
@@ -206,29 +206,94 @@ public class EchoServer extends AbstractServer {
                                 rs.getDate("Estimated_Time"),
                                 rs.getTimestamp("TIMESTAMP")
                         );
-                        
-						reportsToReturn.add(IndividualReport);
-						System.out.println(reportsToReturn);
+
+                        reportsToReturn.add(IndividualReport);
                     } // while
-					System.out.println(reportsToReturn);
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
-                //need for considerations...    
-                case InsertStartStage:
-                case UpdateStage:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.UpdateStage, res), client);
-                	break;
+                //need for considerations...
+                case DECI_UpdateDB:
+                case EVAL_UpdateDB:
+                case VALID_UpdateDB:
+                case EXE_UpdateDB:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+                case EXE_GetInitData:
+                case EVAL_GetInitData:
+                    List<Boolean> init_res = new ArrayList<Boolean>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    if (rs != null) {
+                        while (rs.next()) {
+                            init_res.add(rs.getBoolean("init"));
+                            init_res.add(rs.getBoolean("init_confirmed"));
+                        }
+                    }
+                    init_res.add(false);
+                    init_res.add(false);
+
+                    sendToClient(new Message(m.getOperationtype(), init_res), client);
+                    rs.close();
+                    break;
+                case PreEXE_SetInitStat:
+                case PreEVAL_SetInitStat:
+                case PreEXE_SetConfirmationStatus:
+                case PreEVAL_SetConfirmationStatus:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+                case PreEXE_getData:
+                case PreEVAL_getData:
+                    List<Integer> res3 = new ArrayList<Integer>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    if (rs != null) {
+
+                        while (rs.next()) {
+                            res3.add(rs.getInt("requestedDays"));
+                            res3.add(rs.getInt("init"));
+                            res3.add(rs.getInt("init_confirmed"));
+                        }
+                    }
+                    res3.add(0);
+                    res3.add(0);
+                    res3.add(0);
+
+                    sendToClient(new Message(m.getOperationtype(), res3), client);
+                    rs.close();
+                    break;
+                case ChangeRequest_DownloadFile:
+                    String fileToSend = "Request_"+m.getObject() + ".zip";
+                    String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir")).append("\\serverFiles\\").append(fileToSend).toString();
+                    try {
+                        File newFile = new File(LocalfilePath);
+                        MyFile msgFile = new MyFile(LocalfilePath, fileToSend);
+                        byte[] mybytearray = new byte[(int) newFile.length()];
+                        FileInputStream fis = new FileInputStream(newFile);
+                        BufferedInputStream bis = new BufferedInputStream(fis);
+
+                        msgFile.initArray(mybytearray.length);
+                        msgFile.setSize(mybytearray.length);
+
+                        bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
+                        sendToClient(new Message(m.getOperationtype(), msgFile), client);
+                    }
+                    catch(FileNotFoundException e)
+                    {
+                        sendToClient(new Message(m.getOperationtype(), null), client);
+
+                        e.printStackTrace();
+                    }
+
+                    break;
                 default:
                     break;
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
-            // TODO: handle exception
         }
 
-        // this.sendToAllClients(msg);
     }
 
     /**
@@ -247,6 +312,20 @@ public class EchoServer extends AbstractServer {
             bos.write(mybytearray, 0, newMsg.getSize());
             bos.flush();
             fos.flush();
+            bos.close();
+            fos.close();
+            String fileName = newMsg.getFileName();
+            String[] parts = fileName.split("Request_");
+
+            parts = parts[1].split(".zip");
+            String requestID = parts[0]; // #.zip
+
+            String qry = "UPDATE `Requests` SET `FILE`= '" + fileName + "' WHERE RequestID = " + requestID;
+            boolean res = mysql.insertOrUpdate(qry);
+            if (!res) {
+                System.out.println(requestID + "Update Error");
+                return false;
+            }
             return true;
         } catch (Exception e) {
             System.out.println("Error file in Server: ");

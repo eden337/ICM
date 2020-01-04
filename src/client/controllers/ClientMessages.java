@@ -2,6 +2,7 @@ package client.controllers;
 
 import client.App;
 import common.controllers.Message;
+import common.entity.EvaluationReport;
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -27,10 +28,10 @@ public class ClientMessages {
             case getRequirementData:
                 requestTreatmentController.Instance.setDataTable(m.getObject());
                 break;
-                
+
             case getViewRequestData:
-            	ViewRequestController.Instance.setDataTable(m.getObject());
-            	break;
+                ViewRequestController.Instance.setDataTable(m.getObject());
+                break;
             // case updateRequirement:
             // PrototypeController.Instance.alertMsg(m.getObject());
             // break;
@@ -42,11 +43,11 @@ public class ClientMessages {
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;
-                
+
             case InsertEvaluation:
-    			EvaluationReportController.instance. queryResult(m.getObject());
-    			break;
-    			
+                EvaluationReportController.instance.insertNewRequestResult(m.getObject());
+                break;
+
             case ChangeRequest_File:
                 ChangeRequestController.instance.uploadFileAndqueryResult(m.getObject());
                 break;
@@ -72,10 +73,45 @@ public class ClientMessages {
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
                 
-            case InsertStartStage:
-            case UpdateStage:
-            	ExecutionController.instance.queryResult(m.getObject());
-            	break;
+            case VAL_GetAllReportsByRID:
+                ValidationController.instance.setFieldsData_ServerResponse(m.getObject());
+                break;
+            
+            case EXE_UpdateDB:
+                ExecutionController.instance.queryResult(m.getObject());
+                break;
+
+            case EVAL_GetInitData:
+                EvaluationReportController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
+            // pre Eval
+            case PreEVAL_SetInitStat:
+            case PreEVAL_SetConfirmationStatus:
+                PreEvaluationController.instance.updateStatus_serverResponse(m.getObject());
+                break;
+            case PreEVAL_getData:
+                PreEvaluationController.instance.getCurrentReqestedDays_ServerResponse(m.getObject());
+                break;
+            case EXE_GetInitData:
+                ExecutionController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
+            // pre EXE
+            case PreEXE_SetInitStat:
+            case PreEXE_SetConfirmationStatus:
+                PreExecutionController.instance.updateStatus_serverResponse(m.getObject());
+                break;
+            case PreEXE_getData:
+                PreExecutionController.instance.getCurrentReqestedDays_ServerResponse(m.getObject());
+                break;
+            case VALID_UpdateDB:
+                ValidationController.instance.queryResult(m.getObject());
+                break;
+            case EVAL_UpdateDB:
+                EvaluationReportController.instance.queryResult(m.getObject());
+                break;
+            case ChangeRequest_DownloadFile:
+                requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
+                break;
             default:
                 break;
 

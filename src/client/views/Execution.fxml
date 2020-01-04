@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -76,19 +76,46 @@
                   </VBox>
                </children>
             </Pane>
-            <AnchorPane prefHeight="710.0" prefWidth="585.0">
+            <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="596.0">
                <children>
-                  <Button fx:id="SbmtExecBtn" layoutX="182.0" layoutY="552.0" mnemonicParsing="false" onAction="#submitExecution" prefHeight="112.0" prefWidth="207.0" text="Submit Time">
+                  <Text layoutX="230.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+                  <TitledPane fx:id="titledPane" animated="false" layoutX="28.0" layoutY="83.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
+                                 <font>
+                                    <Font name="System Italic" size="13.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </TitledPane>
+                  <Button fx:id="workDone" layoutX="202.0" layoutY="430.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Button>
-                  <DatePicker fx:id="DeadlinetimeExec" layoutX="65.0" layoutY="73.0" prefHeight="45.0" prefWidth="227.0" />
-                  <Label layoutX="65.0" layoutY="47.0" text="Estimated time">
+                  <Text layoutX="28.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
                      <font>
-                        <Font size="17.0" />
+                        <Font size="13.0" />
                      </font>
-                  </Label>
+                  </Text>
+                  <Text layoutX="28.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have to finish this stage until:">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="105.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="373.29296875">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
                </children></AnchorPane>
          </children>
       </HBox>

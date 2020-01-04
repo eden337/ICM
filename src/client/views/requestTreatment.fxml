@@ -11,21 +11,27 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
       <HBox>
          <children>
-            <TableView fx:id="table" prefHeight="693.0" prefWidth="420.0">
-              <columns>
-                <TableColumn fx:id="colId" prefWidth="61.0" text="ID" />
-                <TableColumn fx:id="colIntitator" prefWidth="107.0" text="Initiator " />
-                  <TableColumn fx:id="colStage" prefWidth="130.0" text="Stage" />
-                  <TableColumn fx:id="colStatus" prefWidth="121.0" text="Status" />
-              </columns>
-            </TableView>
+            <VBox prefHeight="711.0" prefWidth="417.0">
+               <children>
+                  <TextField fx:id="searchBoxTF" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
+                  <TableView fx:id="table" prefHeight="727.0" prefWidth="178.0">
+                    <columns>
+                      <TableColumn fx:id="colId" prefWidth="61.0" text="ID" />
+                      <TableColumn fx:id="colIntitator" prefWidth="107.0" text="Initiator " />
+                        <TableColumn fx:id="colStage" prefWidth="130.0" text="Stage" />
+                        <TableColumn fx:id="colStatus" prefWidth="121.0" text="Status" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <AnchorPane fx:id="rightPane_selectRequest" prefHeight="710.0" prefWidth="579.0" visible="false">
@@ -81,7 +87,7 @@
                               <Image url="@img/icons/icon_refresh.png" />
                            </image>
                         </ImageView>
-                        <HBox layoutX="46.0" layoutY="458.0" prefHeight="80.0" prefWidth="481.0">
+                        <HBox fx:id="stageProgressHBox" layoutX="46.0" layoutY="458.0" prefHeight="80.0" prefWidth="481.0">
                            <children>
                               <Pane prefHeight="200.0" prefWidth="200.0">
                                  <children>
@@ -130,6 +136,7 @@
                               </Pane>
                            </children>
                         </HBox>
+                        <Button fx:id="btnDownloadFiles" layoutX="383.0" layoutY="387.0" mnemonicParsing="false" onAction="#DownloadFiles" text="Download Files" />
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Freezed" layoutY="510.0" prefHeight="200.0" prefWidth="579.0" style="-fx-background-color: #f2ffff;" visible="false">
@@ -153,7 +160,7 @@
                   </AnchorPane>
                   <AnchorPane fx:id="rightPane_Init" prefHeight="710.0" prefWidth="579.0" visible="false">
                      <children>
-                        <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Shuld be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
+                        <Text fx:id="custom_msg1" layoutX="35.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Request Should be Initialized" textAlignment="CENTER" wrappingWidth="508.2119140625">
                            <font>
                               <Font size="17.0" />
                            </font>

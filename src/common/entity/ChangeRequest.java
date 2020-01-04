@@ -40,6 +40,17 @@ public class ChangeRequest implements Serializable{
 	private ZonedDateTime submitTime;
 	private String incharges;
 	
+	public String getPrevStage() {
+		return prevStage;
+	}
+
+
+	public void setPrevStage(String prevStage) {
+		this.prevStage = prevStage;
+	}
+
+
+	private String prevStage;
 	
 	public String getCurrentStage() {
 		return currentStage;
@@ -89,6 +100,7 @@ public class ChangeRequest implements Serializable{
 		this.currentStage = currentStage;
 		this.filesPaths = filesPaths;
 		this.incharges =incharges;
+		prevStage="INIT";
 		
 	}
 

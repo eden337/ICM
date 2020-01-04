@@ -9,10 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.controllers.AllocateController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.AllocateController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -90,21 +91,25 @@
                         </Pane>
                         <Pane prefHeight="668.0" prefWidth="580.0">
                            <children>
-                              <Text layoutX="82.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Evaluator:" />
-                              <ComboBox fx:id="cbEvaluator" layoutX="82.0" layoutY="123.0" prefWidth="150.0" />
-                              <Text layoutX="82.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Executer:" />
-                              <ComboBox fx:id="cbExecuter" layoutX="82.0" layoutY="203.0" prefWidth="150.0" />
-                              <Text layoutX="82.0" layoutY="262.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Tester:" />
-                              <ComboBox fx:id="cbTester" layoutX="82.0" layoutY="273.0" prefWidth="150.0" />
-                              <Text layoutX="82.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Incharge:" />
-                              <ComboBox fx:id="cbIncharge" layoutX="82.0" layoutY="346.0" prefWidth="150.0" />
-                              <Button layoutX="263.0" layoutY="490.0" mnemonicParsing="false" onAction="#submitForm" styleClass="primary" text="Submit" />
-                              <Text fx:id="txtWarning" fill="#ff1c1c" layoutX="84.0" layoutY="437.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*You must allocate all roles">
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d1e9ff" height="38.0" layoutX="307.0" layoutY="119.0" stroke="#839cda" strokeType="INSIDE" width="249.0" />
+                              <Text layoutX="82.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Evaluation Stage:" />
+                              <ComboBox fx:id="cbEvaluator" layoutX="82.0" layoutY="123.0" prefWidth="195.0" />
+                              <Text layoutX="82.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Execution Stage:" />
+                              <ComboBox fx:id="cbExecuter" layoutX="82.0" layoutY="198.0" prefWidth="195.0" />
+                              <Text layoutX="82.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select In-Charge of Validation Stage:" />
+                              <ComboBox fx:id="cbValidator" layoutX="82.0" layoutY="271.0" prefWidth="194.0" />
+                              <Button layoutX="244.0" layoutY="493.0" mnemonicParsing="false" onAction="#submitForm" styleClass="primary" text="Submit" />
+                              <Text fx:id="txtWarning" fill="#ff1c1c" layoutX="82.0" layoutY="373.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*You must allocate all roles">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Text>
-                              <Text layoutX="82.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All fields are required" />
+                              <Text fill="#da0a0a" layoutX="82.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All fields are required">
+                                 <font>
+                                    <Font name="System Bold Italic" size="14.0" />
+                                 </font></Text>
+                              <Text layoutX="315.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This user has been allocated automaticly." />
+                              <Text layoutX="317.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are able to change this allocation." />
                            </children>
                         </Pane>
                      </children>

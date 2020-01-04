@@ -19,6 +19,7 @@ public class BypassedApp extends Application {
 
 
 	private static String DemoPage = "/client/views/Login.fxml";
+	public static Stage stage;
 	/**
 	 * The default port to connect on.
 	 */
@@ -76,6 +77,7 @@ public class BypassedApp extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Pane root = null;
+		stage = primaryStage;
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource(DemoPage));
@@ -84,10 +86,12 @@ public class BypassedApp extends Application {
 			primaryStage.setScene(s1);
 			primaryStage.show();
 			primaryStage.setResizable(false);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("ERR at App.Start");
 		}
 	}
 
+	
 }

@@ -1,10 +1,12 @@
 package client.controllers;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +36,6 @@ public class decisionController extends AppController implements Initializable {
 	public static decisionController instance;
 
 	protected ChangeRequest thisRequest;
-
 
 	@FXML
 	private Text idText;
@@ -104,61 +106,57 @@ public class decisionController extends AppController implements Initializable {
 		titledPane.setCollapsible(false);
 		titledPane.setText("This stage is done");
 
-		if(!thisRequest.getCurrentStage().equals("DECISION")){
+		if (!thisRequest.getCurrentStage().equals("DECISION")) {
 			titledPane.setText("This stage is done");
 			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
 			titledPane.getStyleClass().remove("danger");
 			titledPane.getStyleClass().add("success");
 		}
-		requestID.setText(thisRequest.getRequestID()+"");
-		departmentID.setText(thisRequest.getInfoSystem());
-		requestNameLabel.setText(thisRequest.getInitiator());
-		existingCondition.setText(thisRequest.getExistingCondition());
-		descripitionsTextArea.setText(thisRequest.getRemarks());
-		inchargeTF.setText("");
-		dueDateLabel.setText(thisRequest.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
 		setFieldsData();
 	}
 
-	private void setFieldsData(){
+	private void setFieldsData() {
 		OperationType ot = OperationType.DECISION_GetAllReportsByRID;
-		String query= "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID() + " ORDER BY Report_ID DESC LIMIT 1;";
+		String query = "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID()
+				+ " ORDER BY Report_ID DESC LIMIT 1;";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 
-	public void setFieldsData_ServerResponse(Object object){
+	public void setFieldsData_ServerResponse(Object object) {
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
-		if(reports.size() > 0)
-		{
-			//SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+		if (reports.size() > 0) {
+			// SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
 			EvaluationReport individualReport = reports.get(0);
-			Date reportDate = individualReport.getTimestamp() ;
+			Date reportDate = individualReport.getTimestamp();
 			Calendar reportDateCal = Calendar.getInstance();
 			reportDateCal.setTime(reportDate);
 			reportDateCal.add(Calendar.DATE, 7);
-			reportDateCal.set(Calendar.HOUR_OF_DAY,0);
-			reportDateCal.set(Calendar.MINUTE,0);
-			reportDateCal.set(Calendar.SECOND,0);
-			reportDateCal.set(Calendar.MILLISECOND,0);
+			reportDateCal.set(Calendar.HOUR_OF_DAY, 0);
+			reportDateCal.set(Calendar.MINUTE, 0);
+			reportDateCal.set(Calendar.SECOND, 0);
+			reportDateCal.set(Calendar.MILLISECOND, 0);
 
 			Date today = new Date(System.currentTimeMillis());
 			Calendar todayCal = Calendar.getInstance();
-			todayCal.set(Calendar.HOUR_OF_DAY,0);
-			todayCal.set(Calendar.MINUTE,0);
-			todayCal.set(Calendar.SECOND,0);
-			todayCal.set(Calendar.MILLISECOND,0);
+			todayCal.set(Calendar.HOUR_OF_DAY, 0);
+			todayCal.set(Calendar.MINUTE, 0);
+			todayCal.set(Calendar.SECOND, 0);
+			todayCal.set(Calendar.MILLISECOND, 0);
 
 			long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
 			long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-			if(thisRequest.getCurrentStage().equals("DECISION")){
-				if(daysDiff >= 0) {
-					titledPane_Text.setText(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
+			if (thisRequest.getCurrentStage().equals("DECISION")) {
+				if (daysDiff >= 0) {
+					titledPane_Text.setText(
+							TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
 					titledPane.getStyleClass().removeAll();
 					titledPane.getStyleClass().add("info");
-				}
-				else{
-					titledPane_Text.setText("Stage in "+TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
+				} else {
+					titledPane_Text
+							.setText("Stage in " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
 					titledPane.getStyleClass().removeAll();
 					titledPane.getStyleClass().add("danger");
 				}
@@ -173,15 +171,35 @@ public class decisionController extends AppController implements Initializable {
 
 	@FXML
 	void approveBtnClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
-		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
+		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+
+		OperationType ot = OperationType.DECI_UpdateDB;
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
+
 		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
+	}
+
+	private static int c = 0;
+	public void queryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 2) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+		}
 	}
 
 	@FXML
@@ -190,6 +208,7 @@ public class decisionController extends AppController implements Initializable {
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		thisRequest.setPrevStage("DECISION");
 		showAlert(AlertType.ERROR, "Evaluation Declined", "Request moved to closure phase...", null);
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
@@ -210,12 +229,4 @@ public class decisionController extends AppController implements Initializable {
 		loadPage("requestTreatment");
 	}
 
-	public void queryResult(Object object) {
-		boolean res = (boolean) object;
-
-		if (res)
-			showAlert(AlertType.INFORMATION, "Evaluation Success", "Report updated", null);
-		else
-			showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
-	}
 }
