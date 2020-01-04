@@ -202,7 +202,6 @@ public class requestTreatmentController extends AppController implements Initial
 					initPanes();
 
 					String filename = "Request_"+ selectedRequested.getRequestID()+ ".zip";
-					System.out.println(selectedRequested.getFilesPaths());
 
 					if(selectedRequested.getFilesPaths().equals(filename))
 						btnDownloadFiles.setVisible(true);
