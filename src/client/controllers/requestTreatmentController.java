@@ -466,7 +466,7 @@ public class requestTreatmentController extends AppController implements Initial
 					fos.flush();
 					bos.close();
 					fos.close();
-					showAlert(AlertType.CONFIRMATION,"Download succeed", "The requested files not found.",null);
+					showAlert(AlertType.CONFIRMATION,"Download Failed", "The requested files not found.",null);
 
 
 				} catch (Exception e) {
