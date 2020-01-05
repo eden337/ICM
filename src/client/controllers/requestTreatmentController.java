@@ -230,7 +230,7 @@ public class requestTreatmentController extends AppController implements Initial
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
 								departmentID, null, requestNameLabel, selectedRequested);
 						dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
-						if (selectedRequested.getStatus().equals("FREEZED")) {
+						if (selectedRequested.getStatus().equals("SUSPENDED")) {
 							rightPane_Freezed.setVisible(true);
 							rightPane_requestTreatment.setDisable(true);
 							stageProgressHBox.setVisible(false);
@@ -395,7 +395,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void freezeButtonClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Status = 'FREEZED' WHERE RequestID = '" + getCurrentRequest().getRequestID()
+		String query = "UPDATE Requests SET Status = 'SUSPENDED' WHERE RequestID = '" + getCurrentRequest().getRequestID()
 				+ "'";
 		System.out.println(query);
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
