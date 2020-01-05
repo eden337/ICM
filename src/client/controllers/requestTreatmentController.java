@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -26,6 +27,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -118,7 +120,7 @@ public class requestTreatmentController extends AppController implements Initial
 	private Text idText2;
 
 	@FXML
-	private Text dueDateLabel;
+	private DatePicker dueDateLabel;
 
 	@FXML
 	private Button freezeBtn;
@@ -221,12 +223,13 @@ public class requestTreatmentController extends AppController implements Initial
 						if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
 							existingCondition.setEditable(true);
 							descripitionsTextArea.setEditable(true);
-							inchargeTF.setEditable(true);
+							dueDateLabel.setDisable(false);
 							updateRemarksBtn.setDisable(false);
 						}
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
-								departmentID, dueDateLabel, requestNameLabel, selectedRequested);
+								departmentID, null, requestNameLabel, selectedRequested);
+						dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
 						if (selectedRequested.getStatus().equals("FREEZED")) {
 							rightPane_Freezed.setVisible(true);
 							rightPane_requestTreatment.setDisable(true);
@@ -433,19 +436,20 @@ public class requestTreatmentController extends AppController implements Initial
 		// showAlert(AlertType.INFORMATION, "Mock Button",
 		// "Need to import a query for updating the request tuple in the DB table",
 		// null);
+		
 		updateRemarksBtn.setVisible(true);
 		updateRemarksBtn.setDisable(false);
 		submitBtn.setVisible(false);
 		submitBtn.setDisable(true);
 		supervisorRemarks.setVisible(false);
-		String query = "INSERT INTO `Supervisor Update History` (RequestID, update_remarks, Updater_Name) VALUES ("
-				+ selectedRequested.getRequestID() + ", '" + supervisorRemarks.getText() + "', '"+App.user.getFirstName()+" "+ App.user.getLastName()+"');";
+		String query = "INSERT INTO `Supervisor Update History` (RequestID, Updater_Name, update_remarks) VALUES ("
+				+ selectedRequested.getRequestID() + ", '" +App.user.getFirstName()+" "+ App.user.getLastName()+"', '"+supervisorRemarks.getText()+"');";
 		OperationType ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "',Comments = '"
 				+ descripitionsTextArea.getText() + "', Curr_Responsible = '" + inchargeTF.getText()
-				+ "' WHERE RequestID = " + requestID.getText() + ";";
-		ot = OperationType.SUPERVISOR_REMARKS;
+				+ "', Due_Date = '"+Date.valueOf(dueDateLabel.getValue()) +"' WHERE RequestID = " + requestID.getText() + ";";
+		//ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
 		stageProgressHBox.setVisible(true);

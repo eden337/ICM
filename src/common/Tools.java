@@ -120,7 +120,8 @@ public class Tools {
         descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
         departmentID.setText(selectedRequestInstance.getInfoSystem());
         requestNameLabel.setText(selectedRequestInstance.getInitiator());
-        dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+        if(dueDateLabel!=null)
+        	dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         inchargeTF.setText(selectedRequestInstance.getIncharges());
 	}
 	
