@@ -145,7 +145,7 @@
                      <children>
                         <Pane layoutX="141.0" prefHeight="200.0" prefWidth="297.0">
                            <children>
-                              <Text fill="#4799cf" layoutX="55.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The request is Freezed">
+                              <Text fill="#4799cf" layoutX="55.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The request is Suspended">
                                  <font>
                                     <Font size="19.0" />
                                  </font>
