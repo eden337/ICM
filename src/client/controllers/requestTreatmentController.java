@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
-
-import com.sun.imageio.plugins.common.SubImageInputStream;
 
 import client.App;
 import common.Tools;
@@ -34,7 +31,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -307,7 +303,9 @@ public class requestTreatmentController extends AppController implements Initial
 					return true; // Filter matches initiator name.
 				} else if (request.getCurrentStage().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches current stage.
-				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1)
+				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true;
+				} else if (String.valueOf(request.getRequestID()).toLowerCase().indexOf(lowerCaseFilter) != -1)
 					return true;
 				else
 					return false; // Does not match.
@@ -440,19 +438,19 @@ public class requestTreatmentController extends AppController implements Initial
 		submitBtn.setVisible(false);
 		submitBtn.setDisable(true);
 		supervisorRemarks.setVisible(false);
-		String query = "INSERT INTO `Supervisor Update History` (RequestID, update_remarks) VALUES ("+selectedRequested.getRequestID()+", '"+supervisorRemarks.getText()+"');" ;
-		OperationType ot =OperationType.SUPERVISOR_REMARKS;
+		String query = "INSERT INTO `Supervisor Update History` (RequestID, update_remarks, Updater_Name) VALUES ("
+				+ selectedRequested.getRequestID() + ", '" + supervisorRemarks.getText() + "', '"+App.user.getFirstName()+" "+ App.user.getLastName()+"');";
+		OperationType ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-		query = "UPDATE Requests SET Existing_Cond = '"+existingCondition.getText()+"',Comments = '"+descripitionsTextArea.getText()+"', Curr_Responsible = '"+inchargeTF.getText()+"' WHERE RequestID = "+requestID.getText()+";";
-		ot =OperationType.SUPERVISOR_REMARKS;
+		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "',Comments = '"
+				+ descripitionsTextArea.getText() + "', Curr_Responsible = '" + inchargeTF.getText()
+				+ "' WHERE RequestID = " + requestID.getText() + ";";
+		ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
 		stageProgressHBox.setVisible(true);
-		
+
 	}
-	
-	
-	
 
 	@FXML
 	void updateRemarksBtnClicked(ActionEvent event) {
