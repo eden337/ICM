@@ -121,6 +121,11 @@
                         <Font size="20.0" />
                      </font>
                   </Text>
+                  <Text fx:id="msg" fill="#0e2eff" layoutX="38.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
+                     <font>
+                        <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
          </children>
