@@ -184,6 +184,7 @@ public class EchoServer extends AbstractServer {
                     System.out.println(resOrgRole);
                     sendToClient(new Message(OperationType.User_getOrgRole, resOrgRole), client);
                     break;
+                case SUPERVISOR_REMARKS:
                 case updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
@@ -213,6 +214,7 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 //need for considerations...
+                
                 case DECI_UpdateDB:
                 case EVAL_UpdateDB:
                 case VALID_UpdateDB:

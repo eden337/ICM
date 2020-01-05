@@ -104,7 +104,7 @@ public class decisionController extends AppController implements Initializable {
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		titledPane.setCollapsible(false);
-		titledPane.setText("This stage is done");
+		titledPane.setText("Waiting for your action");
 
 		if (!thisRequest.getCurrentStage().equals("DECISION")) {
 			titledPane.setText("This stage is done");

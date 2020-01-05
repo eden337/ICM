@@ -1,5 +1,8 @@
 package client.controllers;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -11,7 +14,6 @@ import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.MyFile;
 import common.entity.OrganizationRole;
-import common.entity.StageName;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -23,9 +25,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -36,18 +42,17 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-
 public class requestTreatmentController extends AppController implements Initializable {
 
-    public static requestTreatmentController Instance;
-    private static ActionEvent tempEvent;
-    protected ChangeRequest selectedRequested;
+	public static requestTreatmentController Instance;
+	private static ActionEvent tempEvent;
+	protected ChangeRequest selectedRequested;
+
+	@FXML
+	private TextArea supervisorRemarks;
+
+	@FXML
+	private Button updateRemarksBtn;
 
 	@FXML
 	public TableView<ChangeRequest> table;
@@ -148,15 +153,14 @@ public class requestTreatmentController extends AppController implements Initial
 	@FXML
 	private TextField searchBoxTF;
 
-    @FXML
-    private Button btnDownloadFiles;
+	@FXML
+	private Button btnDownloadFiles;
 
-    ObservableList<ChangeRequest> o;
+	ObservableList<ChangeRequest> o;
 
 	protected ChangeRequest getCurrentRequest() {
 		return selectedRequested;
 	}
-
 
 	private void getDatafromServer() {
 		App.client.handleMessageFromClientUI(new Message(OperationType.getRequirementData, setTableByUser()));
@@ -201,9 +205,9 @@ public class requestTreatmentController extends AppController implements Initial
 					selectedRequested = row.getItem();
 					initPanes();
 
-					String filename = "Request_"+ selectedRequested.getRequestID()+ ".zip";
+					String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
 
-					if(selectedRequested.getFilesPaths().equals(filename))
+					if (selectedRequested.getFilesPaths().equals(filename))
 						btnDownloadFiles.setVisible(true);
 
 					rightPane_selectRequest.setVisible(false);
@@ -218,7 +222,7 @@ public class requestTreatmentController extends AppController implements Initial
 							existingCondition.setEditable(true);
 							descripitionsTextArea.setEditable(true);
 							inchargeTF.setEditable(true);
-							submitBtn.setDisable(false);
+							updateRemarksBtn.setDisable(false);
 						}
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
@@ -274,7 +278,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-
 	public void setDataTable(Object object) {
 		ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
 		o = FXCollections.observableArrayList(info);
@@ -300,7 +303,9 @@ public class requestTreatmentController extends AppController implements Initial
 					return true; // Filter matches initiator name.
 				} else if (request.getCurrentStage().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches current stage.
-				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1)
+				} else if (request.getStatus().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true;
+				} else if (String.valueOf(request.getRequestID()).toLowerCase().indexOf(lowerCaseFilter) != -1)
 					return true;
 				else
 					return false; // Does not match.
@@ -316,8 +321,8 @@ public class requestTreatmentController extends AppController implements Initial
 		// 5. Add sorted (and filtered) data to the table.
 		table.setItems(sortedData);
 
-		//table.setItems(o);
-		
+		// table.setItems(o);
+
 	}
 
 	public void alertMsg(Object object) {
@@ -374,7 +379,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void exeButtonClick(MouseEvent event) {
-		//InsertStartStage(StageName.EXECUTION.toString());
+		// InsertStartStage(StageName.EXECUTION.toString());
 		loadPage("Execution");
 	}
 
@@ -406,54 +411,83 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-	/*public void InsertStartStage(String stageName) {
-		Calendar currenttime = Calendar.getInstance(); // creates the Calendar object of the current time
-		Date starttime = new Date((currenttime.getTime()).getTime()); // creates the sql Date of the above created
-																		// object
-		LocalDate duedate = LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
-				selectedRequestInstance.getDueDate().getMonthValue(),
-				selectedRequestInstance.getDueDate().getDayOfMonth());
-		// System.out.println(Date.valueOf(duedate.toString()));
-		String query = "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
-				+ "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" + stageName + "', '" + starttime
-				+ "', NULL, '" + duedate.toString() + "', '', '', '0', '1');";
-
-		OperationType ot = OperationType.InsertStartStage;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}*/
+	/*
+	 * public void InsertStartStage(String stageName) { Calendar currenttime =
+	 * Calendar.getInstance(); // creates the Calendar object of the current time
+	 * Date starttime = new Date((currenttime.getTime()).getTime()); // creates the
+	 * sql Date of the above created // object LocalDate duedate =
+	 * LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
+	 * selectedRequestInstance.getDueDate().getMonthValue(),
+	 * selectedRequestInstance.getDueDate().getDayOfMonth()); //
+	 * System.out.println(Date.valueOf(duedate.toString())); String query =
+	 * "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
+	 * + "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" +
+	 * stageName + "', '" + starttime + "', NULL, '" + duedate.toString() +
+	 * "', '', '', '0', '1');";
+	 * 
+	 * OperationType ot = OperationType.InsertStartStage;
+	 * App.client.handleMessageFromClientUI(new Message(ot, query)); }
+	 */
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
-		showAlert(AlertType.INFORMATION, "Mock Button",
-				"Need to import a query for updating the request tuple in the DB table", null);
+		// showAlert(AlertType.INFORMATION, "Mock Button",
+		// "Need to import a query for updating the request tuple in the DB table",
+		// null);
+		updateRemarksBtn.setVisible(true);
+		updateRemarksBtn.setDisable(false);
+		submitBtn.setVisible(false);
+		submitBtn.setDisable(true);
+		supervisorRemarks.setVisible(false);
+		String query = "INSERT INTO `Supervisor Update History` (RequestID, update_remarks, Updater_Name) VALUES ("
+				+ selectedRequested.getRequestID() + ", '" + supervisorRemarks.getText() + "', '"+App.user.getFirstName()+" "+ App.user.getLastName()+"');";
+		OperationType ot = OperationType.SUPERVISOR_REMARKS;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "',Comments = '"
+				+ descripitionsTextArea.getText() + "', Curr_Responsible = '" + inchargeTF.getText()
+				+ "' WHERE RequestID = " + requestID.getText() + ";";
+		ot = OperationType.SUPERVISOR_REMARKS;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
+		stageProgressHBox.setVisible(true);
+
 	}
 
-
+	@FXML
+	void updateRemarksBtnClicked(ActionEvent event) {
+		updateRemarksBtn.setVisible(false);
+		updateRemarksBtn.setDisable(true);
+		submitBtn.setVisible(true);
+		submitBtn.setDisable(false);
+		supervisorRemarks.setVisible(true);
+		stageProgressHBox.setVisible(false);
+	}
 
 	/* DOWNLOAD FILES */
 
 	@FXML
 	void DownloadFiles(ActionEvent event) {
 		tempEvent = event;
-		App.client.handleMessageFromClientUI(new Message(OperationType.ChangeRequest_DownloadFile, selectedRequested.getRequestID()));
+		App.client.handleMessageFromClientUI(
+				new Message(OperationType.ChangeRequest_DownloadFile, selectedRequested.getRequestID()));
 	}
 
 	public void DownloadFiles_ServerResponse(Object object) {
-		if(object == null){
-			showAlert(AlertType.ERROR,"File not Found", "The requested files not found.",null);
+		if (object == null) {
+			showAlert(AlertType.ERROR, "File not Found", "The requested files not found.", null);
 			return;
 		}
 
 		MyFile msgFile = (MyFile) object;
 		Node source = (Node) tempEvent.getSource();
 		Window theStage = source.getScene().getWindow();
-		final String[] userPath = {""};
+		final String[] userPath = { "" };
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				DirectoryChooser dirChooser = new DirectoryChooser();
 				File chosenDir = dirChooser.showDialog(mainController.primaryStage);
 				try {
-					if(chosenDir == null) // user aborted
+					if (chosenDir == null) // user aborted
 						return;
 					File newFile = new File(chosenDir.getPath() + "\\" + msgFile.getFileName());
 					byte[] mybytearray = msgFile.getMybytearray();
@@ -466,14 +500,12 @@ public class requestTreatmentController extends AppController implements Initial
 					fos.flush();
 					bos.close();
 					fos.close();
-					showAlert(AlertType.CONFIRMATION,"Download succeed", "The requested files not found.",null);
-
+					showAlert(AlertType.CONFIRMATION, "Download succeed", "The requested files not found.", null);
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-
 
 		});
 
