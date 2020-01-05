@@ -91,6 +91,8 @@ public class Tools {
 	}
 	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate)
 	{
+		if(sqlDate == null)
+			return null;
 		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
 		return t;
 	}

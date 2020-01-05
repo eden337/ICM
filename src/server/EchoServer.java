@@ -214,7 +214,7 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 //need for considerations...
-                
+
                 case DECI_UpdateDB:
                 case EVAL_UpdateDB:
                 case VALID_UpdateDB:
@@ -265,7 +265,7 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 case ChangeRequest_DownloadFile:
-                    String fileToSend = "Request_"+m.getObject() + ".zip";
+                    String fileToSend = "Request_" + m.getObject() + ".zip";
                     String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir")).append("\\serverFiles\\").append(fileToSend).toString();
                     try {
                         File newFile = new File(LocalfilePath);
@@ -279,15 +279,53 @@ public class EchoServer extends AbstractServer {
 
                         bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
                         sendToClient(new Message(m.getOperationtype(), msgFile), client);
-                    }
-                    catch(FileNotFoundException e)
-                    {
+                    } catch (FileNotFoundException e) {
                         sendToClient(new Message(m.getOperationtype(), null), client);
 
                         e.printStackTrace();
                     }
 
                     break;
+
+                case Extension_getData:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    Extension extension = null;
+                    while (rs.next()) {
+                        extension = new Extension(
+                                rs.getInt("RequestID"),
+                                rs.getString("StageName"),
+                                rs.getInt("extension_days"),
+                                rs.getString("extension_reason"),
+                                rs.getString("extension_decision")
+                        );
+                    } // while
+                    sendToClient(new Message(m.getOperationtype(), extension), client);
+                    rs.close();
+                    break;
+                case Extension_submit:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+                case ChangeRequest_getStageObject:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    Stage cStage = null;
+                    while (rs.next()) {
+                        cStage = new Stage(
+                                rs.getInt("RequestID"),
+                                rs.getString("StageName"),
+                                Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+                                Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")),
+                                rs.getString("Incharge"),
+                                rs.getBoolean("Extend"),
+                                rs.getInt("init"),
+                                rs.getInt("init_confirmed")
+                        );
+                    }
+                    sendToClient(new Message(m.getOperationtype(), cStage), client);
+
+                    break;
+
                 default:
                     break;
             }
@@ -341,6 +379,8 @@ public class EchoServer extends AbstractServer {
      */
     public ArrayList<ChangeRequest> getRequsets(ResultSet requestData) throws SQLException {
         ArrayList<ChangeRequest> ret = new ArrayList<ChangeRequest>();
+        Stage cStage = null;
+
         while (requestData.next()) {
             ChangeRequest request;
             int requestID = requestData.getInt("RequestID");
@@ -355,7 +395,22 @@ public class EchoServer extends AbstractServer {
             String remarks = requestData.getString("Comments");
             String filespaths = requestData.getString("FILE");
             String currResponsible = requestData.getString("Curr_Responsible");
-
+//            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
+//                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
+//            ResultSet rs = mysql.getQuery(query5);
+//            while (rs.next()) {
+//                 cStage = new Stage(
+//                        rs.getInt("RequestID"),
+//                        rs.getString("StageName"),
+//                        Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("Deadline")),
+//                        rs.getString("Incharge"),
+//                        rs.getBoolean("Extend"),
+//                        rs.getInt("init"),
+//                        rs.getInt("init_confirmed")
+//                );
+//            }
             ZonedDateTime submitTime = Tools.convertDateSQLToZoned(requestData.getDate("Date"));
             ZonedDateTime dueDate = Tools.convertDateSQLToZoned(requestData.getDate("Due_Date"));
 
@@ -363,7 +418,7 @@ public class EchoServer extends AbstractServer {
             // participated in this request right now according to Stage table.
             request = new ChangeRequest(initiator, intiatorType, status, requestID, infoSystem, existingCondition,
                     suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
-                    currResponsible);
+                    currResponsible, null);
             ret.add(request);
         }
         return ret;
@@ -380,73 +435,6 @@ public class EchoServer extends AbstractServer {
 
     }
 
-    public Stage[] getRequestActiveStages(ResultSet stageData, int requestID, int index) throws SQLException {
-        Stage[] requestStages = new Stage[5];
-        int i = 0;
-        while (stageData.next()) {
-
-            String temp = stageData.getString("StageName");
-            ZonedDateTime start = Tools.convertDateSQLToZoned(stageData.getDate("StartTime"));
-            ZonedDateTime deadline = Tools.convertDateSQLToZoned(stageData.getDate("Deadline"));
-            String handler = stageData.getString("Handlers");
-            String incharge = stageData.getString("Incharge");
-            boolean extend = stageData.getBoolean("Extend");
-            boolean delay = stageData.getBoolean("Delay");
-
-            switch (Tools.convertStringToStageName(temp)) {
-                case EVALUATION:
-                    requestStages[0] = new Stage(requestID, StageName.EVALUATION, start, deadline, handler, incharge,
-                            extend, delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-                case DECISION:
-                    requestStages[1] = new Stage(requestID, StageName.DECISION, start, deadline, handler, incharge, extend,
-                            delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-
-                case EXECUTION:
-                    requestStages[2] = new Stage(requestID, StageName.EXECUTION, start, deadline, handler, incharge, extend,
-                            delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-                case VALIDATION:
-                    requestStages[3] = new Stage(requestID, StageName.VALIDATION, start, deadline, handler, incharge,
-                            extend, delay);
-
-                    /*
-                     * need to update sql after delay update
-                     */
-                    break;
-
-                case CLOUSRE:
-                    requestStages[4] = new Stage(requestID, StageName.CLOUSRE, start, deadline, handler, incharge, extend,
-                            delay);
-
-                    /*
-                     * need to update sql after delay update
-                     */
-                    break;
-            }
-            /*
-             * if(i<index)
-             * requestStages[i].setEndTime(Tools.convertDateSQLToZoned(stageData.getDate(
-             * "EndTime"))); i++;
-             */
-
-        }
-        return requestStages;
-
-    }
 
     /**
      * This method overrides the one in the superclass. Called when the server

@@ -32,7 +32,11 @@ public enum OperationType {
 	VALID_UpdateDB,
 	EVAL_UpdateDB,
 	DECI_UpdateDB,
-	ChangeRequest_DownloadFile, SUPERVISOR_REMARKS,
+	ChangeRequest_DownloadFile,
+	SUPERVISOR_REMARKS,
+	Extension_getData,
+	Extension_submit,
+	ChangeRequest_getStageObject,
 	;
 
 }

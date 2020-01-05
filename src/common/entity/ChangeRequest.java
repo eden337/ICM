@@ -39,6 +39,7 @@ public class ChangeRequest implements Serializable{
 	private String filesPaths;
 	private ZonedDateTime submitTime;
 	private String incharges;
+	private Stage currentStageObject;
 	
 	public String getPrevStage() {
 		return prevStage;
@@ -82,10 +83,13 @@ public class ChangeRequest implements Serializable{
 	}
 
 
+	public void setCurrentStageObject(Stage currentStageObject) {
+		this.currentStageObject = currentStageObject;
+	}
 
 	public ChangeRequest(String initiator, String intiatorType, String status, int requestID, String infoSystem,
-			String existingCondition, String suggestedChange, String reasonForChange, String remarks,
-			ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage,String filesPaths,String incharges) {
+						 String existingCondition, String suggestedChange, String reasonForChange, String remarks,
+						 ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage, String filesPaths, String incharges , Stage currentStageObject) {
 		this.initiator=initiator;
 		this.intiatorType=intiatorType;
 		this.status=status;
@@ -100,10 +104,14 @@ public class ChangeRequest implements Serializable{
 		this.currentStage = currentStage;
 		this.filesPaths = filesPaths;
 		this.incharges =incharges;
+		this.currentStageObject = currentStageObject;
 		prevStage="INIT";
 		
 	}
 
+	public Stage getCurrentStageObject() {
+		return currentStageObject;
+	}
 
 	/**
 	 * @return the requestID
