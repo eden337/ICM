@@ -43,7 +43,6 @@ public class ClientMessages {
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;
-
             case InsertEvaluation:
                 EvaluationReportController.instance.insertNewRequestResult(m.getObject());
                 break;
@@ -64,6 +63,7 @@ public class ClientMessages {
                 App.user.setOrgRoleServerResponse(m.getObject());
                 break;
             case updateRequestStatus:
+            case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
             case EVAL_GetAllReportsByRID:
