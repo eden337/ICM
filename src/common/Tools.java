@@ -31,7 +31,6 @@ public class Tools {
 //		   }
 //	}
 
-
 	public static ArrayList<String> disassemble(ResultSet rs, int NumOfCol) {
 		ArrayList<String> returnString = new ArrayList<String>();
 		try {
@@ -65,42 +64,40 @@ public class Tools {
 
 		return map;
 	}
+
 	/**
 	 * 
-	 * @author Ira Goor 
-	 * method purpose:convert String from DB to Enum StageName
+	 * @author Ira Goor method purpose:convert String from DB to Enum StageName
 	 *
 	 * @param str
 	 * @return
 	 */
-	public static StageName convertStringToStageName(String str)
-	{
-		String name=str.toUpperCase();
-		if(name.equals("EVALUATION"))
+	public static StageName convertStringToStageName(String str) {
+		String name = str.toUpperCase();
+		if (name.equals("EVALUATION"))
 			return StageName.EVALUATION;
-		else if(name.equals("DECISION"))
+		else if (name.equals("DECISION"))
 			return StageName.DECISION;
-		else if(name.equals("EXECUTION"))
+		else if (name.equals("EXECUTION"))
 			return StageName.EXECUTION;
-		else if(name.equals("VALIDATION"))
+		else if (name.equals("VALIDATION"))
 			return StageName.VALIDATION;
-		else if(name.equals("CLOUSRE"))
+		else if (name.equals("CLOUSRE"))
 			return StageName.CLOUSRE;
 		else
 			return StageName.INIT;
-		
+
 	}
-	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate)
-	{
-		if(sqlDate == null)
+
+	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate) {
+		if (sqlDate == null)
 			return null;
-		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
+		ZonedDateTime t = ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(), ZoneId.systemDefault());
 		return t;
 	}
-	public static int convertStageNameToInt(StageName name)
-	{
-		switch(name)
-		{
+
+	public static int convertStageNameToInt(StageName name) {
+		switch (name) {
 		case EVALUATION:
 			return 0;
 		case DECISION:
@@ -111,33 +108,39 @@ public class Tools {
 			return 3;
 		case CLOUSRE:
 			return 4;
-			default:
-				return -1;
-		
+		default:
+			return -1;
+
 		}
 	}
-	
-	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,TextField inchargeTF, Text departmentID,Text dueDateLabel,Text requestNameLabel, ChangeRequest selectedRequestInstance) {
+
+	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,
+			TextField inchargeTF, Text departmentID, Text dueDateLabel, Text requestNameLabel,
+			ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());
-        existingCondition.setText(selectedRequestInstance.getExistingCondition());
-        descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
-        departmentID.setText(selectedRequestInstance.getInfoSystem());
-        requestNameLabel.setText(selectedRequestInstance.getInitiator());
-        if(dueDateLabel!=null)
-        	dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-        inchargeTF.setText(selectedRequestInstance.getIncharges());
+		existingCondition.setText(selectedRequestInstance.getExistingCondition());
+		descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
+		departmentID.setText(selectedRequestInstance.getInfoSystem());
+		requestNameLabel.setText(selectedRequestInstance.getInitiator());
+		if (dueDateLabel != null)
+			dueDateLabel
+					.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+		inchargeTF.setText(selectedRequestInstance.getIncharges());
 	}
-	
-	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf,TextField EmailTf, TextField PositionTf,TextField expertiseTf, EmployeeUser selectedEmployeeInstance ) {
+
+	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf, TextField EmailTf,
+			TextField PositionTf, TextField expertiseTf, EmployeeUser selectedEmployeeInstance) {
 		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
-        nameTf.setText(selectedEmployeeInstance.getFirstName());
-        SurenameTf.setText(selectedEmployeeInstance.getLastName());
-        EmailTf.setText(selectedEmployeeInstance.getEmail());
-        PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
-        expertiseTf.setText(selectedEmployeeInstance.getSystemID());
+		nameTf.setText(selectedEmployeeInstance.getFirstName());
+		SurenameTf.setText(selectedEmployeeInstance.getLastName());
+		EmailTf.setText(selectedEmployeeInstance.getEmail());
+		PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
+		if (expertiseTf != null)
+			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
 	}
-	
-	public static void highlightProgressBar(ImageView stage1, ImageView stage2,ImageView stage3,ImageView stage4,ImageView stage5,ChangeRequest currentRequest) {
+
+	public static void highlightProgressBar(ImageView stage1, ImageView stage2, ImageView stage3, ImageView stage4,
+			ImageView stage5, ChangeRequest currentRequest) {
 		switch (currentRequest.getCurrentStage()) {
 
 		case "EVALUATION":
@@ -184,7 +187,7 @@ public class Tools {
 			break;
 		}
 	}
-	
+
 	private static void imgStage_setAsBlocked(ImageView img) {
 		img.getStyleClass().add("img_stage_blocked");
 		img.setOnMouseClicked(null);

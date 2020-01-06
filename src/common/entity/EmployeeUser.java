@@ -86,8 +86,14 @@ public class EmployeeUser extends User {
 			return;
 		}
 		switch (res) {
-		case "COMMITEE_MEMBER":
-			roleInOrg = OrganizationRole.COMMITEE_MEMBER;
+		case "":
+			roleInOrg=null;
+			break;
+		case "COMMITEE_MEMBER1":
+			roleInOrg = OrganizationRole.COMMITEE_MEMBER1;
+			break;
+		case "COMMITEE_MEMBER2":
+			roleInOrg = OrganizationRole.COMMITEE_MEMBER2;
 			break;
 		case "COMMITEE_CHAIRMAN":
 			roleInOrg = OrganizationRole.COMMITEE_CHAIRMAN;
@@ -156,8 +162,10 @@ public class EmployeeUser extends User {
 			if(roleInOrg==null)
 				return "";
 	        switch (roleInOrg) {
-	            case COMMITEE_MEMBER:
-	                return "COMMITEE_MEMBER";
+	            case COMMITEE_MEMBER1:
+	                return "COMMITEE_MEMBER1";
+	            case COMMITEE_MEMBER2:
+	                return "COMMITEE_MEMBER2";
 	                
 	            case COMMITEE_CHAIRMAN:
 	                return "COMMITEE_CHAIRMAN";
