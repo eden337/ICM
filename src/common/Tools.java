@@ -116,7 +116,11 @@ public class Tools {
 		
 		}
 	}
-	
+
+	public static long DaysDifferenceFromToday(ZonedDateTime dateToCompare){
+		return ZonedDateTime.now().compareTo(dateToCompare);
+
+	}
 	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,TextField inchargeTF, Text departmentID,Text dueDateLabel,Text requestNameLabel, ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());
         existingCondition.setText(selectedRequestInstance.getExistingCondition());
@@ -127,7 +131,7 @@ public class Tools {
         	dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         inchargeTF.setText(selectedRequestInstance.getIncharges());
 	}
-	
+
 	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf,TextField EmailTf, TextField PositionTf,TextField expertiseTf, EmployeeUser selectedEmployeeInstance ) {
 		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
         nameTf.setText(selectedEmployeeInstance.getFirstName());
@@ -136,7 +140,7 @@ public class Tools {
         PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
         expertiseTf.setText(selectedEmployeeInstance.getSystemID());
 	}
-	
+
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2,ImageView stage3,ImageView stage4,ImageView stage5,ChangeRequest currentRequest) {
 		switch (currentRequest.getCurrentStage()) {
 
@@ -176,11 +180,11 @@ public class Tools {
 			imgStage_setAsCurrent(stage5);
 			break;
 		default:
-			imgStage_setAsBlocked(stage1);
-			imgStage_setAsBlocked(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
+//			imgStage_setAsBlocked(stage1);
+//			imgStage_setAsBlocked(stage2);
+//			imgStage_setAsBlocked(stage3);
+//			imgStage_setAsBlocked(stage4);
+//			imgStage_setAsBlocked(stage5);
 			break;
 		}
 	}

@@ -138,6 +138,8 @@ public class EvaluationReportController extends AppController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
+
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         rightPane.setVisible(false);
         msgFix.setVisible(false);
@@ -146,13 +148,10 @@ public class EvaluationReportController extends AppController implements Initial
         titledPane.setText("Welcome");
 
 
-//        btnRequestExtension.setVisible(false);
-//        System.out.println(thisRequest.getCurrentStageObject().getDeadline());
-//        Duration d = Duration.between( ZonedDateTime.now() , thisRequest.getCurrentStageObject().getDeadline());
-//        System.out.println(d.toString());
+        setExtensionVisability();
 
-        instance = this;
-        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+
+            Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         checkPreConditions();
 
@@ -283,6 +282,12 @@ public class EvaluationReportController extends AppController implements Initial
 
 
     // Extensions:
+    private void setExtensionVisability(){
+        btnRequestExtension.setVisible(false);
+        long daysdifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if(daysdifference >= -3)
+            btnRequestExtension.setVisible(true);
+    }
 
     @FXML
     void requestExtension(ActionEvent event) {
