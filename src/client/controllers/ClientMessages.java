@@ -1,7 +1,11 @@
 package client.controllers;
 
+import java.util.ArrayList;
+
 import client.App;
 import common.controllers.Message;
+import common.controllers.OperationType;
+import common.entity.EmployeeUser;
 import common.entity.EvaluationReport;
 
 /**
@@ -39,6 +43,9 @@ public class ClientMessages {
             case LoginResult:
                 LoginController.instance.getLoginResult(m.getObject());
                 break;
+            case getEmployeeData:
+            	ManagerViewPage.Instance.setDataTable(m.getObject());
+                break;
 
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
@@ -66,6 +73,9 @@ public class ClientMessages {
             case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
+            case updateRoleInOrg : 
+    
+            	break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;

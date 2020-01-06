@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ManagerViewPage">
+   <children>
+      <HBox>
+         <children>
+            <VBox prefHeight="711.0" prefWidth="417.0">
+               <children>
+                  <TextField fx:id="searchBoxTF" prefHeight="31.0" prefWidth="218.0" promptText="Search..." />
+                  <TableView fx:id="table" prefHeight="727.0" prefWidth="178.0">
+                    <columns>
+                      <TableColumn fx:id="colId" prefWidth="94.33333587646484" text="Worker ID " />
+                      <TableColumn fx:id="colfullname" prefWidth="118.0" text="Full name" />
+                        <TableColumn fx:id="colPostion" prefWidth="102.33331298828125" text="Position" />
+                        <TableColumn fx:id="colSystemID" prefWidth="105.66668701171875" text="Expertise" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="579.0">
+               <children>
+                  <Text layoutX="106.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Worker ID" wrappingWidth="145.99999731127173" />
+                  <Text layoutX="105.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Surname :" />
+                  <Text layoutX="108.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email :" wrappingWidth="73.63037107139826" />
+                  <TextField fx:id="EmailTf" editable="false" layoutX="245.0" layoutY="236.0" prefHeight="31.0" prefWidth="218.0" />
+                  <Text fx:id="WorkerID" layoutX="250.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                     <font>
+                        <Font name="System Bold Italic" size="15.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="commiteeBtn" disable="true" layoutX="314.0" layoutY="489.0" mnemonicParsing="false" onAction="#commiteeBtnClicked" prefHeight="32.0" prefWidth="237.0" styleClass="warning" text="Commitee member Appointment" />
+                  <Button fx:id="SupervisorBtn" disable="true" layoutX="75.0" layoutY="489.0" mnemonicParsing="false" onAction="#SupervisorBtnClicked" prefHeight="32.0" prefWidth="200.0" styleClass="primary" text="Supervisor Appointment" />
+                  <TextField fx:id="SurenameTf" layoutX="245.0" layoutY="173.0" prefWidth="219.0" />
+                  <Button fx:id="chairmanBtn" disable="true" layoutX="216.0" layoutY="562.0" mnemonicParsing="false" onAction="#chairmanBtnClicked" prefHeight="32.0" prefWidth="193.0" styleClass="warning" text="Chairman Appointment" />
+                  <Text layoutX="105.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First name : " />
+                  <TextField fx:id="nameTf" layoutX="248.0" layoutY="116.0" prefWidth="219.0" />
+                  <Text layoutX="109.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Position :" wrappingWidth="73.63037107139826" />
+                  <TextField fx:id="PositionTf" editable="false" layoutX="246.0" layoutY="303.0" prefHeight="31.0" prefWidth="218.0" />
+                  <Text layoutX="108.0" layoutY="386.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System expertise :" wrappingWidth="124.29699704796076" />
+                  <TextField fx:id="expertiseTf" editable="false" layoutX="247.0" layoutY="366.0" prefHeight="31.0" prefWidth="218.0" />
+                  <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="20.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@img/icons/icon_refresh.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="msg" fill="#0e2eff" layoutX="-26.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
+                     <font>
+                        <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </children>
+</Pane>

@@ -110,7 +110,7 @@ public class mainController extends AppController implements Initializable {
     @FXML
     void goToStats(MouseEvent event) {
         markPage(p5);
-        //loadPage("watchRequestFXML","Request Treatment and Management");
+        loadPage("ManagerPage","Manager view");
     }
 
     /**

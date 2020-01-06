@@ -14,6 +14,7 @@ import java.util.Map;
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 import common.entity.ChangeRequest;
+import common.entity.EmployeeUser;
 import common.entity.StageName;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -125,6 +126,15 @@ public class Tools {
         if(dueDateLabel!=null)
         	dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         inchargeTF.setText(selectedRequestInstance.getIncharges());
+	}
+	
+	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf,TextField EmailTf, TextField PositionTf,TextField expertiseTf, EmployeeUser selectedEmployeeInstance ) {
+		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
+        nameTf.setText(selectedEmployeeInstance.getFirstName());
+        SurenameTf.setText(selectedEmployeeInstance.getLastName());
+        EmailTf.setText(selectedEmployeeInstance.getEmail());
+        PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
+        expertiseTf.setText(selectedEmployeeInstance.getSystemID());
 	}
 	
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2,ImageView stage3,ImageView stage4,ImageView stage5,ChangeRequest currentRequest) {

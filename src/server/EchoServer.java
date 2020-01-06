@@ -75,7 +75,18 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.getRequirementData, requestsData), client);
                     rs.close();
                     break;
-
+                case getEmployeeData:
+                	rs = mysql.getQuery(m.getObject().toString());
+                    // Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
+                    ArrayList<EmployeeUser> EmployeeData = getEmployees(rs);
+                    sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
+                    rs.close();
+                    break;
+                case updateRoleInOrg:
+                	res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
+              
+                    break;	
                 case getViewRequestData:
                     rs = mysql.getQuery(m.getObject().toString());
                     //Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
@@ -108,7 +119,7 @@ public class EchoServer extends AbstractServer {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
-                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"));
+                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"),null,null);
                         }
                         rs.close();
                         //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
@@ -189,6 +200,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
+              
                 case DECISION_GetAllReportsByRID:
                 case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
@@ -420,6 +432,47 @@ public class EchoServer extends AbstractServer {
                     suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
                     currResponsible, null);
             ret.add(request);
+        }
+        return ret;
+    }
+    /**
+     * @throws SQLException
+     */
+    public ArrayList<EmployeeUser> getEmployees(ResultSet EmployeeData) throws SQLException {
+        ArrayList<EmployeeUser> ret = new ArrayList<>();
+        Stage cStage = null;
+
+        while (EmployeeData.next()) {
+            EmployeeUser employee;
+            String workerID = EmployeeData.getString("WorkerID");
+            String username = EmployeeData.getString("username");
+            String password = EmployeeData.getString("password");
+            String name = EmployeeData.getString("Name");
+            String surename = EmployeeData.getString("Surename");
+            String email = EmployeeData.getString("EMAIL");
+            String department = EmployeeData.getString("Department");
+            String type = EmployeeData.getString("Type");
+            String roleInOrg = EmployeeData.getString("RoleInOrg");
+            String systemID = EmployeeData.getString("SystemID");
+//            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
+//                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
+//            ResultSet rs = mysql.getQuery(query5);
+//            while (rs.next()) {
+//                 cStage = new Stage(
+//                        rs.getInt("RequestID"),
+//                        rs.getString("StageName"),
+//                        Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("Deadline")),
+//                        rs.getString("Incharge"),
+//                        rs.getBoolean("Extend"),
+//                        rs.getInt("init"),
+//                        rs.getInt("init_confirmed")
+//                );
+//            }
+            
+           employee = new EmployeeUser(name, surename, email, username, password,workerID , department, type,roleInOrg,systemID);
+            ret.add(employee);
         }
         return ret;
     }
