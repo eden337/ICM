@@ -8,7 +8,6 @@ import client.App;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
-import common.entity.ChangeRequest;
 import common.entity.EmployeeUser;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
@@ -18,12 +17,15 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -36,9 +38,9 @@ public class ManagerViewPage extends AppController implements Initializable {
 	ObservableList<EmployeeUser> o;
 	@FXML
 	private TextField searchBoxTF;
-	
+
 	@FXML
-    private Text msg;
+	private Text msg;
 
 	@FXML
 	private TableView<EmployeeUser> table;
@@ -65,10 +67,16 @@ public class ManagerViewPage extends AppController implements Initializable {
 	private Text WorkerID;
 
 	@FXML
-	private Button commiteeBtn;
+	private Button commitee1Btn;
+
+	@FXML
+	private Button commitee2Btn;
 
 	@FXML
 	private Button SupervisorBtn;
+
+	@FXML
+	private Button removeCommiteeBtn;
 
 	@FXML
 	private TextField SurenameTf;
@@ -82,8 +90,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 	@FXML
 	private TextField PositionTf;
 
-	@FXML
-	private TextField expertiseTf;
+	
 
 	private void getDatafromServer() {
 		App.client.handleMessageFromClientUI(
@@ -106,8 +113,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 					selectedEmployeeInstance = row.getItem();
 					SupervisorBtn.setDisable(false);
 					chairmanBtn.setDisable(false);
-					commiteeBtn.setDisable(false);
-					Tools.fillEmployeesPanes(WorkerID, nameTf, SurenameTf, EmailTf, PositionTf, expertiseTf, selectedEmployeeInstance);
+					commitee1Btn.setDisable(false);
+					commitee2Btn.setDisable(false);
+					Tools.fillEmployeesPanes(WorkerID, nameTf, SurenameTf, EmailTf, PositionTf, null,
+							selectedEmployeeInstance);
 				}
 			});
 			return row;
@@ -115,63 +124,78 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 	}
 
+	
+
+	public void alertMsg(Object object) {
+		Boolean queryResult = (Boolean) object;
+		FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
+		msg.setText(queryResult ? "Done" : "Failed");
+		msg.setFill(queryResult ? Color.BLUE : Color.RED);
+		msg.setVisible(true);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.0);
+		ft.setAutoReverse(false);
+		ft.play();
+		getDatafromServer();
+	}
+
+	@FXML
+	void refrshBtn(MouseEvent event) {
+		getDatafromServer();
+
+		FadeTransition ft = new FadeTransition(Duration.millis(1000), msg);
+		msg.setText("Refreshed...");
+		msg.setFill(Color.GREEN);
+		msg.setVisible(true);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.0);
+		ft.setAutoReverse(false);
+		ft.play();
+	}
+ 
+
+	void appointment(String roleInOrg) {
+		if (selectedEmployeeInstance.getRoleInOrg().equals(roleInOrg))
+			return;
+		if (!selectedEmployeeInstance.getRoleInOrg().equals("")) {
+			showAlert(AlertType.WARNING, "Appointment failure",
+					selectedEmployeeInstance.getRoleInOrg() + " Cannot fill two roles", null);
+			return;
+		}
+
+		String query1 = "UPDATE Employees SET RoleInOrg = '' WHERE RoleInOrg = '" + roleInOrg + "';";
+		OperationType ot1 = OperationType.updateRoleInOrg;
+		for (EmployeeUser e : o) {
+			if (e.getRoleInOrg().equals(roleInOrg))
+				e.setOrgRoleServerResponse("");
+		}
+		App.client.handleMessageFromClientUI(new Message(ot1, query1));
+		query1 = "UPDATE Employees SET RoleInOrg = '" + roleInOrg + "' WHERE WorkerID = '"
+				+ selectedEmployeeInstance.getWorkerID() + "';";
+		App.client.handleMessageFromClientUI(new Message(ot1, query1));
+		selectedEmployeeInstance.setOrgRoleServerResponse(roleInOrg);
+		PositionTf.setText(roleInOrg);
+		table.refresh();
+	}
+
 	@FXML
 	void SupervisorBtnClicked(ActionEvent event) {
-		  String query1 = "UPDATE Employees SET RoleInOrg = '' WHERE RoleInOrg = 'SUPERVISOR';";
-	        OperationType ot1 = OperationType.updateRoleInOrg;
-	        App.client.handleMessageFromClientUI(new Message(ot1, query1));
-	        query1 = "UPDATE Employees SET RoleInOrg = 'SUPERVISOR' WHERE WorkerID = '"
-	        		+selectedEmployeeInstance.getWorkerID()+ "';";
-	        App.client.handleMessageFromClientUI(new Message(ot1, query1));
-	        
+		appointment("SUPERVISOR");
 	}
-	   public void alertMsg(Object object) {
-	        Boolean queryResult = (Boolean) object;
-	        FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
-	        msg.setText(queryResult ? "Done" : "Failed");
-	        msg.setFill(queryResult ? Color.BLUE : Color.RED);
-	        msg.setVisible(true);
-	        ft.setFromValue(1.0);
-	        ft.setToValue(0.0);
-	        ft.setAutoReverse(false);
-	        ft.play();
-	        getDatafromServer();
-	    }
-
-	    @FXML
-	    void refrshBtn(MouseEvent event) {
-	        getDatafromServer();
-
-	        FadeTransition ft = new FadeTransition(Duration.millis(1000), msg);
-	        msg.setText("Refreshed...");
-	        msg.setFill(Color.GREEN);
-	        msg.setVisible(true);
-	        ft.setFromValue(1.0);
-	        ft.setToValue(0.0);
-	        ft.setAutoReverse(false);
-	        ft.play();
-	    }
 
 	@FXML
 	void chairmanBtnClicked(ActionEvent event) {
-		String query1 = "UPDATE Employees SET RoleInOrg = '' WHERE RoleInOrg = 'COMMITEE_CHAIRMAN';";
-        OperationType ot1 = OperationType.updateRoleInOrg;
-        App.client.handleMessageFromClientUI(new Message(ot1, query1));
-        query1 = "UPDATE Employees SET RoleInOrg = 'COMMITEE_CHAIRMAN' WHERE WorkerID = '"
-        		+selectedEmployeeInstance.getWorkerID()+ "';";
-        App.client.handleMessageFromClientUI(new Message(ot1, query1));
+		appointment("COMMITEE_CHAIRMAN");
 	}
 
 	@FXML
-	void commiteeBtnClicked(ActionEvent event) {
-		
-		String query1 = "UPDATE Employees SET RoleInOrg = '' WHERE RoleInOrg = 'SUPERVISOR';";
-        OperationType ot1 = OperationType.updateRoleInOrg;
-        App.client.handleMessageFromClientUI(new Message(ot1, query1));
-        query1 = "UPDATE Employees SET RoleInOrg = 'SUPERVISOR' WHERE WorkerID = '"
-        		+selectedEmployeeInstance.getWorkerID()+ "';";
-        App.client.handleMessageFromClientUI(new Message(ot1, query1));
+	void commitee1BtnClicked(ActionEvent event) {
+		appointment("COMMITEE_MEMBER1");
+	}
 
+	@FXML
+	void commitee2BtnClicked(ActionEvent event) {
+		appointment("COMMITEE_MEMBER2");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,7 +207,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 		colId.setCellValueFactory(new PropertyValueFactory<>("workerID"));
 		colfullname.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 		colPostion.setCellValueFactory(new PropertyValueFactory<>("roleInOrg"));
-		colSystemID.setCellValueFactory(new PropertyValueFactory<>("systemID"));
+		
 
 		FilteredList<EmployeeUser> filteredData = new FilteredList<>(o, b -> true);
 		searchBoxTF.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -204,8 +228,8 @@ public class ManagerViewPage extends AppController implements Initializable {
 					return true;
 				} else if (employee.getRoleInOrg().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true;
-				}else if (employee.getSystemID().toLowerCase().indexOf(lowerCaseFilter) != -1) 
-				return true;
+				} else if (employee.getSystemID().toLowerCase().indexOf(lowerCaseFilter) != -1)
+					return true;
 				else
 					return false; // Does not match.
 			});

@@ -80,7 +80,7 @@ public class ChangeRequestController extends AppController implements Initializa
 		instance = this;
 		resetWarnings();
 		fileNames.setVisible(false);
-		infoSystemCombo.getItems().addAll("moodle", "Information Station", "Library System", "Class Computers", "Labs",
+		infoSystemCombo.getItems().addAll("Moodle", "Information Station", "Library System", "Class Computers", "Labs",
 				"Computer Farm", "Collage Website");
 	}
 

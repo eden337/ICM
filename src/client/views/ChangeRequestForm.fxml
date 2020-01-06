@@ -8,14 +8,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/" fx:controller="client.controllers.ChangeRequestController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ChangeRequestController">
    <children>
       <Text fill="#183934" fontSmoothingType="LCD" layoutX="87.0" layoutY="81.0" strokeWidth="0.0" text="Choose information system:" wrappingWidth="225.72232055664062">
          <font>
             <Font name="System Bold Italic" size="16.0" />
          </font>
       </Text>
-      <ComboBox fx:id="infoSystemCombo" cache="true" layoutX="74.0" layoutY="97.0" prefHeight="38.0" prefWidth="248.0" />
+      <ComboBox fx:id="infoSystemCombo" cache="true" layoutX="74.0" layoutY="97.0" onHiding="#Avner" onShowing="#Dobby" prefHeight="38.0" prefWidth="248.0" />
       <Text fill="#183934" fontSmoothingType="LCD" layoutX="87.0" layoutY="195.0" strokeWidth="0.0" text="Existing condition:" wrappingWidth="159.0556640625">
          <font>
             <Font name="System Bold Italic" size="16.0" />
