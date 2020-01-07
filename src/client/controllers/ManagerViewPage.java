@@ -1,7 +1,9 @@
 package client.controllers;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import client.App;
@@ -10,6 +12,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.EmployeeUser;
 import javafx.animation.FadeTransition;
+import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -19,19 +22,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+/**
+ * 
+ * @author Hen Eden Yuda
+ *
+ */
 public class ManagerViewPage extends AppController implements Initializable {
 	public static ManagerViewPage Instance;
 	protected EmployeeUser selectedEmployeeInstance;
@@ -89,6 +95,32 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 	@FXML
 	private TextField PositionTf;
+    @FXML
+    private CheckBox libraryCheckbox;
+
+    @FXML
+    private CheckBox labsCheckbox;
+
+    @FXML
+    private CheckBox classComputersCheckbox;
+
+    @FXML
+    private CheckBox collageCheckbox;
+
+    @FXML
+    private CheckBox computerFarmCheckbox;
+
+    @FXML
+    private CheckBox moodleCheckbox;
+
+    @FXML
+    private CheckBox informationStationCheckbox;
+    
+    @FXML
+    private Button systemSelectionSubmit;
+
+    @FXML
+    private Button deleteMember;
 
 	
 
@@ -117,15 +149,17 @@ public class ManagerViewPage extends AppController implements Initializable {
 					commitee2Btn.setDisable(false);
 					Tools.fillEmployeesPanes(WorkerID, nameTf, SurenameTf, EmailTf, PositionTf, null,
 							selectedEmployeeInstance);
+					
+					
+					
+					
 				}
 			});
 			return row;
 		});
 
 	}
-
 	
-
 	public void alertMsg(Object object) {
 		Boolean queryResult = (Boolean) object;
 		FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
@@ -228,8 +262,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 					return true;
 				} else if (employee.getRoleInOrg().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true;
-				} else if (employee.getSystemID().toLowerCase().indexOf(lowerCaseFilter) != -1)
-					return true;
+				}
 				else
 					return false; // Does not match.
 			});
@@ -246,4 +279,45 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 		// table.setItems(o);
 	}
+    @FXML
+    void deleteMembr(ActionEvent event) {
+    	String query="UPDATE `Employees` SET `RoleInOrg` = '' WHERE `Employees`.`WorkerID` = '"+selectedEmployeeInstance.getWorkerID()+"';";
+		OperationType ot=OperationType.deleteMember;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		
+		table.refresh();//HANDLE LIVE REFRESH
+    }
+    @FXML
+    void systemSelectionClicked(ActionEvent event) {
+    	ArrayList<String> selectedSystems = new ArrayList<>();
+    	String query;
+    	if(libraryCheckbox.isSelected())
+    		selectedSystems.add("Library");
+    	if(labsCheckbox.isSelected())
+    		selectedSystems.add("Labs");
+    	if(moodleCheckbox.isSelected())
+    		selectedSystems.add("Moodle");
+    	if(computerFarmCheckbox.isSelected())
+    		selectedSystems.add("Computer Farm");
+    	if(classComputersCheckbox.isSelected())
+    		selectedSystems.add("Class Computers");
+    	if(collageCheckbox.isSelected())
+    		selectedSystems.add("Collage Website");
+    	if(informationStationCheckbox.isSelected())
+    		selectedSystems.add("information Station");
+    	for(String s: selectedSystems)
+    	{
+    		query="UPDATE `Systems Techncian` SET `username` = '"+selectedEmployeeInstance.getUserName()+"' WHERE `Systems Techncian`.`SystemID` = '"+s+"';";
+    		OperationType ot=OperationType.updateSystems;
+    		App.client.handleMessageFromClientUI(new Message(ot, query));
+    	}
+    }
+    public void getquery(Object object)
+    {
+    	boolean res=(boolean)object;
+    	if(res)
+    		showAlert(AlertType.INFORMATION, "selected succsses", "The selected are in the DB", null);
+    	else
+    		showAlert(AlertType.ERROR, "selected Fail", "Eror in the DB check again", null);
+    }	
 }

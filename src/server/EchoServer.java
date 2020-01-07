@@ -119,7 +119,7 @@ public class EchoServer extends AbstractServer {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
-                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"),null,null);
+                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"),null);
                         }
                         rs.close();
                         //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
@@ -298,7 +298,10 @@ public class EchoServer extends AbstractServer {
                     }
 
                     break;
-
+                case deleteMember:
+                	res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.deleteMember, res), client);
+                    break;
                 case Extension_getData:
                     rs = mysql.getQuery(m.getObject().toString());
                     Extension extension = null;
@@ -335,8 +338,12 @@ public class EchoServer extends AbstractServer {
                         );
                     }
                     sendToClient(new Message(m.getOperationtype(), cStage), client);
-
                     break;
+                case updateSystems:
+                	res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.updateSystems, res), client);
+                    break;
+                	
 
                 default:
                     break;
@@ -453,7 +460,7 @@ public class EchoServer extends AbstractServer {
             String department = EmployeeData.getString("Department");
             String type = EmployeeData.getString("Type");
             String roleInOrg = EmployeeData.getString("RoleInOrg");
-            String systemID = EmployeeData.getString("SystemID");
+//            String systemID = EmployeeData.getString("SystemID");
 //            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
 //                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
 //            ResultSet rs = mysql.getQuery(query5);
@@ -471,7 +478,7 @@ public class EchoServer extends AbstractServer {
 //                );
 //            }
             
-           employee = new EmployeeUser(name, surename, email, username, password,workerID , department, type,roleInOrg,systemID);
+           employee = new EmployeeUser(name, surename, email, username, password,workerID , department, type,roleInOrg);
             ret.add(employee);
         }
         return ret;

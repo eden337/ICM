@@ -20,7 +20,6 @@ public class EmployeeUser extends User {
 	private String department;
 	private OrganizationRole roleInOrg;
 	private Map<Integer, List<StageRole>> stagesRoles;
-	private String systemID;
 
 	/**
 	 * @param firstName
@@ -30,13 +29,12 @@ public class EmployeeUser extends User {
 	 * @param password
 	 */
 	public EmployeeUser(String firstName, String lastName, String email, String userName, String password,
-			String workerID, String department, String type, String roleInOrg, String systemID) {
+			String workerID, String department, String type, String roleInOrg) {
 		super(firstName, lastName, email, userName, password, type);
 		this.department = department;
 		this.workerID = workerID;
 		// add setPermission
 		stagesRoles = new HashMap<>();
-		this.systemID = systemID;
 		setOrgRoleServerResponse(roleInOrg);
 		// updatePermissions();
 	}
@@ -136,23 +134,23 @@ public class EmployeeUser extends User {
 	public String getDepartment() {
 		return department;
 	}
-
-	/**
-	 * @return the SystemID
-	 */
-	public String getSystemID() {
-		if(systemID==null)
-			return "";
-		return systemID;
-	}
-
-	/**
-	 * @param the SystemID
-	 */
-
-	public void setSystemID(String systemID) {
-		this.systemID = systemID;
-	}
+//
+//	/**
+//	 * @return the SystemID
+//	 */
+//	public String getSystemID() {
+//		if(systemID==null)
+//			return "";
+//		return systemID;
+//	}
+//
+//	/**
+//	 * @param the SystemID
+//	 */
+//
+//	public void setSystemID(String systemID) {
+//		this.systemID = systemID;
+//	}
 
 	/**
      * @return the RoleInOrg

@@ -135,8 +135,8 @@ public class Tools {
 		SurenameTf.setText(selectedEmployeeInstance.getLastName());
 		EmailTf.setText(selectedEmployeeInstance.getEmail());
 		PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
-		if (expertiseTf != null)
-			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
+//		if (expertiseTf != null)
+//			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
 	}
 
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2, ImageView stage3, ImageView stage4,
