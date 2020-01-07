@@ -2,6 +2,7 @@ package client.controllers;
 
 import client.App;
 import client.BypassedApp;
+import common.entity.OrganizationRole;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -67,6 +68,8 @@ public class mainController extends AppController implements Initializable {
     @FXML
     private Pane p5;
 
+    @FXML
+    private Pane p6;
     // Menu Links
 
 
@@ -110,9 +113,13 @@ public class mainController extends AppController implements Initializable {
     @FXML
     void goToStats(MouseEvent event) {
         markPage(p5);
+        loadPage("Reports","Reports Generator");
+    }
+    @FXML
+    void goTManager(MouseEvent event) {
+        markPage(p6);
         loadPage("ManagerPage","Manager view");
     }
-
     /**
      * select a pain to be colored as current page
      *
@@ -131,6 +138,8 @@ public class mainController extends AppController implements Initializable {
             p4.getStyleClass().remove("bg_currentPage");
         if (p != p5)
             p5.getStyleClass().remove("bg_currentPage");
+        if (p != p6)
+            p6.getStyleClass().remove("bg_currentPage");
     }
 
 
@@ -172,12 +181,18 @@ public class mainController extends AppController implements Initializable {
         setUser();
         gotoHome(null);
 
+        p6.setVisible(false);
+
         // Menu Permissions:
         if(!App.user.isEngineer()){
             p3.setVisible(false);
             p4.setVisible(false);
             p5.setVisible(false);
         }
+        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+            p6.setVisible(true);
+
+
 
 
     }

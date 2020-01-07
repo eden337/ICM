@@ -213,6 +213,8 @@ public class requestTreatmentController extends AppController implements Initial
         initPanes();
         btnIncharges.setVisible(false);
         searchBoxTF.setVisible(true);
+        updateRemarksBtn.setVisible(false);
+
         // event when user click on a row
         table.setRowFactory(tv -> {
             TableRow<ChangeRequest> row = new TableRow<>();
@@ -263,16 +265,14 @@ public class requestTreatmentController extends AppController implements Initial
                     resetStageImgStyleClass();
                     Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequested);
 
-                    // Extra Time:
-                    // TODO: 3 days before. show button
-
 
                 } // row selected
             });
-
             return row;
         });
 
+    if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+        updateRemarksBtn.setVisible(true);
 
     }// initialize
 
