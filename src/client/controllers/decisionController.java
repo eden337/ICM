@@ -6,6 +6,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
+import common.entity.OrganizationRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,14 +107,31 @@ public class decisionController extends AppController implements Initializable {
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");
 
+		approveBtn.setVisible(false);
+		declineBtn.setVisible(false);
+		reEvaluateBtn.setVisible(false);
+
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
+
+
 		if (!thisRequest.getCurrentStage().equals("DECISION")) {
+
 			titledPane.setText("This stage is done");
 			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
 			titledPane.getStyleClass().remove("danger");
 			titledPane.getStyleClass().add("success");
 		}
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+		else{
+			if(App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)
+					|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
+					|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)){
+				approveBtn.setVisible(true);
+				declineBtn.setVisible(true);
+				reEvaluateBtn.setVisible(true);
+			}
+
+		}
 		setFieldsData();
 	}
 
@@ -204,10 +222,16 @@ public class decisionController extends AppController implements Initializable {
 
 	@FXML
 	void declineBtnClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
+		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+
 		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
+
 		thisRequest.setPrevStage("DECISION");
 		showAlert(AlertType.ERROR, "Evaluation Declined", "Request moved to closure phase...", null);
 		reEvaluateBtn.setDisable(true);

@@ -206,12 +206,10 @@ public class ExecutionController extends AppController implements Initializable 
         String query1 = "UPDATE Requests SET Treatment_Phase = 'VALIDATION' WHERE RequestID = '"
                 + thisRequest.getRequestID() + "';";
         String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-        String query3 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today) + "' , `Deadline` = '" + dateFormat.format(deadlineDate) + "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         OperationType ot1 = OperationType.EXE_UpdateDB;
         App.client.handleMessageFromClientUI(new Message(ot1, query1));
         App.client.handleMessageFromClientUI(new Message(ot1, query2));
-        App.client.handleMessageFromClientUI(new Message(ot1, query3));
     }
 
     private static int c = 0;

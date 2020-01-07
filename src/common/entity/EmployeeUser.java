@@ -46,7 +46,13 @@ public class EmployeeUser extends User {
 
 	@Override
 	public boolean isStageRole(int requestID, StageRole role) {
-		return stagesRoles.get(requestID).contains(role);
+		Boolean res;
+		try {
+			res = stagesRoles.get(requestID).contains(role);
+		}catch (Exception e){
+			return false;
+		}
+		return res;
 	}
 
 	private static int temp_requestID;
@@ -134,6 +140,7 @@ public class EmployeeUser extends User {
 	public String getDepartment() {
 		return department;
 	}
+
 //
 //	/**
 //	 * @return the SystemID
@@ -177,5 +184,16 @@ public class EmployeeUser extends User {
 	              default:
 	            	  return null;
 	       }
+	}
+
+	@Override
+	public String toString() {
+		return "EmployeeUser{" +
+				"workerID='" + workerID + '\'' +
+				", department='" + department + '\'' +
+				", roleInOrg=" + roleInOrg +
+				", stagesRoles=" + stagesRoles +
+				", systemID='"+ '\'' +
+				'}';
 	}
 }

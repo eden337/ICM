@@ -88,6 +88,4 @@ package server.controllers;
                 ex.printStackTrace();
             }
         }
-        
-        
     }

@@ -5,6 +5,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
+import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -83,15 +84,15 @@ public class PreEvaluationController extends AppController implements Initializa
         Date today = new Date(System.currentTimeMillis());
         c.setTime(today);
         c.add(Calendar.DATE, Integer.parseInt(tfDays.getText()));
-        Date dedlineDate = c.getTime();
-        System.out.println(dateFormat.format(dedlineDate));
+        Date deadlineDate = c.getTime();
+        System.out.println(dateFormat.format(deadlineDate));
 
         OperationType ot = OperationType.PreEVAL_SetConfirmationStatus;
 
         String query = "UPDATE `Stage` SET" +
                 " `init_confirmed` = true ," +
                 " `StartTime` = '" + dateFormat.format(today) + "'," +
-                " `Deadline` = '" + dateFormat.format(dedlineDate) + "'" +
+                " `Deadline` = '" + dateFormat.format(deadlineDate) + "'" +
                 " where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
@@ -137,14 +138,6 @@ public class PreEvaluationController extends AppController implements Initializa
         btnSubmit.setVisible(false);
         txtMsg.setVisible(false);
 
-        // GUI Init by Permission
-        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-            btnAccept.setVisible(true);
-            btnDeny.setVisible(true);
-            // btnSubmit.setVisible(false);
-            //  tfDays.setEditable(false);
-        }
-
     }
 
     private void getCurrentReqestedDays() {
@@ -156,13 +149,30 @@ public class PreEvaluationController extends AppController implements Initializa
     public void getCurrentReqestedDays_ServerResponse(Object object) {
         List<Integer> res = (List<Integer>) object;
         tfDays.setText(res.get(0) + ""); // requestedDays
+        // GUI Init by Permission
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(1) == 1) {
+            btnAccept.setVisible(true);
+            btnDeny.setVisible(true);
+            tfDays.setEditable(false);
+            return;
+        }
+
+        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0){
+            txtMsg.setText("Waiting for new days evaluation from the Evaluator.");
+            txtMsg.setVisible(true);
+            tfDays.setVisible(false);
+        }
+
         if (res.get(1) == 1) {
             txtMsg.setVisible(true);
             tfDays.setEditable(false);
         }
         else{
-            btnSubmit.setVisible(true);
+            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR))
+                btnSubmit.setVisible(true);
         }
+
+
     }
 
     public void updateStatus_serverResponse(Object object) {

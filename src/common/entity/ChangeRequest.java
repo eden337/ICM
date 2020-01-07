@@ -40,7 +40,29 @@ public class ChangeRequest implements Serializable{
 	private ZonedDateTime submitTime;
 	private String incharges;
 	private Stage currentStageObject;
-	
+
+	@Override
+	public String toString() {
+		return "ChangeRequest{" +
+				"initiator='" + initiator + '\'' +
+				", currentStage='" + currentStage + '\'' +
+				", intiatorType='" + intiatorType + '\'' +
+				", status='" + status + '\'' +
+				", requestID=" + requestID +
+				", infoSystem='" + infoSystem + '\'' +
+				", existingCondition='" + existingCondition + '\'' +
+				", suggestedChange='" + suggestedChange + '\'' +
+				", reasonForChange='" + reasonForChange + '\'' +
+				", remarks='" + remarks + '\'' +
+				", dueDate=" + dueDate +
+				", filesPaths='" + filesPaths + '\'' +
+				", submitTime=" + submitTime +
+				", incharges='" + incharges + '\'' +
+				", currentStageObject=" + currentStageObject +
+				", prevStage='" + prevStage + '\'' +
+				'}';
+	}
+
 	public String getPrevStage() {
 		return prevStage;
 	}

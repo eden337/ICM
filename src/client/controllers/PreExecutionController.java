@@ -5,6 +5,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
+import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -137,14 +138,6 @@ public class PreExecutionController extends AppController implements Initializab
         btnSubmit.setVisible(false);
         txtMsg.setVisible(false);
 
-        // GUI Init by Permission
-        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-            btnAccept.setVisible(true);
-            btnDeny.setVisible(true);
-            // btnSubmit.setVisible(false);
-            //  tfDays.setEditable(false);
-        }
-
     }
 
     private void getCurrentReqestedDays() {
@@ -153,17 +146,36 @@ public class PreExecutionController extends AppController implements Initializab
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+
     public void getCurrentReqestedDays_ServerResponse(Object object) {
         List<Integer> res = (List<Integer>) object;
         tfDays.setText(res.get(0) + ""); // requestedDays
+        // GUI Init by Permission
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(1) == 1) {
+            btnAccept.setVisible(true);
+            btnDeny.setVisible(true);
+            tfDays.setEditable(false);
+            return;
+        }
+
+        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0){
+            txtMsg.setText("Waiting for new days evaluation from the Executer.");
+            txtMsg.setVisible(true);
+            tfDays.setVisible(false);
+        }
+
         if (res.get(1) == 1) {
             txtMsg.setVisible(true);
             tfDays.setEditable(false);
         }
         else{
-            btnSubmit.setVisible(true);
+            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER))
+                btnSubmit.setVisible(true);
         }
+
+
     }
+
 
     public void updateStatus_serverResponse(Object object) {
         boolean res = (boolean) object;

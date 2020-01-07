@@ -3,9 +3,12 @@ package common;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +69,7 @@ public class Tools {
 	}
 
 	/**
-	 * 
+	 *
 	 * @author Ira Goor method purpose:convert String from DB to Enum StageName
 	 *
 	 * @param str
@@ -98,25 +101,25 @@ public class Tools {
 
 	public static int convertStageNameToInt(StageName name) {
 		switch (name) {
-		case EVALUATION:
-			return 0;
-		case DECISION:
-			return 1;
-		case EXECUTION:
-			return 2;
-		case VALIDATION:
-			return 3;
-		case CLOUSRE:
-			return 4;
-		default:
-			return -1;
+			case EVALUATION:
+				return 0;
+			case DECISION:
+				return 1;
+			case EXECUTION:
+				return 2;
+			case VALIDATION:
+				return 3;
+			case CLOUSRE:
+				return 4;
+			default:
+				return -1;
 
 		}
 	}
 
 	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,
-			TextField inchargeTF, Text departmentID, Text dueDateLabel, Text requestNameLabel,
-			ChangeRequest selectedRequestInstance) {
+										TextField inchargeTF, Text departmentID, Text dueDateLabel, Text requestNameLabel,
+										ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());
 		existingCondition.setText(selectedRequestInstance.getExistingCondition());
 		descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
@@ -129,7 +132,7 @@ public class Tools {
 	}
 
 	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf, TextField EmailTf,
-			TextField PositionTf, TextField expertiseTf, EmployeeUser selectedEmployeeInstance) {
+										  TextField PositionTf, TextField expertiseTf, EmployeeUser selectedEmployeeInstance) {
 		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
 		nameTf.setText(selectedEmployeeInstance.getFirstName());
 		SurenameTf.setText(selectedEmployeeInstance.getLastName());
@@ -140,51 +143,51 @@ public class Tools {
 	}
 
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2, ImageView stage3, ImageView stage4,
-			ImageView stage5, ChangeRequest currentRequest) {
+											ImageView stage5, ChangeRequest currentRequest) {
 		switch (currentRequest.getCurrentStage()) {
 
-		case "EVALUATION":
-			imgStage_setAsCurrent(stage1);
-			imgStage_setAsBlocked(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "DECISION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsCurrent(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "EXECUTION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsCurrent(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "VALIDATION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsPassed(stage3);
-			imgStage_setAsCurrent(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "CLOSURE":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsPassed(stage3);
-			imgStage_setAsPassed(stage4);
-			imgStage_setAsCurrent(stage5);
-			break;
-		default:
-			imgStage_setAsBlocked(stage1);
-			imgStage_setAsBlocked(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
+			case "EVALUATION":
+				imgStage_setAsCurrent(stage1);
+				imgStage_setAsBlocked(stage2);
+				imgStage_setAsBlocked(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "DECISION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsCurrent(stage2);
+				imgStage_setAsBlocked(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "EXECUTION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsCurrent(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "VALIDATION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsPassed(stage3);
+				imgStage_setAsCurrent(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "CLOSURE":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsPassed(stage3);
+				imgStage_setAsPassed(stage4);
+				imgStage_setAsCurrent(stage5);
+				break;
+			default:
+//				imgStage_setAsBlocked(stage1);
+//				imgStage_setAsBlocked(stage2);
+//				imgStage_setAsBlocked(stage3);
+//				imgStage_setAsBlocked(stage4);
+//				imgStage_setAsBlocked(stage5);
+				break;
 		}
 	}
 
@@ -199,5 +202,13 @@ public class Tools {
 
 	private static void imgStage_setAsCurrent(ImageView img) {
 		img.getStyleClass().add("img_stage_current");
+	}
+
+	public static long DaysDifferenceFromToday(ZonedDateTime dateToCompare){
+		if(dateToCompare == null)
+			return -999999999;
+		//return Duration.between(ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")), dateToCompare).toDays();
+		return Period.between(dateToCompare.toLocalDate(),ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")).plusDays(1).toLocalDate()).getDays();
+
 	}
 }

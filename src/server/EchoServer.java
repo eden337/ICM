@@ -31,389 +31,377 @@ import java.util.Map;
  * @version July 2000
  */
 public class EchoServer extends AbstractServer {
-    // Class variables *************************************************
+	// Class variables *************************************************
 
-    /**
-     * The default port to lisen on.
-     */
-    final public static int DEFAULT_PORT = 5555;
-    public static int portNumber = 0;
-    mysqlConnection mysql = new mysqlConnection();
+	/**
+	 * The default port to lisen on.
+	 */
+	final public static int DEFAULT_PORT = 5555;
+	public static int portNumber = 0;
+	mysqlConnection mysql = new mysqlConnection();
 
-    // Constructors ****************************************************
+	// Constructors ****************************************************
 
-    /**
-     * Constructs an instance of the echo server.
-     *
-     * @param port The port number to connect on.
-     */
-    public EchoServer(int port) {
-        super(port);
-    }
+	/**
+	 * Constructs an instance of the echo server.
+	 *
+	 * @param port The port number to connect on.
+	 */
+	public EchoServer(int port) {
+		super(port);
+	}
 
-    // Instance methods ************************************************
+	// Instance methods ************************************************
 
-    /**
-     * This method handles any messages received from the client.
-     *
-     * @param msg    The message received from the client.
-     * @param client The connection from which the message originated.
-     */
-    public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        Message m = (Message) msg;
-        //ServerController.instance.startDBService();
-        boolean res;
-        ResultSet rs;
-        String query;
-        System.out.println("Message received: " + msg + " from " + client);
-        try {
-            switch ((m.getOperationtype())) {
-                case getRequirementData:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    // Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
-                    ArrayList<ChangeRequest> requestsData = getRequsets(rs);
-                    sendToClient(new Message(OperationType.getRequirementData, requestsData), client);
-                    rs.close();
-                    break;
-                case getEmployeeData:
-                	rs = mysql.getQuery(m.getObject().toString());
-                    // Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
-                    ArrayList<EmployeeUser> EmployeeData = getEmployees(rs);
-                    sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
-                    rs.close();
-                    break;
-                case updateRoleInOrg:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
-              
-                    break;	
-                case getViewRequestData:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    //Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
-                    ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
-                    sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
-                    rs.close();
-                    break;
+	/**
+	 * This method handles any messages received from the client.
+	 *
+	 * @param msg    The message received from the client.
+	 * @param client The connection from which the message originated.
+	 */
+	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+		Message m = (Message) msg;
+		// ServerController.instance.startDBService();
+		boolean res;
+		ResultSet rs;
+		String query;
+		System.out.println("Message received: " + msg + " from " + client);
+		try {
+			switch ((m.getOperationtype())) {
+			case getRequirementData:
+				rs = mysql.getQuery(m.getObject().toString());
+				// Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
+				ArrayList<ChangeRequest> requestsData = getRequsets(rs);
+				sendToClient(new Message(OperationType.getRequirementData, requestsData), client);
+				rs.close();
+				break;
+			case getEmployeeData:
+				rs = mysql.getQuery(m.getObject().toString());
+				// Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
+				ArrayList<EmployeeUser> EmployeeData = getEmployees(rs);
+				sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
+				rs.close();
+				break;
+			case updateRoleInOrg:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
 
-                case InsertRequirement:
-                    int current_rid = -1;
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    rs = mysql.getQuery("SELECT `RequestID` FROM `Requests` WHERE 1 ORDER BY RequestID DESC LIMIT 1");
-                    while (rs.next()) {
-                        current_rid = rs.getInt(1);
-                    }
-                    if (!(res && current_rid > 0))
-                        current_rid = -1;
-                    sendToClient(new Message(OperationType.InsertRequirement, current_rid), client);
-                    break;
+				break;
+			case getViewRequestData:
+				rs = mysql.getQuery(m.getObject().toString());
+				// Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
+				ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
+				sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
+				rs.close();
+				break;
 
-                case InsertEvaluation:
-                    boolean resEvaluation = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.InsertEvaluation, resEvaluation), client);
-                    break;
+			case InsertRequirement:
+				int current_rid = -1;
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				rs = mysql.getQuery("SELECT `RequestID` FROM `Requests` WHERE 1 ORDER BY RequestID DESC LIMIT 1");
+				while (rs.next()) {
+					current_rid = rs.getInt(1);
+				}
+				if (!(res && current_rid > 0))
+					current_rid = -1;
+				sendToClient(new Message(OperationType.InsertRequirement, current_rid), client);
+				break;
 
-                case LoginAsEmployee:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    EmployeeUser employeeUser = null;
-                    if (rs != null) {
-                        while (rs.next()) {
-                            employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
-                                    rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
-                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"),null);
-                        }
-                        rs.close();
-                        //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
+			case InsertEvaluation:
+				boolean resEvaluation = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(OperationType.InsertEvaluation, resEvaluation), client);
+				break;
 
-                        sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
-                    } else
-                        sendToClient(new Message(OperationType.LoginResult, null), client);
+			case LoginAsEmployee:
+				rs = mysql.getQuery(m.getObject().toString());
+				EmployeeUser employeeUser = null;
+				if (rs != null) {
+					while (rs.next()) {
+						employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
+								rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
 
-                    break;
+								rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null);
 
-                case ChangeRequest_File:
-                    boolean resultFile;
-                    System.out.println("Message received: " + ((MyFile) m.getObject()).getFileName() + " from " + client);
-                    resultFile = FileAttacedInServer((MyFile) m.getObject(), client);
-                    sendToClient(new Message(OperationType.ChangeRequest_File, resultFile), client);
-                    break;
-                case Allocate_GetITUsers:
-                    List<String> listOfUsers = new ArrayList<>();
-                    rs = mysql.getQuery(m.getObject().toString());
-                    while (rs.next()) {
-                        listOfUsers.add(rs.getString("USERNAME"));
-                    }
-                    sendToClient(new Message(OperationType.Allocate_GetITUsers, listOfUsers), client);
-                    rs.close();
-                    break;
-                case Allocate_SetRoles:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.Allocate_SetRoles, res), client);
-                    break;
-                case User_getStageRoleObject:
-                    User u1 = (User) m.getObject();
-                    // stages permission:
-                    query = "SELECT * FROM Stage WHERE Incharge = '" + u1.getUserName() + "'";
-                    int r_id = 0;
-                    rs = mysql.getQuery(query);
-                    StageRole role;
-                    Map<Integer, List<StageRole>> stagesRoles = new HashMap<>();
-                    if (rs != null) {
-                        while (rs.next()) {
-                            r_id = rs.getInt("RequestID");
-                            switch (rs.getString("StageName")) {
-                                case "EXECUTION":
-                                    role = StageRole.EXECUTER;
-                                    break;
-                                case "VALIDATION":
-                                    role = StageRole.TESTER;
-                                    break;
-                                case "EVALUATION":
-                                    role = StageRole.EVALUATOR;
-                                    break;
-                                default:
-                                    throw new IllegalStateException("Unexpected value: " + rs.getString("ROLE"));
-                            } // switch
+					}
+					rs.close();
+					// EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has
+					// just logged in. Yoooho","That's really exciting moment.");
 
-                            if (stagesRoles.get(r_id) == null)
-                                stagesRoles.put(r_id, new ArrayList<>());
-                            stagesRoles.get(r_id).add(role);
-                        }
-                    }
-                    System.out.println(stagesRoles);
-                    sendToClient(new Message(OperationType.User_getStageRoleObject, stagesRoles), client);
-                    break;
-                case User_getOrgRole:
-                    User u2 = (User) m.getObject();
-                    query = "SELECT RoleInOrg FROM Employees WHERE USERNAME = '" + u2.getUserName() + "'";
-                    rs = mysql.getQuery(query);
-                    String resOrgRole = null;
-                    if (rs != null) {
-                        while (rs.next()) {
-                            resOrgRole = rs.getString(1);
-                        }
-                    }
-                    System.out.println(resOrgRole);
-                    sendToClient(new Message(OperationType.User_getOrgRole, resOrgRole), client);
-                    break;
-                case SUPERVISOR_REMARKS:
-                case updateRequestStatus:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateRequestStatus, res), client);
-                    break;
-              
-                case DECISION_GetAllReportsByRID:
-                case VAL_GetAllReportsByRID:
-                case EVAL_GetAllReportsByRID:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();
+					sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
+				} else
+					sendToClient(new Message(OperationType.LoginResult, null), client);
 
-                    while (rs.next()) {
+				break;
 
-                        EvaluationReport IndividualReport = new EvaluationReport(
-                                rs.getInt("Report_ID"),
-                                rs.getString("RequestID"),
-                                rs.getString("System_ID"),
-                                rs.getString("Required_Change"),
-                                rs.getString("Expected_Result"),
-                                rs.getString("Expected_Risks"),
-                                rs.getDate("Estimated_Time"),
-                                rs.getTimestamp("TIMESTAMP")
-                        );
+			case ChangeRequest_File:
+				boolean resultFile;
+				System.out.println("Message received: " + ((MyFile) m.getObject()).getFileName() + " from " + client);
+				resultFile = FileAttacedInServer((MyFile) m.getObject(), client);
+				sendToClient(new Message(OperationType.ChangeRequest_File, resultFile), client);
+				break;
+			case PreValidation_GetCOMMITEE_MEMBERS:
+			case Allocate_GetITUsers:
+				List<String> listOfUsers = new ArrayList<>();
+				rs = mysql.getQuery(m.getObject().toString());
+				while (rs.next()) {
+					listOfUsers.add(rs.getString("USERNAME"));
+				}
+				sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
+				rs.close();
+				break;
+			case PreValidation_SetRole:
+			case Allocate_SetRoles:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(m.getOperationtype(), res), client);
+				break;
+			case User_getStageRoleObject:
+				User u1 = (User) m.getObject();
+				// stages permission:
+				query = "SELECT * FROM Stage WHERE Incharge = '" + u1.getUserName() + "'";
+				int r_id = 0;
+				rs = mysql.getQuery(query);
+				StageRole role;
+				Map<Integer, List<StageRole>> stagesRoles = new HashMap<>();
+				if (rs != null) {
+					while (rs.next()) {
+						r_id = rs.getInt("RequestID");
+						switch (rs.getString("StageName")) {
+						case "EXECUTION":
+							role = StageRole.EXECUTER;
+							break;
+						case "VALIDATION":
+							role = StageRole.TESTER;
+							break;
+						case "EVALUATION":
+							role = StageRole.EVALUATOR;
+							break;
+						default:
+							throw new IllegalStateException("Unexpected value: " + rs.getString("ROLE"));
+						} // switch
 
-                        reportsToReturn.add(IndividualReport);
-                    } // while
-                    sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
-                    rs.close();
-                    break;
-                //need for considerations...
+						if (stagesRoles.get(r_id) == null)
+							stagesRoles.put(r_id, new ArrayList<>());
+						stagesRoles.get(r_id).add(role);
+					}
+				}
+				System.out.println(stagesRoles);
+				sendToClient(new Message(OperationType.User_getStageRoleObject, stagesRoles), client);
+				break;
+			case User_getOrgRole:
+				User u2 = (User) m.getObject();
+				query = "SELECT RoleInOrg FROM Employees WHERE USERNAME = '" + u2.getUserName() + "'";
+				rs = mysql.getQuery(query);
+				String resOrgRole = null;
+				if (rs != null) {
+					while (rs.next()) {
+						resOrgRole = rs.getString(1);
+					}
+				}
+				System.out.println(resOrgRole);
+				sendToClient(new Message(OperationType.User_getOrgRole, resOrgRole), client);
+				break;
+			case SUPERVISOR_REMARKS:
+			case updateRequestStatus:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(OperationType.updateRequestStatus, res), client);
+				break;
 
-                case DECI_UpdateDB:
-                case EVAL_UpdateDB:
-                case VALID_UpdateDB:
-                case EXE_UpdateDB:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-                case EXE_GetInitData:
-                case EVAL_GetInitData:
-                    List<Boolean> init_res = new ArrayList<Boolean>();
-                    rs = mysql.getQuery(m.getObject().toString());
-                    if (rs != null) {
-                        while (rs.next()) {
-                            init_res.add(rs.getBoolean("init"));
-                            init_res.add(rs.getBoolean("init_confirmed"));
-                        }
-                    }
-                    init_res.add(false);
-                    init_res.add(false);
+			case DECISION_GetAllReportsByRID:
+			case VAL_GetAllReportsByRID:
+			case EVAL_GetAllReportsByRID:
+				rs = mysql.getQuery(m.getObject().toString());
+				ArrayList<EvaluationReport> reportsToReturn = new ArrayList<EvaluationReport>();
 
-                    sendToClient(new Message(m.getOperationtype(), init_res), client);
-                    rs.close();
-                    break;
-                case PreEXE_SetInitStat:
-                case PreEVAL_SetInitStat:
-                case PreEXE_SetConfirmationStatus:
-                case PreEVAL_SetConfirmationStatus:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-                case PreEXE_getData:
-                case PreEVAL_getData:
-                    List<Integer> res3 = new ArrayList<Integer>();
-                    rs = mysql.getQuery(m.getObject().toString());
-                    if (rs != null) {
+				while (rs.next()) {
 
-                        while (rs.next()) {
-                            res3.add(rs.getInt("requestedDays"));
-                            res3.add(rs.getInt("init"));
-                            res3.add(rs.getInt("init_confirmed"));
-                        }
-                    }
-                    res3.add(0);
-                    res3.add(0);
-                    res3.add(0);
+					EvaluationReport IndividualReport = new EvaluationReport(rs.getInt("Report_ID"),
+							rs.getString("RequestID"), rs.getString("System_ID"), rs.getString("Required_Change"),
+							rs.getString("Expected_Result"), rs.getString("Expected_Risks"),
+							rs.getDate("Estimated_Time"), rs.getTimestamp("TIMESTAMP"));
 
-                    sendToClient(new Message(m.getOperationtype(), res3), client);
-                    rs.close();
-                    break;
-                case ChangeRequest_DownloadFile:
-                    String fileToSend = "Request_" + m.getObject() + ".zip";
-                    String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir")).append("\\serverFiles\\").append(fileToSend).toString();
-                    try {
-                        File newFile = new File(LocalfilePath);
-                        MyFile msgFile = new MyFile(LocalfilePath, fileToSend);
-                        byte[] mybytearray = new byte[(int) newFile.length()];
-                        FileInputStream fis = new FileInputStream(newFile);
-                        BufferedInputStream bis = new BufferedInputStream(fis);
+					reportsToReturn.add(IndividualReport);
+				} // while
+				sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
+				rs.close();
+				break;
+			// need for considerations...
 
-                        msgFile.initArray(mybytearray.length);
-                        msgFile.setSize(mybytearray.length);
+			case DECI_UpdateDB:
+			case EVAL_UpdateDB:
+			case VALID_UpdateDB:
+			case EXE_UpdateDB:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(m.getOperationtype(), res), client);
+				break;
+			case EXE_GetInitData:
+			case EVAL_GetInitData:
+				List<Boolean> init_res = new ArrayList<Boolean>();
+				rs = mysql.getQuery(m.getObject().toString());
+				if (rs != null) {
+					while (rs.next()) {
+						init_res.add(rs.getBoolean("init"));
+						init_res.add(rs.getBoolean("init_confirmed"));
+					}
+				}
+				init_res.add(false);
+				init_res.add(false);
 
-                        bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
-                        sendToClient(new Message(m.getOperationtype(), msgFile), client);
-                    } catch (FileNotFoundException e) {
-                        sendToClient(new Message(m.getOperationtype(), null), client);
+				sendToClient(new Message(m.getOperationtype(), init_res), client);
+				rs.close();
+				break;
+			case PreEXE_SetInitStat:
+			case PreEVAL_SetInitStat:
+			case PreEXE_SetConfirmationStatus:
+			case PreEVAL_SetConfirmationStatus:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(m.getOperationtype(), res), client);
+				break;
+			case PreEXE_getData:
+			case PreEVAL_getData:
+				List<Integer> res3 = new ArrayList<Integer>();
+				rs = mysql.getQuery(m.getObject().toString());
+				if (rs != null) {
 
-                        e.printStackTrace();
-                    }
+					while (rs.next()) {
+						res3.add(rs.getInt("requestedDays"));
+						res3.add(rs.getInt("init"));
+						res3.add(rs.getInt("init_confirmed"));
+					}
+				}
+				res3.add(0);
+				res3.add(0);
+				res3.add(0);
 
-                    break;
-                case deleteMember:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.deleteMember, res), client);
-                    break;
-                case Extension_getData:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    Extension extension = null;
-                    while (rs.next()) {
-                        extension = new Extension(
-                                rs.getInt("RequestID"),
-                                rs.getString("StageName"),
-                                rs.getInt("extension_days"),
-                                rs.getString("extension_reason"),
-                                rs.getString("extension_decision")
-                        );
-                    } // while
-                    sendToClient(new Message(m.getOperationtype(), extension), client);
-                    rs.close();
-                    break;
-                case Extension_submit:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-                case ChangeRequest_getStageObject:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    Stage cStage = null;
-                    while (rs.next()) {
-                        cStage = new Stage(
-                                rs.getInt("RequestID"),
-                                rs.getString("StageName"),
-                                Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
-                                Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
-                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")),
-                                rs.getString("Incharge"),
-                                rs.getBoolean("Extend"),
-                                rs.getInt("init"),
-                                rs.getInt("init_confirmed")
-                        );
-                    }
-                    sendToClient(new Message(m.getOperationtype(), cStage), client);
-                    break;
-                case updateSystems:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateSystems, res), client);
-                    break;
-                	
+				sendToClient(new Message(m.getOperationtype(), res3), client);
+				rs.close();
+				break;
+			case ChangeRequest_DownloadFile:
+				String fileToSend = "Request_" + m.getObject() + ".zip";
+				String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir"))
+						.append("\\serverFiles\\").append(fileToSend).toString();
+				try {
+					File newFile = new File(LocalfilePath);
+					MyFile msgFile = new MyFile(LocalfilePath, fileToSend);
+					byte[] mybytearray = new byte[(int) newFile.length()];
+					FileInputStream fis = new FileInputStream(newFile);
+					BufferedInputStream bis = new BufferedInputStream(fis);
 
-                default:
-                    break;
-            }
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        }
+					msgFile.initArray(mybytearray.length);
+					msgFile.setSize(mybytearray.length);
 
-    }
+					bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
+					sendToClient(new Message(m.getOperationtype(), msgFile), client);
+				} catch (FileNotFoundException e) {
+					sendToClient(new Message(m.getOperationtype(), null), client);
 
-    /**
-     * The object MyFile get from the client to the server and need to be read
-     */
-    private boolean FileAttacedInServer(MyFile file, ConnectionToClient client) {
-        int fileSize = ((MyFile) file).getSize();
-        MyFile newMsg = (MyFile) file;
-        String path = System.getProperty("user.dir") + "\\serverFiles\\";
-        new File(path).mkdirs();
-        try {
-            File newFile = new File(path + "" + newMsg.getFileName());
-            byte[] mybytearray = newMsg.getMybytearray();
-            FileOutputStream fos = new FileOutputStream(newFile);
-            BufferedOutputStream bos = new BufferedOutputStream(fos);
-            bos.write(mybytearray, 0, newMsg.getSize());
-            bos.flush();
-            fos.flush();
-            bos.close();
-            fos.close();
-            String fileName = newMsg.getFileName();
-            String[] parts = fileName.split("Request_");
+					e.printStackTrace();
+				}
 
-            parts = parts[1].split(".zip");
-            String requestID = parts[0]; // #.zip
+				break;
+			case deleteMember:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(OperationType.deleteMember, res), client);
+				break;
+			case Extension_getData:
+				rs = mysql.getQuery(m.getObject().toString());
+				Extension extension = null;
+				while (rs.next()) {
+					extension = new Extension(rs.getInt("RequestID"), rs.getString("StageName"),
+							rs.getInt("extension_days"), rs.getString("extension_reason"),
+							rs.getString("extension_decision"));
+				} // while
+				sendToClient(new Message(m.getOperationtype(), extension), client);
+				rs.close();
+				break;
+			case Extension_submit:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(m.getOperationtype(), res), client);
+				break;
+			case ChangeRequest_getStageObject:
+				rs = mysql.getQuery(m.getObject().toString());
+				Stage cStage = null;
+				while (rs.next()) {
+					cStage = new Stage(rs.getInt("RequestID"), rs.getString("StageName"),
+							Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+							Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+							Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge"),
+							rs.getBoolean("Extend"), rs.getInt("init"), rs.getInt("init_confirmed"));
+				}
+				sendToClient(new Message(m.getOperationtype(), cStage), client);
+				break;
+			case updateSystems:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(OperationType.updateSystems, res), client);
+				break;
 
-            String qry = "UPDATE `Requests` SET `FILE`= '" + fileName + "' WHERE RequestID = " + requestID;
-            boolean res = mysql.insertOrUpdate(qry);
-            if (!res) {
-                System.out.println(requestID + "Update Error");
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            System.out.println("Error file in Server: ");
-            e.printStackTrace();
-            return false;
-        }
-    }
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    /**
-     * @throws SQLException
-     */
-    public ArrayList<ChangeRequest> getRequsets(ResultSet requestData) throws SQLException {
-        ArrayList<ChangeRequest> ret = new ArrayList<ChangeRequest>();
-        Stage cStage = null;
+	}
 
-        while (requestData.next()) {
-            ChangeRequest request;
-            int requestID = requestData.getInt("RequestID");
-            String currentStage = requestData.getString("Treatment_Phase");
-            String initiator = requestData.getString("USERNAME");
-            String intiatorType = requestData.getString("Position");
-            String infoSystem = requestData.getString("SystemID");
-            String status = requestData.getString("Status");
-            String existingCondition = requestData.getString("Existing_Cond");
-            String suggestedChange = requestData.getString("Wanted_Change");
-            String reasonForChange = requestData.getString("Reason");
-            String remarks = requestData.getString("Comments");
-            String filespaths = requestData.getString("FILE");
-            String currResponsible = requestData.getString("Curr_Responsible");
+	/**
+	 * The object MyFile get from the client to the server and need to be read
+	 */
+	private boolean FileAttacedInServer(MyFile file, ConnectionToClient client) {
+		int fileSize = ((MyFile) file).getSize();
+		MyFile newMsg = (MyFile) file;
+		String path = System.getProperty("user.dir") + "\\serverFiles\\";
+		new File(path).mkdirs();
+		try {
+			File newFile = new File(path + "" + newMsg.getFileName());
+			byte[] mybytearray = newMsg.getMybytearray();
+			FileOutputStream fos = new FileOutputStream(newFile);
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			bos.write(mybytearray, 0, newMsg.getSize());
+			bos.flush();
+			fos.flush();
+			bos.close();
+			fos.close();
+			String fileName = newMsg.getFileName();
+			String[] parts = fileName.split("Request_");
+
+			parts = parts[1].split(".zip");
+			String requestID = parts[0]; // #.zip
+
+			String qry = "UPDATE `Requests` SET `FILE`= '" + fileName + "' WHERE RequestID = " + requestID;
+			boolean res = mysql.insertOrUpdate(qry);
+			if (!res) {
+				System.out.println(requestID + "Update Error");
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			System.out.println("Error file in Server: ");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @throws SQLException
+	 */
+	public ArrayList<ChangeRequest> getRequsets(ResultSet requestData) throws SQLException {
+		ArrayList<ChangeRequest> ret = new ArrayList<ChangeRequest>();
+		Stage cStage = null;
+
+		while (requestData.next()) {
+			ChangeRequest request;
+			int requestID = requestData.getInt("RequestID");
+			String currentStage = requestData.getString("Treatment_Phase");
+			String initiator = requestData.getString("USERNAME");
+			String intiatorType = requestData.getString("Position");
+			String infoSystem = requestData.getString("SystemID");
+			String status = requestData.getString("Status");
+			String existingCondition = requestData.getString("Existing_Cond");
+			String suggestedChange = requestData.getString("Wanted_Change");
+			String reasonForChange = requestData.getString("Reason");
+			String remarks = requestData.getString("Comments");
+			String filespaths = requestData.getString("FILE");
+			String currResponsible = requestData.getString("Curr_Responsible");
 //            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
 //                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
 //            ResultSet rs = mysql.getQuery(query5);
@@ -430,36 +418,37 @@ public class EchoServer extends AbstractServer {
 //                        rs.getInt("init_confirmed")
 //                );
 //            }
-            ZonedDateTime submitTime = Tools.convertDateSQLToZoned(requestData.getDate("Date"));
-            ZonedDateTime dueDate = Tools.convertDateSQLToZoned(requestData.getDate("Due_Date"));
+			ZonedDateTime submitTime = Tools.convertDateSQLToZoned(requestData.getDate("Date"));
+			ZonedDateTime dueDate = Tools.convertDateSQLToZoned(requestData.getDate("Due_Date"));
 
-            // TODO: now, the currResponsible is 'none'. we need to get all users
-            // participated in this request right now according to Stage table.
-            request = new ChangeRequest(initiator, intiatorType, status, requestID, infoSystem, existingCondition,
-                    suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
-                    currResponsible, null);
-            ret.add(request);
-        }
-        return ret;
-    }
-    /**
-     * @throws SQLException
-     */
-    public ArrayList<EmployeeUser> getEmployees(ResultSet EmployeeData) throws SQLException {
-        ArrayList<EmployeeUser> ret = new ArrayList<>();
-        Stage cStage = null;
+			// TODO: now, the currResponsible is 'none'. we need to get all users
+			// participated in this request right now according to Stage table.
+			request = new ChangeRequest(initiator, intiatorType, status, requestID, infoSystem, existingCondition,
+					suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
+					currResponsible, null);
+			ret.add(request);
+		}
+		return ret;
+	}
 
-        while (EmployeeData.next()) {
-            EmployeeUser employee;
-            String workerID = EmployeeData.getString("WorkerID");
-            String username = EmployeeData.getString("username");
-            String password = EmployeeData.getString("password");
-            String name = EmployeeData.getString("Name");
-            String surename = EmployeeData.getString("Surename");
-            String email = EmployeeData.getString("EMAIL");
-            String department = EmployeeData.getString("Department");
-            String type = EmployeeData.getString("Type");
-            String roleInOrg = EmployeeData.getString("RoleInOrg");
+	/**
+	 * @throws SQLException
+	 */
+	public ArrayList<EmployeeUser> getEmployees(ResultSet EmployeeData) throws SQLException {
+		ArrayList<EmployeeUser> ret = new ArrayList<>();
+		Stage cStage = null;
+
+		while (EmployeeData.next()) {
+			EmployeeUser employee;
+			String workerID = EmployeeData.getString("WorkerID");
+			String username = EmployeeData.getString("username");
+			String password = EmployeeData.getString("password");
+			String name = EmployeeData.getString("Name");
+			String surename = EmployeeData.getString("Surename");
+			String email = EmployeeData.getString("EMAIL");
+			String department = EmployeeData.getString("Department");
+			String type = EmployeeData.getString("Type");
+			String roleInOrg = EmployeeData.getString("RoleInOrg");
 //            String systemID = EmployeeData.getString("SystemID");
 //            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
 //                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
@@ -477,42 +466,42 @@ public class EchoServer extends AbstractServer {
 //                        rs.getInt("init_confirmed")
 //                );
 //            }
-            
-           employee = new EmployeeUser(name, surename, email, username, password,workerID , department, type,roleInOrg);
-            ret.add(employee);
-        }
-        return ret;
-    }
 
-    public String[] requestIncharge(ResultSet inCharge) throws SQLException {
-        String[] requestIncharge = new String[4];
-        inCharge.next();
-        requestIncharge[0] = inCharge.getString("Eval_Incharge");
-        requestIncharge[1] = inCharge.getString("Decision_Incharge");
-        requestIncharge[2] = inCharge.getString("Exec_Incharge");
-        requestIncharge[3] = inCharge.getString("Valid_InCharge");
-        return requestIncharge;
+			employee = new EmployeeUser(name, surename, email, username, password, workerID, department, type,
+					roleInOrg);
+			ret.add(employee);
+		}
+		return ret;
+	}
 
-    }
+	public String[] requestIncharge(ResultSet inCharge) throws SQLException {
+		String[] requestIncharge = new String[4];
+		inCharge.next();
+		requestIncharge[0] = inCharge.getString("Eval_Incharge");
+		requestIncharge[1] = inCharge.getString("Decision_Incharge");
+		requestIncharge[2] = inCharge.getString("Exec_Incharge");
+		requestIncharge[3] = inCharge.getString("Valid_InCharge");
+		return requestIncharge;
 
+	}
 
-    /**
-     * This method overrides the one in the superclass. Called when the server
-     * starts listening for connections.
-     */
-    protected void serverStarted() {
-        System.out.println("Server listening for connections on port " + getPort());
-    }
+	/**
+	 * This method overrides the one in the superclass. Called when the server
+	 * starts listening for connections.
+	 */
+	protected void serverStarted() {
+		System.out.println("Server listening for connections on port " + getPort());
+	}
 
-    /**
-     * This method overrides the one in the superclass. Called when the server stops
-     * listening for connections.
-     */
-    protected void serverStopped() {
-        System.out.println("Server has stopped listening for connections.");
-    }
+	/**
+	 * This method overrides the one in the superclass. Called when the server stops
+	 * listening for connections.
+	 */
+	protected void serverStopped() {
+		System.out.println("Server has stopped listening for connections.");
+	}
 
-    // Class methods ***************************************************
+	// Class methods ***************************************************
 
 //    /**
 //     * This method is responsible for the creation of the server instance (there is
@@ -521,7 +510,7 @@ public class EchoServer extends AbstractServer {
 //     * @param args[0] The port number to listen on. Defaults to 5555 if no argument
 //     *                is entered.
 //     */
-    // public static void main(String[] args) {
+	// public static void main(String[] args) {
 //		int port = 0; // Port to listen on
 //
 //		try {
@@ -532,7 +521,7 @@ public class EchoServer extends AbstractServer {
 //
 //		EchoServer sv = new EchoServer(port);
 
-    //
+	//
 //		try {
 //			sv.listen(); // Start listening for connections
 //		} catch (Exception ex) {
@@ -541,10 +530,10 @@ public class EchoServer extends AbstractServer {
 //		AppServer.echoserver = sv;
 //		AppServer.mainAppServer(args);
 //	}
-    public boolean getDBStatus() {
-        if (mysqlConnection.con != null)
-            return true;
-        return false;
-    }
+	public boolean getDBStatus() {
+		if (mysqlConnection.con != null)
+			return true;
+		return false;
+	}
 }
 //End of EchoServer class
