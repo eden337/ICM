@@ -1,12 +1,7 @@
 package client.controllers;
 
-import java.util.ArrayList;
-
 import client.App;
 import common.controllers.Message;
-import common.controllers.OperationType;
-import common.entity.EmployeeUser;
-import common.entity.EvaluationReport;
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -44,7 +39,7 @@ public class ClientMessages {
                 LoginController.instance.getLoginResult(m.getObject());
                 break;
             case getEmployeeData:
-            	ManagerViewPage.Instance.setDataTable(m.getObject());
+                ManagerViewPage.Instance.setDataTable(m.getObject());
                 break;
 
             case InsertRequirement:
@@ -73,20 +68,20 @@ public class ClientMessages {
             case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
-            case updateRoleInOrg : 
-    
-            	break;
+            case updateRoleInOrg:
+
+                break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-                
+
             case VAL_GetAllReportsByRID:
                 ValidationController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-            
+
             case EXE_UpdateDB:
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
@@ -127,6 +122,11 @@ public class ClientMessages {
             case ChangeRequest_getStageObject:
                 requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
                 break;
+            case PreValidation_GetCOMMITEE_MEMBERS:
+                PreValidationController.instance.setComboBoxesData(m.getObject());
+                break;
+            case PreValidation_SetRole:
+                PreValidationController.instance.queryResult(m.getObject());
             default:
                 break;
 

@@ -76,17 +76,17 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 case getEmployeeData:
-                	rs = mysql.getQuery(m.getObject().toString());
+                    rs = mysql.getQuery(m.getObject().toString());
                     // Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
                     ArrayList<EmployeeUser> EmployeeData = getEmployees(rs);
                     sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
                     rs.close();
                     break;
                 case updateRoleInOrg:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
+                    res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
-              
-                    break;	
+
+                    break;
                 case getViewRequestData:
                     rs = mysql.getQuery(m.getObject().toString());
                     //Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
@@ -119,7 +119,7 @@ public class EchoServer extends AbstractServer {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
-                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"),null,null);
+                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null, null);
                         }
                         rs.close();
                         //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
@@ -130,24 +130,27 @@ public class EchoServer extends AbstractServer {
 
                     break;
 
+
                 case ChangeRequest_File:
                     boolean resultFile;
                     System.out.println("Message received: " + ((MyFile) m.getObject()).getFileName() + " from " + client);
                     resultFile = FileAttacedInServer((MyFile) m.getObject(), client);
                     sendToClient(new Message(OperationType.ChangeRequest_File, resultFile), client);
                     break;
+                case PreValidation_GetCOMMITEE_MEMBERS:
                 case Allocate_GetITUsers:
-                    List<String> listOfUsers = new ArrayList<>();
-                    rs = mysql.getQuery(m.getObject().toString());
-                    while (rs.next()) {
-                        listOfUsers.add(rs.getString("USERNAME"));
-                    }
-                    sendToClient(new Message(OperationType.Allocate_GetITUsers, listOfUsers), client);
-                    rs.close();
-                    break;
+                List<String> listOfUsers = new ArrayList<>();
+                rs = mysql.getQuery(m.getObject().toString());
+                while (rs.next()) {
+                    listOfUsers.add(rs.getString("USERNAME"));
+                }
+                sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
+                rs.close();
+                break;
+                case PreValidation_SetRole:
                 case Allocate_SetRoles:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.Allocate_SetRoles, res), client);
+                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
@@ -200,7 +203,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
-              
+
                 case DECISION_GetAllReportsByRID:
                 case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
@@ -435,6 +438,7 @@ public class EchoServer extends AbstractServer {
         }
         return ret;
     }
+
     /**
      * @throws SQLException
      */
@@ -470,8 +474,8 @@ public class EchoServer extends AbstractServer {
 //                        rs.getInt("init_confirmed")
 //                );
 //            }
-            
-           employee = new EmployeeUser(name, surename, email, username, password,workerID , department, type,roleInOrg,systemID);
+
+            employee = new EmployeeUser(name, surename, email, username, password, workerID, department, type, roleInOrg, systemID);
             ret.add(employee);
         }
         return ret;

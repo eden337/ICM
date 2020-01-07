@@ -132,12 +132,11 @@ public class AllocateController extends AppController implements Initializable {
         new AutoCompleteBox<String>(cbExecuter);
         new AutoCompleteBox<String>(cbValidator);
         int rand = r.nextInt(size);
-        //System.out.println(rand);
-       // oblist.get(rand);
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(2);
+                cbEvaluator.getSelectionModel().select(r.nextInt());
             }
         });
     }

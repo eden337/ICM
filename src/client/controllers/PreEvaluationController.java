@@ -84,15 +84,15 @@ public class PreEvaluationController extends AppController implements Initializa
         Date today = new Date(System.currentTimeMillis());
         c.setTime(today);
         c.add(Calendar.DATE, Integer.parseInt(tfDays.getText()));
-        Date dedlineDate = c.getTime();
-        System.out.println(dateFormat.format(dedlineDate));
+        Date deadlineDate = c.getTime();
+        System.out.println(dateFormat.format(deadlineDate));
 
         OperationType ot = OperationType.PreEVAL_SetConfirmationStatus;
 
         String query = "UPDATE `Stage` SET" +
                 " `init_confirmed` = true ," +
                 " `StartTime` = '" + dateFormat.format(today) + "'," +
-                " `Deadline` = '" + dateFormat.format(dedlineDate) + "'" +
+                " `Deadline` = '" + dateFormat.format(deadlineDate) + "'" +
                 " where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
