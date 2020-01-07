@@ -49,7 +49,7 @@
                   <TextField fx:id="nameTf" layoutX="248.0" layoutY="116.0" prefWidth="219.0" />
                   <Text layoutX="109.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Position :" wrappingWidth="73.63037107139826" />
                   <TextField fx:id="PositionTf" editable="false" layoutX="246.0" layoutY="303.0" prefHeight="31.0" prefWidth="218.0" />
-                  <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="20.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="523.0" layoutY="11.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@img/icons/icon_refresh.png" />
                      </image>
@@ -66,9 +66,10 @@
                         <CheckBox fx:id="labsCheckbox" mnemonicParsing="false" text="Labs" />
                      </children>
                   </VBox>
-                  <VBox layoutX="420.0" layoutY="404.0" prefHeight="50.0" prefWidth="115.0">
+                  <VBox layoutX="420.0" layoutY="404.0" prefHeight="69.0" prefWidth="115.0">
                      <children>
                         <CheckBox fx:id="classComputersCheckbox" mnemonicParsing="false" prefWidth="107.0" text="Class Computers" />
+                        <Button fx:id="systemSelectionSubmit" mnemonicParsing="false" onAction="#systemSelectionClicked" prefHeight="32.0" prefWidth="113.0" text="submit" />
                      </children>
                   </VBox>
                   <VBox layoutX="300.0" layoutY="404.0" prefHeight="50.0" prefWidth="115.0">
@@ -83,6 +84,7 @@
                         <CheckBox fx:id="informationStationCheckbox" mnemonicParsing="false" text="Information Station" />
                      </children>
                   </VBox>
+                  <Button fx:id="deleteMember" layoutX="203.0" layoutY="482.0" mnemonicParsing="false" onAction="#deleteMembr" text="Delete Permission" />
                </children>
             </AnchorPane>
          </children>

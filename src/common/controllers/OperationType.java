@@ -36,8 +36,9 @@ public enum OperationType {
 	SUPERVISOR_REMARKS,
 	Extension_getData,
 	Extension_submit,
-	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg,
-	PreValidation_GetCOMMITEE_MEMBERS,PreValidation_SetRole
+	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS
+
+
 
 	;
 

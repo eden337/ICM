@@ -24,7 +24,7 @@ public class ITEngineer extends EmployeeUser {
 	 */
 	public ITEngineer(String firstName, String lastName, String email, String userName, String password, String userID,
 			String department, String type) {
-		super(firstName, lastName, email, userName, password, userID, department, type,null,null);
+		super(firstName, lastName, email, userName, password, userID, department, type,null);
 		this.userRole = UserRole.getUserRoleInstance();
 	}
 
