@@ -135,9 +135,12 @@ public class ViewRequestController extends AppController implements Initializabl
 					if(selectedRequestInstance.getCurrentStage().equals("INIT")) {
 						progressViewLabel.setText("The Request waiting for initialize");
 						progressViewLabel.setVisible(true);
+						stageHBox.setOpacity(0.5);
 					}
-					else
+					else {
 						progressViewLabel.setVisible(false);
+						stageHBox.setOpacity(1);
+					}
 
 					Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
 							departmentID, dueDateLabel, requestNameLabel, selectedRequestInstance);

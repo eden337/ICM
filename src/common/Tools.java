@@ -3,9 +3,12 @@ package common;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -202,7 +205,10 @@ public class Tools {
 	}
 
 	public static long DaysDifferenceFromToday(ZonedDateTime dateToCompare){
-		return ZonedDateTime.now().compareTo(dateToCompare);
+		if(dateToCompare == null)
+			return -999999999;
+		//return Duration.between(ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")), dateToCompare).toDays();
+		return Period.between(dateToCompare.toLocalDate(),ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")).plusDays(1).toLocalDate()).getDays();
 
 	}
 }

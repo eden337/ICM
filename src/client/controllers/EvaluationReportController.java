@@ -6,17 +6,19 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
+import common.entity.OrganizationRole;
+import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -25,11 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -39,7 +38,7 @@ public class EvaluationReportController extends AppController implements Initial
      */
     // public static ChangeRequest thisRequest;
     public static EvaluationReportController instance;
-
+    private common.entity.Stage thisStage;
     protected ChangeRequest thisRequest;
     private boolean firstReportForRequest;
 
@@ -104,6 +103,16 @@ public class EvaluationReportController extends AppController implements Initial
     private Button btnRequestExtension;
 
     @FXML
+    private Pane Pane_Form;
+
+    @FXML
+    private Pane Pane_locked;
+
+    @FXML
+    private Text txt_locked;
+
+
+    @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
 
         if (departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()
@@ -141,46 +150,54 @@ public class EvaluationReportController extends AppController implements Initial
         instance = this;
 
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
+        SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
+        Pane_Form.setVisible(false);
+        Pane_locked.setVisible(false);
+
         msgFix.setVisible(false);
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
 
+        btnRequestExtension.setVisible(false);
 
-        setExtensionVisability();
-
-
-            Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
-        checkPreConditions();
 
-
-    }
-
-    private void checkPreConditions() {
-        OperationType ot = OperationType.EVAL_GetInitData;
-        String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID() + "' AND `StageName` = 'EVALUATION' LIMIT 1";
-        App.client.handleMessageFromClientUI(new Message(ot, query));
-    }
-
-    public void checkPreConditions_ServerResponse(Object object) {
-        List<Boolean> init_res = (List<Boolean>) object;
-        boolean init = init_res.get(0);
-        boolean init_confirmed = init_res.get(1);
-
-        if (init_confirmed && init) {
+        if(!thisRequest.getCurrentStage().equals("EVALUATION")){
             formInit();
+            Pane_Form.setVisible(true);
             rightPane.setVisible(true);
-            return;
-        }
-        Platform.runLater(new Runnable() {
 
-            @Override
-            public void run() {
-                loadPage("PreEvaluation");
+        }
+        else{ // in Eval Stage
+            setExtensionVisability();
+            if (thisStage.getInit_confirmed() == 1 && thisStage.getInit() == 1)
+                rightPane.setVisible(true);
+             else {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("PreEvaluation");
+                    }
+                });
+                return;
             }
-        });
+
+            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { // NOT EVALUATOR
+                SbmtEvlBtn.setVisible(true);
+                Pane_Form.setVisible(true);
+
+            }
+            else // EVALUATOR
+                Pane_locked.setVisible(true);
+
+        }
+
+
+
 
     }
 
@@ -188,13 +205,12 @@ public class EvaluationReportController extends AppController implements Initial
     private void formInit() {
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
             Platform.runLater(new Runnable() {
-
                 @Override
                 public void run() {
+                    titledPane.getStyleClass().remove("danger");
                     titledPane.getStyleClass().add("success");
                     titledPane.setText("This stage is done.");
                     SbmtEvlBtn.setVisible(false);
-                    timeEvlBox.setDisable(true);
                     msgFix.setText("You have only a viewing permission.");
                     msgFix.setFill(Color.FORESTGREEN);
                     msgFix.setVisible(true);
@@ -211,15 +227,19 @@ public class EvaluationReportController extends AppController implements Initial
                 public void run() {
                     titledPane.getStyleClass().remove("danger");
                     titledPane.getStyleClass().add("info");
+
                     titledPane.setText("Fill in Evaluation report.");
+                    msgFix.setText("After you submit the form, the evaluation will go to decision stage. ");
                 }
             });
 
         }
+
         setFieldsData();
     }
 
     private void setFieldsData() {
+        System.out.println("sdfsf");
         OperationType ot = OperationType.EVAL_GetAllReportsByRID;
         String query = "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID()
                 + " ORDER BY Report_ID DESC LIMIT 1";
@@ -282,10 +302,10 @@ public class EvaluationReportController extends AppController implements Initial
 
 
     // Extensions:
-    private void setExtensionVisability(){
+    private void setExtensionVisability() {
         btnRequestExtension.setVisible(false);
-        long daysdifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
-        if(daysdifference >= -3)
+        long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if (daysDifference >= -3)
             btnRequestExtension.setVisible(true);
     }
 
