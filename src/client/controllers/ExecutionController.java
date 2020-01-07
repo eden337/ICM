@@ -6,6 +6,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
+import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +20,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -89,7 +92,16 @@ public class ExecutionController extends AppController implements Initializable 
     @FXML
     private AnchorPane rightPane;
 
-    private boolean responseSupervisor = false;//this provide if the supervisor agree or not.
+    @FXML
+    private Pane pane_form;
+
+    @FXML
+    private Pane pane_msg;
+
+    @FXML
+    private Text textInMsgPane;
+
+    private boolean responseSupervisor = false;     //this provide if the supervisor agree or not.
     private static int save;
     static LocalDate saveAfterResponse;
 
@@ -111,6 +123,24 @@ public class ExecutionController extends AppController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+
+        pane_msg.setVisible(false);
+        pane_form.setVisible(false);
+
+        if(!thisRequest.getCurrentStage().equals("EXECUTION")){
+            pane_msg.setVisible(true);
+            return;
+        }
+
+        if(!App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER) ){
+            textInMsgPane.setFill(Color.BLUE);
+            textInMsgPane.setText("Stage in progress");
+            pane_msg.setVisible(true);
+            return;
+        }
+
+        // Otherwise: this is the Executer in his stage
+
         msgFix.setVisible(false);
         titledPane.setVisible(false);
         dueDateLabel.setVisible(true);

@@ -78,46 +78,64 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="596.0">
                <children>
-                  <Text layoutX="230.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Text>
-                  <TitledPane fx:id="titledPane" animated="false" layoutX="28.0" layoutY="83.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </TitledPane>
-                  <Button fx:id="workDone" layoutX="194.0" layoutY="584.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Button>
-                  <Text layoutX="25.0" layoutY="554.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="28.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have to finish this stage until:">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="248.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="35.29296875">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Text>
-                  <TextArea fx:id="taNotes" editable="false" layoutX="24.0" layoutY="261.0" prefHeight="263.0" prefWidth="519.0" text="none" />
-                  <Text layoutX="25.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" />
+                  <Pane fx:id="pane_form" prefHeight="710.0" prefWidth="588.0" visible="false">
+                     <children>
+                        <Text layoutX="21.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" />
+                        <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                        <Button fx:id="workDone" layoutX="190.0" layoutY="582.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Button>
+                        <Text layoutX="21.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="24.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have to finish this stage until:">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="244.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="35.29296875">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <TextArea fx:id="taNotes" editable="false" layoutX="20.0" layoutY="259.0" prefHeight="263.0" prefWidth="519.0" text="none" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="pane_msg" prefHeight="710.0" prefWidth="588.0">
+                     <children>
+                        <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="210.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Execution stage is done.">
+                           <font>
+                              <Font name="System Bold Italic" size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
                </children></AnchorPane>
          </children>
       </HBox>
