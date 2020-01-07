@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -45,7 +46,13 @@ public class PreEvaluationController extends AppController implements Initializa
     private TextArea descripitionsTextArea;
 
     @FXML
-    private Text msg;
+    private Pane Pane_msg;
+
+    @FXML
+    private Text txtMsg;
+
+    @FXML
+    private Pane pane_form;
 
     @FXML
     private TextField inchargeTF;
@@ -74,8 +81,6 @@ public class PreEvaluationController extends AppController implements Initializa
     @FXML
     private Button btnDeny;
 
-    @FXML
-    private Text txtMsg;
 
     @FXML
     void AcceptPreEval(ActionEvent event) {
@@ -129,6 +134,14 @@ public class PreEvaluationController extends AppController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        pane_form.setVisible(false);
+        Pane_msg.setVisible(false);
+
+
+        if(!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)){
+            Pane_msg.setVisible(true);
+            return;
+        }
 
         getCurrentReqestedDays();
 
