@@ -9,18 +9,27 @@ import common.entity.EvaluationReport;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -91,6 +100,8 @@ public class EvaluationReportController extends AppController implements Initial
     @FXML
     private AnchorPane rightPane;
 
+    @FXML
+    private Button btnRequestExtension;
 
     @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
@@ -127,6 +138,8 @@ public class EvaluationReportController extends AppController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
+
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         rightPane.setVisible(false);
         msgFix.setVisible(false);
@@ -134,10 +147,14 @@ public class EvaluationReportController extends AppController implements Initial
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
 
-        instance = this;
-        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+
+        setExtensionVisability();
+
+
+            Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         checkPreConditions();
+
 
     }
 
@@ -188,11 +205,16 @@ public class EvaluationReportController extends AppController implements Initial
                 }
             });
 
-        }
-        else{ // currently doing this stage
-            titledPane.getStyleClass().remove("danger");
-            titledPane.getStyleClass().add("info");
-            titledPane.setText("Fill in Evaluation report.");
+        } else { // currently doing this stage
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    titledPane.getStyleClass().remove("danger");
+                    titledPane.getStyleClass().add("info");
+                    titledPane.setText("Fill in Evaluation report.");
+                }
+            });
+
         }
         setFieldsData();
     }
@@ -255,6 +277,34 @@ public class EvaluationReportController extends AppController implements Initial
                 });
             } else
                 showAlert(AlertType.ERROR, "Error!", "Data Error.", null);
+        }
+    }
+
+
+    // Extensions:
+    private void setExtensionVisability(){
+        btnRequestExtension.setVisible(false);
+        long daysdifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if(daysdifference >= -3)
+            btnRequestExtension.setVisible(true);
+    }
+
+    @FXML
+    void requestExtension(ActionEvent event) {
+        start(new Stage());
+    }
+
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Extension");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Could not load execution prompt");
+            e.printStackTrace();
         }
     }
 }

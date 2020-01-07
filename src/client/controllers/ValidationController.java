@@ -100,11 +100,21 @@ public class ValidationController extends AppController implements Initializable
 		dueDateLabel.setVisible(true);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+		titledPane.setCollapsible(false);
+		titledPane.setText("Waiting for your action");
+
+		if (!thisRequest.getCurrentStage().equals("VALIDATION")) {
+			titledPane.setText("This stage is done");
+			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
+			titledPane.getStyleClass().remove("danger");
+			titledPane.getStyleClass().add("success");
+		}
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
 		failReportLabel.setVisible(false);
 		failReportTextArea.setVisible(false);
 		failureReportBtn.setDisable(true);
 		failureReportBtn.setVisible(false);
+		setFieldsData();
 	}
 	private void setFieldsData() {
 		OperationType ot = OperationType.VAL_GetAllReportsByRID;

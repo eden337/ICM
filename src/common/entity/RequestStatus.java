@@ -10,6 +10,6 @@ package common.entity;
 public enum RequestStatus {
 	ACTIVE,
 	CANCELED,
-	FREEZED,
+	SUSPENDED,
 	DONE
 }

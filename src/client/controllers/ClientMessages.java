@@ -1,7 +1,11 @@
 package client.controllers;
 
+import java.util.ArrayList;
+
 import client.App;
 import common.controllers.Message;
+import common.controllers.OperationType;
+import common.entity.EmployeeUser;
 import common.entity.EvaluationReport;
 
 /**
@@ -39,11 +43,13 @@ public class ClientMessages {
             case LoginResult:
                 LoginController.instance.getLoginResult(m.getObject());
                 break;
+            case getEmployeeData:
+            	ManagerViewPage.Instance.setDataTable(m.getObject());
+                break;
 
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;
-
             case InsertEvaluation:
                 EvaluationReportController.instance.insertNewRequestResult(m.getObject());
                 break;
@@ -64,8 +70,12 @@ public class ClientMessages {
                 App.user.setOrgRoleServerResponse(m.getObject());
                 break;
             case updateRequestStatus:
+            case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
+            case updateRoleInOrg : 
+    
+            	break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
@@ -111,6 +121,15 @@ public class ClientMessages {
                 break;
             case ChangeRequest_DownloadFile:
                 requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
+                break;
+            case Extension_getData:
+                ExtensionController.instance.getCurrentExtension_ServerResponse(m.getObject());
+                break;
+            case Extension_submit:
+                ExtensionController.instance.InsertOrUpdate_ServerResponse(m.getObject());
+                break;
+            case ChangeRequest_getStageObject:
+                requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
                 break;
             default:
                 break;
