@@ -79,7 +79,7 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0" visible="false">
+                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0">
                      <children>
                         <Label alignment="CENTER" layoutX="204.0" layoutY="14.0" text="Evalutaion Report" textAlignment="CENTER">
                            <font>
@@ -127,7 +127,7 @@
                         <Button fx:id="btnRequestExtension" layoutX="418.0" layoutY="611.0" mnemonicParsing="false" onAction="#requestExtension" prefHeight="32.0" prefWidth="146.0" text="Request Extension" />
                      </children>
                   </Pane>
-                  <Pane fx:id="Pane_locked" layoutX="10.0" layoutY="10.0" prefHeight="710.0" prefWidth="583.0">
+                  <Pane fx:id="Pane_locked" layoutX="10.0" layoutY="10.0" prefHeight="710.0" prefWidth="583.0" visible="false">
                      <children>
                         <Label alignment="CENTER" layoutX="194.0" layoutY="4.0" text="Evalutaion Report" textAlignment="CENTER">
                            <font>

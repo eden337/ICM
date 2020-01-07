@@ -222,10 +222,16 @@ public class decisionController extends AppController implements Initializable {
 
 	@FXML
 	void declineBtnClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
+		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today) + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+
 		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
+
 		thisRequest.setPrevStage("DECISION");
 		showAlert(AlertType.ERROR, "Evaluation Declined", "Request moved to closure phase...", null);
 		reEvaluateBtn.setDisable(true);

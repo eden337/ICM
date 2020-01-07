@@ -138,8 +138,6 @@ public class PreEvaluationController extends AppController implements Initializa
         btnSubmit.setVisible(false);
         txtMsg.setVisible(false);
 
-
-
     }
 
     private void getCurrentReqestedDays() {
