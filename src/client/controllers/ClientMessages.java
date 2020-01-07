@@ -7,7 +7,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.EmployeeUser;
 import common.entity.EvaluationReport;
-
+//
 /**
  * get <Code> Message </code> from server and send it to the relevant
  * controller. Usually used for transfer data from db to client.
@@ -46,7 +46,9 @@ public class ClientMessages {
             case getEmployeeData:
             	ManagerViewPage.Instance.setDataTable(m.getObject());
                 break;
-
+            case getSystemData:
+            	ManagerViewPage.Instance.setSystemData(m.getObject());
+                  	break;
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;

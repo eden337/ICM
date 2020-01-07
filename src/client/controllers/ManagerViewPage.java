@@ -11,6 +11,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.EmployeeUser;
+import common.entity.InfoSystem;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
@@ -33,15 +34,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+//
 /**
  * 
- * @author Hen Eden Yuda
+ * @author Hen_Eden_Yuda
  *
  */
 public class ManagerViewPage extends AppController implements Initializable {
 	public static ManagerViewPage Instance;
 	protected EmployeeUser selectedEmployeeInstance;
 	ObservableList<EmployeeUser> o;
+	ObservableList<InfoSystem> is;
 	@FXML
 	private TextField searchBoxTF;
 
@@ -95,38 +98,38 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 	@FXML
 	private TextField PositionTf;
-    @FXML
-    private CheckBox libraryCheckbox;
+	@FXML
+	private CheckBox libraryCheckbox;
 
-    @FXML
-    private CheckBox labsCheckbox;
+	@FXML
+	private CheckBox labsCheckbox;
 
-    @FXML
-    private CheckBox classComputersCheckbox;
+	@FXML
+	private CheckBox classComputersCheckbox;
 
-    @FXML
-    private CheckBox collageCheckbox;
+	@FXML
+	private CheckBox collageCheckbox;
 
-    @FXML
-    private CheckBox computerFarmCheckbox;
+	@FXML
+	private CheckBox computerFarmCheckbox;
 
-    @FXML
-    private CheckBox moodleCheckbox;
+	@FXML
+	private CheckBox moodleCheckbox;
 
-    @FXML
-    private CheckBox informationStationCheckbox;
-    
-    @FXML
-    private Button systemSelectionSubmit;
+	@FXML
+	private CheckBox informationStationCheckbox;
 
-    @FXML
-    private Button deleteMember;
-
+	@FXML
+	private Button deleteMember;
 	
 
 	private void getDatafromServer() {
 		App.client.handleMessageFromClientUI(
 				new Message(OperationType.getEmployeeData, "SELECT * FROM Employees WHERE Department = 'IT';"));
+	}
+	private void getSystemsTable() {
+		App.client.handleMessageFromClientUI(
+				new Message(OperationType.getSystemData, "SELECT `SystemID`, `username` FROM `Systems Techncian` WHERE 1 ;"));
 	}
 
 	@Override
@@ -134,6 +137,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 		Instance = this;
 		// request data from server
 		getDatafromServer();
+		getSystemsTable();
 		searchBoxTF.setVisible(true);
 		// event when user click on a row
 		table.setRowFactory(tv -> {
@@ -148,18 +152,61 @@ public class ManagerViewPage extends AppController implements Initializable {
 					commitee1Btn.setDisable(false);
 					commitee2Btn.setDisable(false);
 					Tools.fillEmployeesPanes(WorkerID, nameTf, SurenameTf, EmailTf, PositionTf, null,
-							selectedEmployeeInstance);
-					
-					
-					//asgjkygokadsjgnolasd
-					
+							selectedEmployeeInstance);	
+					enable();
+					setCheckBoxes();
+					deleteMember.setDisable(false);
 				}
 			});
 			return row;
 		});
 
 	}
-	
+	/**
+	 * enables the buttons on row clicked.
+	 */
+	public void enable() {
+		libraryCheckbox.setDisable(false);
+		classComputersCheckbox.setDisable(false);
+		collageCheckbox.setDisable(false);
+		computerFarmCheckbox.setDisable(false);
+		informationStationCheckbox.setDisable(false);
+		labsCheckbox.setDisable(false);
+		moodleCheckbox.setDisable(false);		
+	}
+	/**
+	 * sets the selected status in the page.
+	 */
+	public void setCheckBoxes() {
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Collage website"))
+				collageCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Library"))
+				libraryCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Class Computers"))
+				classComputersCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Computer Farm"))
+				computerFarmCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Labs"))
+				labsCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Moodle"))
+				moodleCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals("Information Station"))
+				informationStationCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
+		}	
+	}
 	public void alertMsg(Object object) {
 		Boolean queryResult = (Boolean) object;
 		FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
@@ -186,8 +233,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 		ft.setAutoReverse(false);
 		ft.play();
 	}
- 
-
+/**
+ * generic role appointment.
+ * @param roleInOrg
+ */
 	void appointment(String roleInOrg) {
 		if (selectedEmployeeInstance.getRoleInOrg().equals(roleInOrg))
 			return;
@@ -241,7 +290,6 @@ public class ManagerViewPage extends AppController implements Initializable {
 		colId.setCellValueFactory(new PropertyValueFactory<>("workerID"));
 		colfullname.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 		colPostion.setCellValueFactory(new PropertyValueFactory<>("roleInOrg"));
-		
 
 		FilteredList<EmployeeUser> filteredData = new FilteredList<>(o, b -> true);
 		searchBoxTF.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -262,8 +310,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 					return true;
 				} else if (employee.getRoleInOrg().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true;
-				}
-				else
+				} else
 					return false; // Does not match.
 			});
 		});
@@ -279,45 +326,56 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 		// table.setItems(o);
 	}
-    @FXML
-    void deleteMembr(ActionEvent event) {
-    	String query="UPDATE `Employees` SET `RoleInOrg` = '' WHERE `Employees`.`WorkerID` = '"+selectedEmployeeInstance.getWorkerID()+"';";
-		OperationType ot=OperationType.deleteMember;
+/**
+ * remove role of selected Employee 
+ * @param event
+ */
+	@FXML
+	void deleteMembr(ActionEvent event) {
+		String query = "UPDATE `Employees` SET `RoleInOrg` = '' WHERE `Employees`.`WorkerID` = '"
+				+ selectedEmployeeInstance.getWorkerID() + "';";
+		OperationType ot = OperationType.deleteMember;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-		
-		table.refresh();//HANDLE LIVE REFRESH
-    }
-    @FXML
-    void systemSelectionClicked(ActionEvent event) {
-    	ArrayList<String> selectedSystems = new ArrayList<>();
-    	String query;
-    	if(libraryCheckbox.isSelected())
-    		selectedSystems.add("Library");
-    	if(labsCheckbox.isSelected())
-    		selectedSystems.add("Labs");
-    	if(moodleCheckbox.isSelected())
-    		selectedSystems.add("Moodle");
-    	if(computerFarmCheckbox.isSelected())
-    		selectedSystems.add("Computer Farm");
-    	if(classComputersCheckbox.isSelected())
-    		selectedSystems.add("Class Computers");
-    	if(collageCheckbox.isSelected())
-    		selectedSystems.add("Collage Website");
-    	if(informationStationCheckbox.isSelected())
-    		selectedSystems.add("information Station");
-    	for(String s: selectedSystems)
-    	{
-    		query="UPDATE `Systems Techncian` SET `username` = '"+selectedEmployeeInstance.getUserName()+"' WHERE `Systems Techncian`.`SystemID` = '"+s+"';";
-    		OperationType ot=OperationType.updateSystems;
-    		App.client.handleMessageFromClientUI(new Message(ot, query));
-    	}
-    }
-    public void getquery(Object object)
-    {
-    	boolean res=(boolean)object;
-    	if(res)
-    		showAlert(AlertType.INFORMATION, "selected succsses", "The selected are in the DB", null);
-    	else
-    		showAlert(AlertType.ERROR, "selected Fail", "Eror in the DB check again", null);
-    }	
+		for (EmployeeUser employeeUser : o) {
+			if (employeeUser.getWorkerID() == selectedEmployeeInstance.getWorkerID()) {
+				employeeUser.setOrgRoleServerResponse("");
+				PositionTf.setText("");
+			}
+		}
+		table.refresh();
+	}
+/**
+ * generic update of DB of system data & live update of the present entities.
+ * @param event
+ */
+	@FXML
+	void systemSelectionClicked(ActionEvent event) {
+		String query = "UPDATE `Systems Techncian` SET `username` = '" + selectedEmployeeInstance.getUserName()
+				+ "' WHERE `Systems Techncian`.`SystemID` = '" + ((CheckBox)event.getTarget()).getText() + "';";
+		OperationType ot = OperationType.updateSystems;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		for (InfoSystem infoSystem : is) {
+			if(infoSystem.getSystemID().equals(((CheckBox)event.getTarget()).getText())) {
+				infoSystem.setUserName(selectedEmployeeInstance.getUserName());
+				
+			}
+		}
+	}
+	
+	public void getquery(Object object) {
+//		boolean res = (boolean) object;
+//		if (res)
+//			showAlert(AlertType.INFORMATION, "selected succsses", "The selected are in the DB", null);
+//		else
+//			showAlert(AlertType.ERROR, "selected Fail", "Eror in the DB check again", null);
+	}
+	/**
+	 * setting of the entities ArrayList from the server.
+	 * @param object
+	 */
+	@SuppressWarnings("unchecked")
+	public void setSystemData(Object object) {
+		ArrayList<InfoSystem> infoSystem=((ArrayList<InfoSystem>)object);
+		is=FXCollections.observableArrayList(infoSystem);	
+	}
 }

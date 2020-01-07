@@ -9,7 +9,7 @@ public enum OperationType {
 	InsertEvaluation,
 	getViewRequestData,
 	// Results:
-
+//
 	LoginResult, ChangeRequest_File,
 	Allocate_GetITUsers,
 	Allocate_SetRoles,
@@ -36,7 +36,7 @@ public enum OperationType {
 	SUPERVISOR_REMARKS,
 	Extension_getData,
 	Extension_submit,
-	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS
+	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS, getSystemData
 
 
 

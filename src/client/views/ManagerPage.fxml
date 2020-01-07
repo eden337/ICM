@@ -41,12 +41,12 @@
                         <Font name="System Bold Italic" size="15.0" />
                      </font>
                   </Text>
-                  <Button fx:id="commitee2Btn" disable="true" layoutX="283.0" layoutY="583.0" mnemonicParsing="false" onAction="#commitee2BtnClicked" prefHeight="32.0" prefWidth="237.0" styleClass="warning" text="Commitee member 2 Appointment" />
-                  <Button fx:id="SupervisorBtn" disable="true" layoutX="44.0" layoutY="583.0" mnemonicParsing="false" onAction="#SupervisorBtnClicked" prefHeight="32.0" prefWidth="200.0" styleClass="primary" text="Supervisor Appointment" />
-                  <TextField fx:id="SurenameTf" layoutX="245.0" layoutY="173.0" prefWidth="219.0" />
-                  <Button fx:id="chairmanBtn" disable="true" layoutX="48.0" layoutY="532.0" mnemonicParsing="false" onAction="#chairmanBtnClicked" prefHeight="32.0" prefWidth="193.0" styleClass="warning" text="Chairman Appointment" />
+                  <Button fx:id="commitee2Btn" disable="true" layoutX="290.0" layoutY="540.0" mnemonicParsing="false" onAction="#commitee2BtnClicked" prefHeight="32.0" prefWidth="240.0" styleClass="primary" text="Appoint Commitee member 2 " />
+                  <Button fx:id="SupervisorBtn" disable="true" layoutX="30.0" layoutY="540.0" mnemonicParsing="false" onAction="#SupervisorBtnClicked" prefHeight="32.0" prefWidth="240.0" styleClass="primary" text="Appoint Supervisor " />
+                  <TextField fx:id="SurenameTf" editable="false" layoutX="245.0" layoutY="173.0" prefWidth="219.0" />
+                  <Button fx:id="chairmanBtn" disable="true" layoutX="30.0" layoutY="490.0" mnemonicParsing="false" onAction="#chairmanBtnClicked" prefHeight="32.0" prefWidth="240.0" styleClass="primary" text="Appoint Chairman " />
                   <Text layoutX="105.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First name : " />
-                  <TextField fx:id="nameTf" layoutX="248.0" layoutY="116.0" prefWidth="219.0" />
+                  <TextField fx:id="nameTf" editable="false" layoutX="248.0" layoutY="116.0" prefWidth="219.0" />
                   <Text layoutX="109.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Position :" wrappingWidth="73.63037107139826" />
                   <TextField fx:id="PositionTf" editable="false" layoutX="246.0" layoutY="303.0" prefHeight="31.0" prefWidth="218.0" />
                   <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="523.0" layoutY="11.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
@@ -59,32 +59,31 @@
                         <Font name="System Bold" size="38.0" />
                      </font>
                   </Text>
-                  <Button fx:id="commitee1Btn" disable="true" layoutX="283.0" layoutY="532.0" mnemonicParsing="false" onAction="#commitee1BtnClicked" prefHeight="32.0" prefWidth="237.0" styleClass="warning" text="Commitee member 1 Appointment" />
+                  <Button fx:id="commitee1Btn" disable="true" layoutX="290.0" layoutY="490.0" mnemonicParsing="false" onAction="#commitee1BtnClicked" prefHeight="32.0" prefWidth="240.0" styleClass="primary" text="Appoint Commitee member 1 " />
                   <VBox layoutX="59.0" layoutY="404.0" prefHeight="50.0" prefWidth="100.0">
                      <children>
-                        <CheckBox fx:id="libraryCheckbox" mnemonicParsing="false" text="Library" />
-                        <CheckBox fx:id="labsCheckbox" mnemonicParsing="false" text="Labs" />
+                        <CheckBox fx:id="libraryCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Library" />
+                        <CheckBox fx:id="labsCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Labs" />
                      </children>
                   </VBox>
                   <VBox layoutX="420.0" layoutY="404.0" prefHeight="69.0" prefWidth="115.0">
                      <children>
-                        <CheckBox fx:id="classComputersCheckbox" mnemonicParsing="false" prefWidth="107.0" text="Class Computers" />
-                        <Button fx:id="systemSelectionSubmit" mnemonicParsing="false" onAction="#systemSelectionClicked" prefHeight="32.0" prefWidth="113.0" text="submit" />
+                        <CheckBox fx:id="classComputersCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" prefWidth="107.0" text="Class Computers" />
                      </children>
                   </VBox>
                   <VBox layoutX="300.0" layoutY="404.0" prefHeight="50.0" prefWidth="115.0">
                      <children>
-                        <CheckBox fx:id="collageCheckbox" mnemonicParsing="false" text="Collage Website" />
-                        <CheckBox fx:id="computerFarmCheckbox" mnemonicParsing="false" text="Computer Farm" />
+                        <CheckBox fx:id="collageCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Collage website" />
+                        <CheckBox fx:id="computerFarmCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Computer Farm" />
                      </children>
                   </VBox>
                   <VBox layoutX="169.0" layoutY="404.0" prefHeight="50.0" prefWidth="124.0">
                      <children>
-                        <CheckBox fx:id="moodleCheckbox" mnemonicParsing="false" text="Moodle" />
-                        <CheckBox fx:id="informationStationCheckbox" mnemonicParsing="false" text="Information Station" />
+                        <CheckBox fx:id="moodleCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Moodle" />
+                        <CheckBox fx:id="informationStationCheckbox" disable="true" mnemonicParsing="false" onAction="#systemSelectionClicked" text="Information Station" />
                      </children>
                   </VBox>
-                  <Button fx:id="deleteMember" layoutX="203.0" layoutY="482.0" mnemonicParsing="false" onAction="#deleteMembr" text="Delete Permission" />
+                  <Button fx:id="deleteMember" disable="true" layoutX="155.0" layoutY="627.0" mnemonicParsing="false" onAction="#deleteMembr" prefWidth="240.0" styleClass="warning" text="Remove Role" />
                </children>
             </AnchorPane>
          </children>

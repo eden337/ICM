@@ -21,6 +21,8 @@ import java.util.Map;
 // license found at www.lloseng.com
 
 /**
+ * 
+ * 
  * This class overrides some of the methods in the abstract superclass in order
  * to give more functionality to the server.
  *
@@ -85,7 +87,12 @@ public class EchoServer extends AbstractServer {
 			case updateRoleInOrg:
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
-
+				break;
+			case getSystemData:
+				rs = mysql.getQuery(m.getObject().toString());				
+				ArrayList<InfoSystem> infoSystem = getSystemData(rs);
+				sendToClient(new Message(OperationType.getSystemData, infoSystem), client);
+				rs.close();
 				break;
 			case getViewRequestData:
 				rs = mysql.getQuery(m.getObject().toString());
@@ -430,7 +437,19 @@ public class EchoServer extends AbstractServer {
 		}
 		return ret;
 	}
+	public ArrayList<InfoSystem> getSystemData(ResultSet systemData) throws SQLException {
+		ArrayList<InfoSystem> ret = new ArrayList<>();
+		Stage cStage = null;
 
+		while (systemData.next()) {
+			InfoSystem infoSystem;
+			String SystemID = systemData.getString("SystemID");
+			String username = systemData.getString("username");
+			infoSystem = new InfoSystem(SystemID,username);
+			ret.add(infoSystem);
+		}
+		return ret;
+	}
 	/**
 	 * @throws SQLException
 	 */
@@ -466,7 +485,6 @@ public class EchoServer extends AbstractServer {
 //                        rs.getInt("init_confirmed")
 //                );
 //            }
-
 			employee = new EmployeeUser(name, surename, email, username, password, workerID, department, type,
 					roleInOrg);
 			ret.add(employee);
