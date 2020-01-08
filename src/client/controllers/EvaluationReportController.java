@@ -176,7 +176,15 @@ public class EvaluationReportController extends AppController implements Initial
             return;
         }
         else{ // in Eval Stage
-            setExtensionVisability();
+            if(thisStage == null){
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("PreEvaluation");
+                    }
+                });
+                return;
+            }
             if (thisStage.getInit_confirmed() == 1 && thisStage.getInit() == 1)
                 rightPane.setVisible(true);
              else {
@@ -188,6 +196,7 @@ public class EvaluationReportController extends AppController implements Initial
                 });
                 return;
             }
+            setExtensionVisability();
 
             if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { // NOT EVALUATOR
                 SbmtEvlBtn.setVisible(true);

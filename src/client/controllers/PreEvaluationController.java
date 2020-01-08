@@ -82,6 +82,7 @@ public class PreEvaluationController extends AppController implements Initializa
     private Button btnDeny;
 
 
+
     @FXML
     void AcceptPreEval(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -134,14 +135,6 @@ public class PreEvaluationController extends AppController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        pane_form.setVisible(false);
-        Pane_msg.setVisible(false);
-
-
-        if(!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)){
-            Pane_msg.setVisible(true);
-            return;
-        }
 
         getCurrentReqestedDays();
 
