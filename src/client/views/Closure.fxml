@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClosureController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClosureController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -78,11 +78,11 @@
             </Pane>
             <Pane prefHeight="710.0" prefWidth="580.0">
                <children>
-                  <Pane fx:id="pane_msg" prefHeight="712.0" prefWidth="580.0">
+                  <Pane fx:id="pane_msg" prefHeight="712.0" prefWidth="580.0" visible="false">
                      <children>
                         <Text layoutX="233.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
                            <font>
-                              <Font size="24.0" />
+                              <Font size="31.0" />
                            </font>
                         </Text>
                         <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="211.0" layoutY="362.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure stage is done.">
@@ -92,27 +92,27 @@
                         </Text>
                      </children>
                   </Pane>
-                  <AnchorPane fx:id="pane_form" prefHeight="710.0" prefWidth="585.0" visible="false">
+                  <AnchorPane fx:id="pane_form" prefHeight="710.0" prefWidth="585.0">
                      <children>
-                        <Text fx:id="finishedStatus" fill="#2fba0f" layoutX="56.0" layoutY="253.0" strokeType="OUTSIDE" strokeWidth="0.0" text="null">
+                        <Text fx:id="finishedStatus" fill="#2fba0f" layoutX="269.0" layoutY="219.0" strokeType="OUTSIDE" strokeWidth="0.0" text="null">
                            <font>
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
-                        <Text layoutX="242.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
+                        <Text layoutX="236.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
                            <font>
                               <Font size="30.0" />
                            </font>
                         </Text>
-                        <Text layoutX="56.0" layoutY="307.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm the closure of the process" wrappingWidth="371.009765625">
+                        <Text layoutX="21.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm the closure of the process" wrappingWidth="371.009765625">
                            <font>
-                              <Font name="System Bold Italic" size="19.0" />
+                              <Font size="15.0" />
                            </font>
                         </Text>
-                        <Button fx:id="closeProcessBtn" layoutX="56.0" layoutY="329.0" mnemonicParsing="false" onAction="#closeProcessBtnClicked" text="Close Process" />
-                        <Text layoutX="56.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Status of current request is:" wrappingWidth="371.009765625">
+                        <Button fx:id="closeProcessBtn" layoutX="231.0" layoutY="355.0" mnemonicParsing="false" onAction="#closeProcessBtnClicked" styleClass="primary" text="Close Process" />
+                        <Text layoutX="21.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Status of current request is:" wrappingWidth="371.009765625">
                            <font>
-                              <Font name="System Bold Italic" size="19.0" />
+                              <Font size="15.0" />
                            </font>
                         </Text>
                         <TitledPane fx:id="titledPane" animated="false" layoutX="21.0" layoutY="76.0" prefHeight="83.0" prefWidth="529.0" styleClass="info" text="Closure Required">
@@ -124,7 +124,7 @@
                                           <Font name="System Italic" size="13.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="deadlineText" fill="#0058d9" layoutX="103.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="time">
+                                    <Text fx:id="deadlineText" fill="#0058d9" layoutX="93.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="time">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>

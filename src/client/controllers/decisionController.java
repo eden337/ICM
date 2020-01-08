@@ -5,6 +5,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import common.entity.EmailContent;
 import common.entity.EvaluationReport;
 import common.entity.OrganizationRole;
 import javafx.application.Platform;
@@ -110,6 +111,7 @@ public class decisionController extends AppController implements Initializable {
 		approveBtn.setVisible(false);
 		declineBtn.setVisible(false);
 		reEvaluateBtn.setVisible(false);
+		inchargeTF.setText("Committee Chairman");
 
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
@@ -123,14 +125,11 @@ public class decisionController extends AppController implements Initializable {
 			titledPane.getStyleClass().add("success");
 		}
 		else{
-			if(App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)
-					|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
-					|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)){
+			if(App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)){
 				approveBtn.setVisible(true);
 				declineBtn.setVisible(true);
 				reEvaluateBtn.setVisible(true);
 			}
-
 		}
 		setFieldsData();
 	}
@@ -247,6 +246,9 @@ public class decisionController extends AppController implements Initializable {
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Need to Re-Evaluate", "Request moved back to evaluation phase...", null);
+// Select Email from Employees where username = thisrequest.getStageObject().getIncharge
+//		OperationType ot2 = OperationType.SendGeneralEmail;
+//		App.client.handleMessageFromClientUI(new Message(ot, new EmailContent()));
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
 		declineBtn.setDisable(true);

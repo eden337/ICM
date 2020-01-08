@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.App;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.EmployeeUser;
@@ -89,7 +90,6 @@ public class LoginController extends AppController implements Initializable{
 	 */
 	public void getLoginResult(Object res){
 		user = (EmployeeUser)res;
-
 		// change window:
 		if(user == null) // print error
 			showAlert(AlertType.ERROR, "Login Failed", "Login Failed\nCheck your Username or Password", null);

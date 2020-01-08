@@ -136,6 +136,7 @@ public class ValidationController extends AppController implements Initializable
 			textInMsgPane.setFill(Color.BLUE);
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
+			inchargeTF.setText("Tester");
 			return;
 		}
 
@@ -148,7 +149,8 @@ public class ValidationController extends AppController implements Initializable
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
 		deadlineText.setText(String.valueOf(estimatedTime));
-		
+		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+
 
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");

@@ -128,7 +128,7 @@ public class Tools {
 		if (dueDateLabel != null)
 			dueDateLabel
 					.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-		inchargeTF.setText(selectedRequestInstance.getIncharges());
+
 	}
 
 	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf, TextField EmailTf,
@@ -140,6 +140,7 @@ public class Tools {
 		PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
 //		if (expertiseTf != null)
 //			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
+
 	}
 
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2, ImageView stage3, ImageView stage4,

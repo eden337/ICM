@@ -34,8 +34,6 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private ComboBox<String> cbExecuter;
 
-    @FXML
-    private ComboBox<String> cbValidator;
 
     @FXML
     private Text txtWarning;
@@ -77,8 +75,7 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     void submitForm(ActionEvent event) {
-        if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null ||
-                cbValidator.getValue() == null) {
+        if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
             txtWarning.setVisible(true);
             return;
         }
@@ -89,7 +86,6 @@ public class AllocateController extends AppController implements Initializable {
                 "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
                 "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
                 "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
-                "('" + thisRequest.getRequestID() + "','VALIDATION','" + cbValidator.getValue() + "')," +
                 "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
         App.client.handleMessageFromClientUI(new Message(ot, query));
 
@@ -127,10 +123,8 @@ public class AllocateController extends AppController implements Initializable {
 
         cbEvaluator.setItems(oblist);
         cbExecuter.setItems(oblist);
-        cbValidator.setItems(oblist);
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
-        new AutoCompleteBox<String>(cbValidator);
         int rand = r.nextInt(size);
 
         Platform.runLater(new Runnable() {

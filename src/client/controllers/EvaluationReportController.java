@@ -171,6 +171,9 @@ public class EvaluationReportController extends AppController implements Initial
             Pane_Form.setVisible(true);
             rightPane.setVisible(true);
 
+            inchargeTF.setText("Evaluator");
+
+            return;
         }
         else{ // in Eval Stage
             setExtensionVisability();
@@ -194,7 +197,9 @@ public class EvaluationReportController extends AppController implements Initial
             else // EVALUATOR
                 Pane_locked.setVisible(true);
 
+            inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
         }
+
 
 
 

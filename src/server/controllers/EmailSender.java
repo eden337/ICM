@@ -52,7 +52,6 @@ package server.controllers;
             msg.saveChanges();
             // set plain text message
 
-
             // sends the e-mail
             Transport.send(msg);
 

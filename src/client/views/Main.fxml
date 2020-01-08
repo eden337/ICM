@@ -90,9 +90,9 @@
                   </Text>
                </children>
             </Pane>
-            <Pane fx:id="p6" onMouseClicked="#goToStats" prefHeight="200.0" prefWidth="200.0" styleClass="bg_menu_item">
+            <Pane fx:id="p6" onMouseClicked="#goToManager" prefHeight="200.0" prefWidth="200.0" styleClass="bg_menu_item">
                <children>
-                  <ImageView fitHeight="77.0" fitWidth="98.0" layoutX="91.0" layoutY="12.0" onMouseClicked="#goToStats">
+                  <ImageView fitHeight="77.0" fitWidth="98.0" layoutX="91.0" layoutY="12.0">
                      <image>
                         <Image url="@img/icons/icon_management.png" />
                      </image>

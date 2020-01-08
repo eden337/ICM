@@ -4,8 +4,10 @@
 package common.entity;
 
 import client.App;
+import client.controllers.mainController;
 import common.controllers.Message;
 import common.controllers.OperationType;
+import javafx.application.Platform;
 
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +112,16 @@ public class EmployeeUser extends User {
 			roleInOrg = OrganizationRole.DIRECTOR;
 			break;
 		}
+		if(mainController.instance != null) {
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					mainController.instance.initialize_afterUserUpdate();
+				}
+			});
+
+		}
 	}
 
 	@Override
@@ -189,7 +201,7 @@ public class EmployeeUser extends User {
 
 	@Override
 	public String toString() {
-		return "EmployeeUser{" +
+		return super.toString() + "EmployeeUser{" +
 				"workerID='" + workerID + '\'' +
 				", department='" + department + '\'' +
 				", roleInOrg=" + roleInOrg +

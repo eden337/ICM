@@ -116,7 +116,7 @@ public class mainController extends AppController implements Initializable {
         loadPage("Reports","Reports Generator");
     }
     @FXML
-    void goTManager(MouseEvent event) {
+    void goToManager(MouseEvent event) {
         markPage(p6);
         loadPage("ManagerPage","Manager view");
     }
@@ -179,24 +179,31 @@ public class mainController extends AppController implements Initializable {
         instance = this;
         primaryStage = BypassedApp.stage;
         setUser();
+        pHome.setVisible(false);
+        p2.setVisible(false);
+        p3.setVisible(false);
+        p4.setVisible(false);
+        p5.setVisible(false);
+        p6.setVisible(false);
+    }
+
+    public void initialize_afterUserUpdate(){
         gotoHome(null);
 
         p6.setVisible(false);
 
         // Menu Permissions:
-        if(!App.user.isEngineer()){
-            p3.setVisible(false);
-            p4.setVisible(false);
-            p5.setVisible(false);
+        if(App.user.isEngineer()){
+            pHome.setVisible(true);
+            p2.setVisible(true);
+            p3.setVisible(true);
+            p4.setVisible(true);
+            p5.setVisible(true);
         }
+
         if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
             p6.setVisible(true);
-
-
-
-
     }
-
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
     }

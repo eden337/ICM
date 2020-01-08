@@ -140,6 +140,7 @@ public class ExecutionController extends AppController implements Initializable 
 
 		if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
 			pane_msg.setVisible(true);
+			inchargeTF.setText("Executer");
 			return;
 		}
 
@@ -168,6 +169,7 @@ public class ExecutionController extends AppController implements Initializable 
 				dueDateLabel, requestNameLabel, thisRequest);
 
 		checkPreConditions();
+		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
 
 	}
 

@@ -103,22 +103,31 @@ public class ClosureController extends AppController implements Initializable {
 		dueDateLabel.setVisible(true);
 		instance = this;
 		long estimatedTime = 0;
+		pane_msg.setVisible(false);
+		pane_form.setVisible(false);
+
+		inchargeTF.setText("Supervisor");
+
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
+
 		if (!thisRequest.getCurrentStage().equals("CLOSURE")) {
 			pane_msg.setVisible(true);
 			return;
 		}
 		
 		if (!App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+			System.out.println("2");
 			textInMsgPane.setFill(Color.BLUE);
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
+
 			return;
 		}
 
 		// Otherwise: this is the Supervisor in his stage
+
 		pane_form.setVisible(true);
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
@@ -132,6 +141,9 @@ public class ClosureController extends AppController implements Initializable {
 			finishedStatus.setFill(Color.FORESTGREEN);
 			finishedStatus.setText("Request Processed Correctly");
 		}
+
+		//inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+
 	}
 
 	/**
@@ -155,7 +167,7 @@ public class ClosureController extends AppController implements Initializable {
 		}
 		// send email
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));

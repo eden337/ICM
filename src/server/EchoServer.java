@@ -7,6 +7,7 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
+import server.controllers.EmailSender;
 
 import java.io.*;
 import java.sql.ResultSet;
@@ -341,7 +342,10 @@ public class EchoServer extends AbstractServer {
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(OperationType.updateSystems, res), client);
 				break;
-
+				case SendGeneralEmail:
+					EmailContent generalEmail = (EmailContent)m.getObject();
+					EmailSender.sendEmail(generalEmail.getMailTo(),generalEmail.getTitle(),generalEmail.getContent());
+					break;
 			default:
 				break;
 			}
