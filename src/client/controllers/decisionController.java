@@ -199,7 +199,7 @@ public class decisionController extends AppController implements Initializable {
 		OperationType ot = OperationType.DECI_UpdateDB;
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
-
+		thisRequest.setReturned(false);
 		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
 	}
 

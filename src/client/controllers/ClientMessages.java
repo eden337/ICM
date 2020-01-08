@@ -87,7 +87,7 @@ public class ClientMessages {
                 break;
                 
             case VAL_GetAllReportsByRID:
-                ValidationController.instance.setFieldsData_ServerResponse(m.getObject());
+                ValidationController.instance.queryResult(m.getObject());
                 break;
             
             case EXE_UpdateDB:
@@ -105,6 +105,9 @@ public class ClientMessages {
             case EXE_GetInitData:
                 ExecutionController.instance.checkPreConditions_ServerResponse(m.getObject());
                 break;
+            case VAL_GetInitData:
+            	ValidationController.instance.checkPreConditions_ServerResponse(m.getObject());
+            	break;
             // pre EXE
             case PreEXE_SetInitStat:
             case PreEXE_SetConfirmationStatus:

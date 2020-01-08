@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -78,14 +78,19 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="596.0">
                <children>
-                  <Pane fx:id="pane_form" prefHeight="710.0" prefWidth="588.0" visible="false">
+                  <Pane fx:id="pane_form" prefHeight="710.0" prefWidth="588.0">
                      <children>
-                        <Text layoutX="21.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" />
                         <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
                            <font>
                               <Font size="24.0" />
                            </font>
                         </Text>
+                        <AnchorPane fx:id="returnedNoteAP" layoutX="13.0" layoutY="220.0" prefHeight="322.0" prefWidth="544.0" visible="false">
+                           <children>
+                              <Text layoutX="8.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" />
+                              <TextArea fx:id="returnedNotes" editable="false" layoutX="7.0" layoutY="41.0" prefHeight="263.0" prefWidth="519.0" text="none" />
+                           </children>
+                        </AnchorPane>
                         <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -114,12 +119,11 @@
                               <Font size="13.0" />
                            </font>
                         </Text>
-                        <Text layoutX="244.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="35.29296875">
+                        <Text fx:id="deadlineText" layoutX="244.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="35.29296875">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <TextArea fx:id="taNotes" editable="false" layoutX="20.0" layoutY="259.0" prefHeight="263.0" prefWidth="519.0" text="none" />
                      </children>
                   </Pane>
                   <Pane fx:id="pane_msg" prefHeight="710.0" prefWidth="588.0">

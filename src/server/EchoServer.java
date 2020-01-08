@@ -240,6 +240,7 @@ public class EchoServer extends AbstractServer {
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(m.getOperationtype(), res), client);
 				break;
+			case VAL_GetInitData:
 			case EXE_GetInitData:
 			case EVAL_GetInitData:
 				List<Boolean> init_res = new ArrayList<Boolean>();

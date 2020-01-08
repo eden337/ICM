@@ -40,6 +40,8 @@ public class ChangeRequest implements Serializable{
 	private ZonedDateTime submitTime;
 	private String incharges;
 	private Stage currentStageObject;
+	private boolean returned;
+	private String returnedNote;
 
 	@Override
 	public String toString() {
@@ -128,6 +130,8 @@ public class ChangeRequest implements Serializable{
 		this.incharges =incharges;
 		this.currentStageObject = currentStageObject;
 		prevStage="INIT";
+		this.returned= false;
+		this.returnedNote="";
 		
 	}
 
@@ -270,5 +274,21 @@ public class ChangeRequest implements Serializable{
 
 	public String getIntiatorType() {
 		return intiatorType;
+	}
+
+	public boolean isReturned() {
+		return returned;
+	}
+
+	public void setReturned(boolean returned) {
+		this.returned = returned;
+	}
+
+	public String getReturnedNote() {
+		return returnedNote;
+	}
+
+	public void setReturnedNote(String returnedNote) {
+		this.returnedNote = returnedNote;
 	}
 }
