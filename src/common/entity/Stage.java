@@ -24,34 +24,62 @@ public class Stage implements Serializable {
 	private ZonedDateTime endTime;
 	private ZonedDateTime deadline;
 	private String incharge;
-	private String preStage;
-	private boolean extend;
-
 	private int init;
+	private int init_confirmed;
+	private int extension_days;
+	private String extension_reason;
+	private String extension_decision;
+	private String preStage;
 
-	@Override
-	public String toString() {
-		return "Stage{" + "requestID=" + requestID + ", stageName='" + stageName + '\'' + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", deadline=" + deadline + ", incharge='" + incharge + '\'' + ", extend="
-				+ extend + ", init=" + init + ", init_confirmed=" + init_confirmed + '}';
-	}
-
-	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime,
-			ZonedDateTime deadline, String incharge, boolean extend, int init, int init_confirmed, String prevStage) {
+	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime deadline, String incharge, int init, int init_confirmed, int extension_days, String extension_reason, String extension_decision, String prevStage) {
 		this.requestID = requestID;
 		this.stageName = stageName;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.deadline = deadline;
 		this.incharge = incharge;
-		this.extend = extend;
 		this.init = init;
 		this.init_confirmed = init_confirmed;
-		this.preStage = prevStage;
+		this.extension_days = extension_days;
+		this.extension_reason = extension_reason;
+		this.extension_decision = extension_decision;
+		this.preStage = preStage;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "Stage{" +
+				"requestID=" + requestID +
+				", stageName='" + stageName + '\'' +
+				", startTime=" + startTime +
+				", endTime=" + endTime +
+				", deadline=" + deadline +
+				", incharge='" + incharge + '\'' +
+				", preStage='" + preStage + '\'' +
+				", extension_days=" + extension_days +
+				", extension_reason='" + extension_reason + '\'' +
+				", extension_decision='" + extension_decision + '\'' +
+				", init=" + init +
+				", init_confirmed=" + init_confirmed +
+				'}';
 	}
 
 	public int getRequestID() {
 		return requestID;
+	}
+
+	public int getExtension_days() {
+		return extension_days;
+	}
+
+	public String getExtension_reason() {
+		return extension_reason;
+	}
+
+	public String getExtension_decision() {
+		return extension_decision;
 	}
 
 	public String getStageName() {
@@ -74,9 +102,6 @@ public class Stage implements Serializable {
 		return incharge;
 	}
 
-	public boolean isExtend() {
-		return extend;
-	}
 
 	public int getInit() {
 		return init;
@@ -94,7 +119,6 @@ public class Stage implements Serializable {
 		this.preStage = preStage;
 	}
 
-	private int init_confirmed;
 
 //	/**
 //	 *

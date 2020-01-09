@@ -12,13 +12,17 @@ import common.entity.Stage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import server.controllers.EmailSender;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +46,7 @@ public class decisionController extends AppController implements Initializable {
 	public static decisionController instance;
 
 	protected ChangeRequest thisRequest;
+	private common.entity.Stage thisStage;
 
 	@FXML
 	private Text idText;
@@ -103,12 +108,19 @@ public class decisionController extends AppController implements Initializable {
 	@FXML
 	private Text titledPane_Text;
 
+	@FXML
+	private Button btnRequestExtension;
+
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		long estimatedTime = 0;
-		dueDateLabel.setVisible(false);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+		thisStage = thisRequest.getCurrentStageObject();
+
+		dueDateLabel.setVisible(false);
+
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");
 
@@ -116,6 +128,7 @@ public class decisionController extends AppController implements Initializable {
 		declineBtn.setVisible(false);
 		reEvaluateBtn.setVisible(false);
 		inchargeTF.setText("Committee Chairman");
+		btnRequestExtension.setVisible(false);
 
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
@@ -131,6 +144,10 @@ public class decisionController extends AppController implements Initializable {
 				approveBtn.setVisible(true);
 				declineBtn.setVisible(true);
 				reEvaluateBtn.setVisible(true);
+				setExtensionVisability();
+			}else{
+				if (thisStage.getExtension_days() != 0)
+					btnRequestExtension.setVisible(true);
 			}
 		}
 
@@ -296,4 +313,34 @@ public class decisionController extends AppController implements Initializable {
 		loadPage("requestTreatment");
 	}
 
+
+	// Extensions:
+	private void setExtensionVisability() {
+		btnRequestExtension.setVisible(false);
+		long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+		if (daysDifference >= -3) {
+			btnRequestExtension.setVisible(true);
+			if (thisStage.getExtension_days() != 0)
+				btnRequestExtension.setDisable(true);
+		}
+	}
+
+	@FXML
+	void requestExtension(ActionEvent event) {
+		start(new javafx.stage.Stage());
+	}
+
+	public void start(javafx.stage.Stage primaryStage) {
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+			Scene scene = new Scene(root);
+			primaryStage.setTitle("Extension");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not load execution prompt");
+			e.printStackTrace();
+		}
+	}
 }

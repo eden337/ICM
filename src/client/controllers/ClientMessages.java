@@ -125,9 +125,7 @@ public class ClientMessages {
             case ChangeRequest_DownloadFile:
                 requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
                 break;
-            case Extension_getData:
-                ExtensionController.instance.getCurrentExtension_ServerResponse(m.getObject());
-                break;
+
             case Extension_submit:
                 ExtensionController.instance.InsertOrUpdate_ServerResponse(m.getObject());
                 break;

@@ -6,7 +6,6 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
-import common.entity.OrganizationRole;
 import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -30,7 +29,10 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ResourceBundle;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -42,7 +44,6 @@ public class EvaluationReportController extends AppController implements Initial
     public static EvaluationReportController instance;
     private common.entity.Stage thisStage;
     protected ChangeRequest thisRequest;
-    private boolean firstReportForRequest;
 
     @FXML
     private Text idText;
@@ -114,6 +115,9 @@ public class EvaluationReportController extends AppController implements Initial
     private Text txt_locked;
 
     @FXML
+    private Button btnAnswerStageExtensionRequest;
+
+    @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
 
         if (departmentID.getText().isEmpty() || reqChngTXT.getText().isEmpty() || expResTXT.getText().isEmpty()
@@ -129,6 +133,11 @@ public class EvaluationReportController extends AppController implements Initial
         expectedRisk = this.cnstrntTXT.getText();
         LocalDate date = this.timeEvlBox.getValue();
         estimatedTime = date.toString();
+        btnAnswerStageExtensionRequest.setVisible(false);
+
+        if(thisStage.getExtension_reason()!=null)
+            btnAnswerStageExtensionRequest.setVisible(true);
+
 
         String query = "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
 
@@ -149,14 +158,12 @@ public class EvaluationReportController extends AppController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
-
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
         SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
         Pane_Form.setVisible(false);
         Pane_locked.setVisible(false);
-
         //titledPane_Text.setVisible(false);
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
@@ -167,28 +174,17 @@ public class EvaluationReportController extends AppController implements Initial
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
 
-        if(!thisRequest.getCurrentStage().equals("EVALUATION")){
+        if (!thisRequest.getCurrentStage().equals("EVALUATION")) {
             formInit();
             Pane_Form.setVisible(true);
             rightPane.setVisible(true);
 
             inchargeTF.setText("Evaluator");
-
             return;
-        }
-        else{ // in Eval Stage
-            if(thisStage == null){
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadPage("PreEvaluation");
-                    }
-                });
-                return;
-            }
+        } else { // in Eval Stage
             if (thisStage.getInit_confirmed() == 1 && thisStage.getInit() == 1)
                 rightPane.setVisible(true);
-             else {
+            else {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -197,25 +193,25 @@ public class EvaluationReportController extends AppController implements Initial
                 });
                 return;
             }
-            setExtensionVisability();
 
-            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { // NOT EVALUATOR
+            if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { //  EVALUATOR
                 SbmtEvlBtn.setVisible(true);
                 Pane_Form.setVisible(true);
                 long estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-        				.toDays();
-        		estimatedTime+=1;
-        		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+                        .toDays();
+                estimatedTime += 1;
+                Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+                setExtensionVisability();
+
+
+            } else { // NOT EVALUATOR
+                Pane_locked.setVisible(true);
+                if (thisStage.getExtension_days() != 0)
+                    btnRequestExtension.setVisible(true);
 
             }
-            else // EVALUATOR
-                Pane_locked.setVisible(true);
-
-            inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+            inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
         }
-
-
-
 
 
     }
@@ -258,7 +254,6 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     private void setFieldsData() {
-        System.out.println("sdfsf");
         OperationType ot = OperationType.EVAL_GetAllReportsByRID;
         String query = "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID()
                 + " ORDER BY Report_ID DESC LIMIT 1";
@@ -301,7 +296,6 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     private static int c = 0;
-
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -324,8 +318,12 @@ public class EvaluationReportController extends AppController implements Initial
     private void setExtensionVisability() {
         btnRequestExtension.setVisible(false);
         long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
-        if (daysDifference >= -3)
+        if (daysDifference >= -3) {
             btnRequestExtension.setVisible(true);
+            if (thisStage.getExtension_days() != 0)
+                btnRequestExtension.setDisable(true);
+        }
+
     }
 
     @FXML

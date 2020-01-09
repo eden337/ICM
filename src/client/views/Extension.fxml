@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExtensionController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExtensionController">
     <children>
       <Pane fx:id="msgPane" prefHeight="400.0" prefWidth="601.0" />
       <Pane fx:id="defualtPane" prefHeight="400.0" prefWidth="601.0">
@@ -25,16 +25,16 @@
               <Text layoutX="35.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reason" />
       
                     <Text layoutX="36.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Days:" />
+            <TextField fx:id="tfDays" layoutX="95.0" layoutY="84.0" prefHeight="33.0" prefWidth="59.0" />
             <TextArea fx:id="taReason" layoutX="34.0" layoutY="154.0" prefHeight="161.0" prefWidth="523.0" />
+            <Button fx:id="btnSubmit" layoutX="296.0" layoutY="356.0" mnemonicParsing="false" onAction="#submitForm" prefHeight="31.0" prefWidth="122.0" styleClass="primary" text="Submit" />
+            <Button layoutX="428.0" layoutY="356.0" mnemonicParsing="false" onAction="#close" prefHeight="31.0" prefWidth="122.0" text="Close" />
             <Button fx:id="btnAccept" layoutX="36.0" layoutY="356.0" mnemonicParsing="false" onAction="#accept" prefHeight="31.0" prefWidth="122.0" styleClass="success" text="Accept" />
             <Button fx:id="btnDeny" layoutX="166.0" layoutY="356.0" mnemonicParsing="false" onAction="#deny" prefHeight="31.0" prefWidth="122.0" styleClass="danger" text="Deny" />
-            <Button fx:id="btnSubmit" layoutX="296.0" layoutY="356.0" mnemonicParsing="false" onAction="#submitForm" prefHeight="31.0" prefWidth="122.0" styleClass="primary" text="Submit" />
-            <TextField fx:id="tfDays" layoutX="95.0" layoutY="84.0" prefHeight="33.0" prefWidth="59.0" />
             <Text fx:id="warning" fill="RED" layoutX="307.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill all the fields." textAlignment="CENTER" wrappingWidth="241.6708984375">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font></Text>
-            <Button layoutX="428.0" layoutY="356.0" mnemonicParsing="false" onAction="#close" prefHeight="31.0" prefWidth="122.0" text="Close" />
          </children>
       </Pane>
 

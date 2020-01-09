@@ -187,15 +187,17 @@ public class requestTreatmentController extends AppController implements Initial
 				+ " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
 				+ " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
 				+ "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
-				"AND `incharge` = '" + App.user.getUserName() + "'";
+				" AND `incharge` = '" + App.user.getUserName() + "'";
 
 		if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
 			// add option to see active decision stages in addition to other permission of
 			// these user
-			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'"
-					+ " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION'";
+			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
+
+			if(App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
+				query+= " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
 		}
 		// general:
 		return query;
@@ -228,6 +230,7 @@ public class requestTreatmentController extends AppController implements Initial
 		btnIncharges.setVisible(false);
 		searchBoxTF.setVisible(true);
 		updateRemarksBtn.setVisible(false);
+		freezeBtn.setVisible(false);
 
 		// event when user click on a row
 		table.setRowFactory(tv -> {
@@ -237,7 +240,6 @@ public class requestTreatmentController extends AppController implements Initial
 					selectedRequested = row.getItem();
 					appendStageObject();
 					initPanes();
-
 					String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
 
 					if (selectedRequested.getFilesPaths().equals(filename))
@@ -258,6 +260,7 @@ public class requestTreatmentController extends AppController implements Initial
 							// descripitionsTextArea.setEditable(true);
 							dueDateLabel.setDisable(false);
 							updateRemarksBtn.setDisable(false);
+							freezeBtn.setVisible(true);
 						}
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
@@ -402,7 +405,6 @@ public class requestTreatmentController extends AppController implements Initial
 	@FXML
 	void closureButtonClick(MouseEvent event) {
 		loadPage("Closure");
-
 	}
 
 	@FXML
@@ -412,7 +414,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void evalButtonClick(MouseEvent event) {
-
 		loadPage("EvaluationForm");
 	}
 
@@ -450,23 +451,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-	/*
-	 * public void InsertStartStage(String stageName) { Calendar currenttime =
-	 * Calendar.getInstance(); // creates the Calendar object of the current time
-	 * Date starttime = new Date((currenttime.getTime()).getTime()); // creates the
-	 * sql Date of the above created // object LocalDate duedate =
-	 * LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
-	 * selectedRequestInstance.getDueDate().getMonthValue(),
-	 * selectedRequestInstance.getDueDate().getDayOfMonth()); //
-	 * System.out.println(Date.valueOf(duedate.toString())); String query =
-	 * "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
-	 * + "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" +
-	 * stageName + "', '" + starttime + "', NULL, '" + duedate.toString() +
-	 * "', '', '', '0', '1');";
-	 *
-	 * OperationType ot = OperationType.InsertStartStage;
-	 * App.client.handleMessageFromClientUI(new Message(ot, query)); }
-	 */
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
 		// showAlert(AlertType.INFORMATION, "Mock Button",
@@ -548,27 +532,23 @@ public class requestTreatmentController extends AppController implements Initial
 			}
 
 		});
-
 	}
-
 	// get Stage Object to Request:
 
 	void appendStageObject() {
+		if(selectedRequested.getCurrentStage().equals("INIT"))
+			return;
 		String query5 = "SELECT * FROM `Stage` WHERE `RequestID` = '" + selectedRequested.getRequestID()
 				+ "' AND `StageName` = '" + selectedRequested.getCurrentStage() + "' LIMIT 1";
 		App.client.handleMessageFromClientUI(new Message(OperationType.ChangeRequest_getStageObject, query5));
-
+		rightPane_requestTreatment.setDisable(true);
 	}
 
 	void appendStageObject_ServerResponse(Object object) {
 		common.entity.Stage currentStage = (common.entity.Stage) object;
 		selectedRequested.setCurrentStageObject(currentStage);
+		rightPane_requestTreatment.setDisable(false);
+
 	}
 
-	/**
-	 *
-	 * SELECT * FROM `Requests` as r , `Stage` as s WHERE r.`RequestID` =
-	 * s.`RequestID` AND r.`Treatment_Phase` = s.`StageName` AND `incharge` =
-	 *
-	 */
 }

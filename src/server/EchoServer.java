@@ -317,17 +317,7 @@ public class EchoServer extends AbstractServer {
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(OperationType.deleteMember, res), client);
 				break;
-			case Extension_getData:
-				rs = mysql.getQuery(m.getObject().toString());
-				Extension extension = null;
-				while (rs.next()) {
-					extension = new Extension(rs.getInt("RequestID"), rs.getString("StageName"),
-							rs.getInt("extension_days"), rs.getString("extension_reason"),
-							rs.getString("extension_decision"));
-				} // while
-				sendToClient(new Message(m.getOperationtype(), extension), client);
-				rs.close();
-				break;
+
 			case Extension_submit:
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(m.getOperationtype(), res), client);
@@ -339,8 +329,8 @@ public class EchoServer extends AbstractServer {
 					cStage = new Stage(rs.getInt("RequestID"), rs.getString("StageName"),
 							Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
 							Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
-							Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge"),
-							rs.getBoolean("Extend"), rs.getInt("init"), rs.getInt("init_confirmed"),rs.getString("PrevStage"));
+							Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge")
+							, rs.getInt("init"), rs.getInt("init_confirmed"),rs.getInt("extension_days"),rs.getString("extension_reason"),rs.getString("extension_decision"),rs.getString("PrevStage"));
 				}
 				sendToClient(new Message(m.getOperationtype(), cStage), client);
 				break;

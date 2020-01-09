@@ -51,7 +51,6 @@ public class EmployeeUser extends User {
 		Boolean res;
 		try {
 			res = stagesRoles.get(requestID).contains(role);
-			System.out.println(stagesRoles);
 		}catch (Exception e){
 			return false;
 		}

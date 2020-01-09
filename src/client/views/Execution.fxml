@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ExecutionController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -78,6 +78,22 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="596.0">
                <children>
+                  <Pane fx:id="pane_msg" prefHeight="710.0" prefWidth="588.0">
+                     <children>
+                        <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="210.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Execution stage is done.">
+                           <font>
+                              <Font name="System Bold Italic" size="15.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="btnAnswerStageExtensionRequest" layoutX="173.0" layoutY="437.0" mnemonicParsing="false" onAction="#requestExtension" prefHeight="32.0" prefWidth="229.0" styleClass="primary" text="Answer Stage Extention Request" />
+
+                     </children>
+                  </Pane>
                   <Pane fx:id="pane_form" prefHeight="710.0" prefWidth="588.0">
                      <children>
                         <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
@@ -104,28 +120,15 @@
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                        <Button fx:id="workDone" layoutX="190.0" layoutY="582.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
+                        <Button fx:id="workDone" layoutX="199.0" layoutY="582.0" mnemonicParsing="false" onAction="#submitWorkDone" prefHeight="47.0" prefWidth="179.0" styleClass="success" text="Execution Done!">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Button>
+                        <Button fx:id="btnRequestExtension" layoutX="411.0" layoutY="582.0" mnemonicParsing="false" onAction="#requestExtension" prefHeight="32.0" prefWidth="146.0" text="Request Extension" />
                         <Text layoutX="21.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
                            <font>
                               <Font size="13.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                  <Pane fx:id="pane_msg" prefHeight="710.0" prefWidth="588.0">
-                     <children>
-                        <Text layoutX="226.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="EXECUTION">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </Text>
-                        <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="210.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Execution stage is done.">
-                           <font>
-                              <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
                      </children>

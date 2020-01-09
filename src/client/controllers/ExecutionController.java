@@ -109,29 +109,29 @@ public class ExecutionController extends AppController implements Initializable 
 	@FXML
 	private Text textInMsgPane;
 
+	@FXML
+	private Button btnRequestExtension;
+
+	@FXML
+	private Button btnAnswerStageExtensionRequest;
+
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
 	static LocalDate saveAfterResponse;
 
-	public void start(Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Execution.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Execution");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load execution prompt");
-			e.printStackTrace();
-		}
-	}
+	private common.entity.Stage thisStage;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+		thisStage = thisRequest.getCurrentStageObject();
+
+		btnRequestExtension.setVisible(false);
+		btnAnswerStageExtensionRequest.setVisible(false);
+		if(thisStage.getExtension_reason()!=null)
+			btnAnswerStageExtensionRequest.setVisible(true);
 
 		pane_msg.setVisible(false);
 		pane_form.setVisible(false);
@@ -155,6 +155,8 @@ public class ExecutionController extends AppController implements Initializable 
 		}
 
 		checkPreConditions();
+		setExtensionVisability();
+
 		// the supervisor should present the stage in progress after he approved the
 		// time
 		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
@@ -296,7 +298,36 @@ public class ExecutionController extends AppController implements Initializable 
 				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
 		}
 	}
+	// Extensions:
+	private void setExtensionVisability() {
+		btnRequestExtension.setVisible(false);
+		long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+		if (daysDifference >= -3) {
+			btnRequestExtension.setVisible(true);
+			if (thisStage.getExtension_days() != 0)
+				btnRequestExtension.setDisable(true);
+		}
 
+	}
+
+	@FXML
+	void requestExtension(ActionEvent event) {
+		start(new Stage());
+	}
+
+	public void start(Stage primaryStage) {
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+			Scene scene = new Scene(root);
+			primaryStage.setTitle("Extension");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not load execution prompt");
+			e.printStackTrace();
+		}
+	}
 }
 
 //	
