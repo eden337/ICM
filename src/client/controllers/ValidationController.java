@@ -272,11 +272,13 @@ public class ValidationController extends AppController implements Initializable
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query4 = " UPDATE `Stage` SET  `Deadline` = '" + tomorrowFormat
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'VALIDATION' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		OperationType ot = OperationType.VALID_UpdateDB;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 		App.client.handleMessageFromClientUI(new Message(ot, query4));
+		App.client.handleMessageFromClientUI(new Message(ot, query5));
 		thisRequest.setPrevStage("VALIDATION");
 
 	}

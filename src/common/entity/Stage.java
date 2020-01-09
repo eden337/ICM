@@ -9,7 +9,7 @@ import java.util.Date;
  * 
  * @author Ira Goor
  *
- *  
+ * 
  *         class purpose: General structure of a stage in request treatment
  *         process classes extends from it: Evaluation, Decision,
  *         Execution,Validation and Closure. Auxiliary classes, enums, and
@@ -24,24 +24,31 @@ public class Stage implements Serializable {
 	private ZonedDateTime endTime;
 	private ZonedDateTime deadline;
 	private String incharge;
+	private String preStage;
 	private boolean extend;
+
+	private int init;
 
 	@Override
 	public String toString() {
-		return "Stage{" +
-				"requestID=" + requestID +
-				", stageName='" + stageName + '\'' +
-				", startTime=" + startTime +
-				", endTime=" + endTime +
-				", deadline=" + deadline +
-				", incharge='" + incharge + '\'' +
-				", extend=" + extend +
-				", init=" + init +
-				", init_confirmed=" + init_confirmed +
-				'}';
+		return "Stage{" + "requestID=" + requestID + ", stageName='" + stageName + '\'' + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", deadline=" + deadline + ", incharge='" + incharge + '\'' + ", extend="
+				+ extend + ", init=" + init + ", init_confirmed=" + init_confirmed + '}';
 	}
 
-	private int init;
+	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime,
+			ZonedDateTime deadline, String incharge, boolean extend, int init, int init_confirmed, String prevStage) {
+		this.requestID = requestID;
+		this.stageName = stageName;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.deadline = deadline;
+		this.incharge = incharge;
+		this.extend = extend;
+		this.init = init;
+		this.init_confirmed = init_confirmed;
+		this.preStage = prevStage;
+	}
 
 	public int getRequestID() {
 		return requestID;
@@ -79,16 +86,12 @@ public class Stage implements Serializable {
 		return init_confirmed;
 	}
 
-	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime deadline, String incharge, boolean extend, int init, int init_confirmed) {
-		this.requestID = requestID;
-		this.stageName = stageName;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.deadline = deadline;
-		this.incharge = incharge;
-		this.extend = extend;
-		this.init = init;
-		this.init_confirmed = init_confirmed;
+	public String getPreStage() {
+		return preStage;
+	}
+
+	public void setPreStage(String preStage) {
+		this.preStage = preStage;
 	}
 
 	private int init_confirmed;
@@ -156,8 +159,5 @@ public class Stage implements Serializable {
 //		long temp = Duration.between(deadline, ZonedDateTime.now()).toDays();
 //		this.daysDelayed = temp > 0 ? temp : 0;
 //	}
-
-
-
 
 }

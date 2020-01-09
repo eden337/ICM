@@ -43,7 +43,8 @@ public class ChangeRequest implements Serializable{
 	private boolean returned;
 	private String returnedNote;
 	private String email;
-
+	private String prevStage;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -84,8 +85,7 @@ public class ChangeRequest implements Serializable{
 	}
 
 
-	private String prevStage;
-	
+
 	public String getCurrentStage() {
 		return currentStage;
 	}
@@ -138,7 +138,7 @@ public class ChangeRequest implements Serializable{
 		this.filesPaths = filesPaths;
 		this.incharges =incharges;
 		this.currentStageObject = currentStageObject;
-		prevStage="INIT";
+		this.prevStage="INIT";
 		this.returned= false;
 		this.returnedNote="";
 		

@@ -62,6 +62,7 @@ public class EchoServer extends AbstractServer {
 	 * @param msg    The message received from the client.
 	 * @param client The connection from which the message originated.
 	 */
+	@SuppressWarnings("finally")
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		Message m = (Message) msg;
 		// ServerController.instance.startDBService();
@@ -334,7 +335,7 @@ public class EchoServer extends AbstractServer {
 							Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
 							Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
 							Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge"),
-							rs.getBoolean("Extend"), rs.getInt("init"), rs.getInt("init_confirmed"));
+							rs.getBoolean("Extend"), rs.getInt("init"), rs.getInt("init_confirmed"),rs.getString("PrevStage"));
 				}
 				sendToClient(new Message(m.getOperationtype(), cStage), client);
 				break;
@@ -343,9 +344,22 @@ public class EchoServer extends AbstractServer {
 				sendToClient(new Message(OperationType.updateSystems, res), client);
 				break;
 				case SendGeneralEmail:
-					EmailContent generalEmail = (EmailContent)m.getObject();
-					EmailSender.sendEmail(generalEmail.getMailTo(),generalEmail.getTitle(),generalEmail.getContent());
-					break;
+					try {
+					rs = mysql.getQuery(m.getObject().toString());
+					EmailContent emailContent = null;
+					while(rs.next()) {
+						emailContent= new EmailContent(rs.getString("EMAIL"), "ICM Notification", "Please view your progress");
+					}
+					//EmailContent generalEmail = (EmailContent)m.getObject();
+					//EmailSender.sendEmail(generalEmail.getMailTo(),generalEmail.getTitle(),generalEmail.getContent());
+					System.out.println(emailContent.getMailTo());
+					EmailSender.sendEmail(emailContent.getMailTo(), emailContent.getTitle(),emailContent.getContent());
+					
+					}catch(SQLException e) {e.printStackTrace();}
+					finally {
+						break;
+					}
+					
 			default:
 				break;
 			}

@@ -13,9 +13,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
-import common.entity.EmployeeUser;
 import common.entity.OrganizationRole;
-import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,8 +25,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class ClosureController extends AppController implements Initializable {
 
@@ -131,7 +129,7 @@ public class ClosureController extends AppController implements Initializable {
 		estimatedTime += 1;
 		// titlePane_Text.setText(String.valueOf(estimatedTime));
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-		if (thisRequest.getPrevStage().equals("DECISION")) {
+		if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
 			finishedStatus.setFill(Color.DARKRED);
 			finishedStatus.setText("FAILED");
 		} else // else if prevStage == Validation{
@@ -155,7 +153,8 @@ public class ClosureController extends AppController implements Initializable {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query;
-		if (thisRequest.getPrevStage().equals("DECISION")) {
+		System.out.println(thisRequest.getCurrentStageObject().getPreStage());
+		if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
 			query = "UPDATE Requests SET Treatment_Phase = 'CANCELED' , STATUS = 'CANCELED' WHERE RequestID = '"
 					+ thisRequest.getRequestID() + "'";
 			thisRequest.setStatus("Canceled");

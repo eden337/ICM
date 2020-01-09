@@ -194,8 +194,8 @@ public class requestTreatmentController extends AppController implements Initial
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
 			// add option to see active decision stages in addition to other permission of
 			// these user
-			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION'"
-					+ " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION'";
+			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'"
+					+ " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION'";
 		}
 		// general:
 		return query;

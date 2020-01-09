@@ -157,7 +157,7 @@ public class EvaluationReportController extends AppController implements Initial
         Pane_Form.setVisible(false);
         Pane_locked.setVisible(false);
 
-        titledPane_Text.setVisible(false);
+        //titledPane_Text.setVisible(false);
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
