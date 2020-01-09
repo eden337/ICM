@@ -111,7 +111,9 @@ public class decisionController extends AppController implements Initializable {
 	@FXML
 	private Button btnRequestExtension;
 
-
+	private Stage prevStage; 
+	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		long estimatedTime = 0;
@@ -146,7 +148,7 @@ public class decisionController extends AppController implements Initializable {
 				declineBtn.setVisible(true);
 				reEvaluateBtn.setVisible(true);
 				setExtensionVisability();
-			}else{
+			} else {
 				if (thisStage.getExtension_days() != 0)
 					btnRequestExtension.setVisible(true);
 			}
@@ -276,7 +278,39 @@ public class decisionController extends AppController implements Initializable {
 		declineBtn.setDisable(true);
 		loadPage("requestTreatment");
 	}
+	
+	void setStageTable() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
 
+		String query = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
+				+ thisRequest.getRequestID() + "'";
+		//put in echo server
+		String query2 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
+				+ thisRequest.getRequestID() + ";";
+		String query3 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+				+ "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+		String query4 = "SELECT * FROM 'Stage'  WHERE 'RequestID' = '" + thisRequest.getRequestID()
+				+ "' AND 'StageName' = 'EVALUATION' LIMIT 1";
+		String query5 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
+				+ thisRequest.getRequestID();
+
+		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot2 = OperationType.SendGeneralEmail;
+		OperationType ot3 = OperationType.updateRequestStatus;
+		OperationType ot4 = OperationType.GetDataForRepeted;
+		OperationType ot5 = OperationType.updateRequestStatus;
+
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+		App.client.handleMessageFromClientUI(new Message(ot2, query2));
+		App.client.handleMessageFromClientUI(new Message(ot3, query3));
+		App.client.handleMessageFromClientUI(new Message(ot4, query4));
+		// System.out.println(getPrevStageObject().getIncharge() + " " +
+		// getPrevStageObject().getStageName());
+		App.client.handleMessageFromClientUI(new Message(ot5, query5));
+		// Stage currentStage = thisRequest.getCurrentStageObject();
+	}
+	
 	@FXML
 	void reEvaluateBtnClick(ActionEvent event) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -284,36 +318,51 @@ public class decisionController extends AppController implements Initializable {
 
 		String query = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
+
+		String query2 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
+				+ thisRequest.getRequestID() + ";";
+		String query3 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+				+ "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+		String query4 = "SELECT * FROM 'Stage'  WHERE 'RequestID' = '" + thisRequest.getRequestID()
+				+ "' AND 'StageName' = 'EVALUATION' LIMIT 1";
+		String query5 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
+				+ thisRequest.getRequestID();
+
 		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot2 = OperationType.SendGeneralEmail;
+		OperationType ot3 = OperationType.updateRequestStatus;
+		OperationType ot4 = OperationType.GetDataForRepeted;
+		OperationType ot5 = OperationType.updateRequestStatus;
+
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		App.client.handleMessageFromClientUI(new Message(ot2, query2));
+		App.client.handleMessageFromClientUI(new Message(ot3, query3));
+		App.client.handleMessageFromClientUI(new Message(ot4, query4));
+		// System.out.println(getPrevStageObject().getIncharge() + " " +
+		// getPrevStageObject().getStageName());
+		App.client.handleMessageFromClientUI(new Message(ot5, query5));
+		// Stage currentStage = thisRequest.getCurrentStageObject();
+
 		showAlert(AlertType.INFORMATION, "Need to Re-Evaluate", "Request moved back to evaluation phase...", null);
 // Select Email from Employees where username = thisrequest.getStageObject().getIncharge
 //
-		query = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
-				+ thisRequest.getRequestID() + ";";
-		OperationType ot2 = OperationType.SendGeneralEmail;
-		App.client.handleMessageFromClientUI(new Message(ot2, query));
 
-		query = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		
-		query = " UPDATE `Stage` SET `StartTime` = '',`Deadline` = '',`EndTime` = '', where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		Stage currentStage = thisRequest.getCurrentStageObject();
-		
-	/*	query = "INSERT into 'Repeted'(RequestID, StageName, StartTime, EndTime, Deadline, Incharge, Delay, Extend) VALUES ("
-				+currentStage.getRequestID() +", "+ currentStage.getStageName()+", "+currentStage.getStartTime()+", "+ currentStage.getEndTime()+", "
-				+currentStage.getDeadline()  +", "+ currentStage.getIncharge()+", "+ currentStage.getDe;
-		*/
+		/*
+		 * query =
+		 * "INSERT into 'Repeted'(RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ("
+		 * +prevStageObject.getRequestID() +", "+
+		 * prevStageObject.getStageName()+", "+prevStageObject.getStartTime()+", "+
+		 * prevStageObject.getEndTime()+", " +prevStageObject.getDeadline() +", "+
+		 * prevStageObject.getIncharge()+");";
+		 */
+		// ot = OperationType.updateRequestStatus;
+		// App.client.handleMessageFromClientUI(new Message(ot, query));
+
 		reEvaluateBtn.setDisable(true);
 		approveBtn.setDisable(true);
 		declineBtn.setDisable(true);
 		loadPage("requestTreatment");
 	}
-
 
 	// Extensions:
 	private void setExtensionVisability() {
@@ -343,5 +392,19 @@ public class decisionController extends AppController implements Initializable {
 			System.out.println("Could not load execution prompt");
 			e.printStackTrace();
 		}
+	}
+
+	public void appendStageObject_ServerResponse(Object object) {
+		// TODO Auto-generated method stub
+		common.entity.Stage currentStage = (common.entity.Stage) object;
+		setPrevStage(currentStage);
+	}
+
+	public Stage getPrevStage() {
+		return prevStage;
+	}
+
+	public void setPrevStage(Stage prevStage) {
+		this.prevStage = prevStage;
 	}
 }

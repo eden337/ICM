@@ -322,6 +322,7 @@ public class EchoServer extends AbstractServer {
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(m.getOperationtype(), res), client);
 				break;
+			case GetDataForRepeted:
 			case ChangeRequest_getStageObject:
 				rs = mysql.getQuery(m.getObject().toString());
 				Stage cStage = null;

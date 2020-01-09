@@ -62,6 +62,7 @@ public class ClientMessages {
             case Allocate_GetITUsers:
                 AllocateController.instance.setComboBoxesData(m.getObject());
                 break;
+            case Allocate_UpdateRoles:
             case Allocate_SetRoles:
                 AllocateController.instance.showResult(m.getObject());
                 break;
@@ -129,6 +130,9 @@ public class ClientMessages {
             case Extension_submit:
                 ExtensionController.instance.InsertOrUpdate_ServerResponse(m.getObject());
                 break;
+            case GetDataForRepeted:
+            	decisionController.instance.appendStageObject_ServerResponse(m.getObject());
+                break;  
             case ChangeRequest_getStageObject:
                 requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
                 break;        

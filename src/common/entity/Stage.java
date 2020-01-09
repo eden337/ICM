@@ -31,7 +31,7 @@ public class Stage implements Serializable {
 	private String extension_decision;
 	private String preStage;
 
-	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime deadline, String incharge, int init, int init_confirmed, int extension_days, String extension_reason, String extension_decision, String prevStage) {
+	public Stage(int requestID, String stageName, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime deadline, String incharge, int init, int init_confirmed, int extension_days, String extension_reason, String extension_decision, String preStage) {
 		this.requestID = requestID;
 		this.stageName = stageName;
 		this.startTime = startTime;
