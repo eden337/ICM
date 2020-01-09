@@ -43,78 +43,77 @@ public class ValidationController extends AppController implements Initializable
 	private Stage thisStage;
 	protected ChangeRequest thisRequest;
 
-	   @FXML
-	    private Text idText;
+	@FXML
+	private Text idText;
 
-	    @FXML
-	    private Text requestID;
+	@FXML
+	private Text requestID;
 
-	    @FXML
-	    private TextArea existingCondition;
+	@FXML
+	private TextArea existingCondition;
 
-	    @FXML
-	    private TextArea descripitionsTextArea;
+	@FXML
+	private TextArea descripitionsTextArea;
 
-	    @FXML
-	    private Text msg;
+	@FXML
+	private Text msg;
 
-	    @FXML
-	    private TextField inchargeTF;
+	@FXML
+	private TextField inchargeTF;
 
-	    @FXML
-	    private Text departmentID;
+	@FXML
+	private Text departmentID;
 
-	    @FXML
-	    private Text idText1;
+	@FXML
+	private Text idText1;
 
-	    @FXML
-	    private Text requestNameLabel;
+	@FXML
+	private Text requestNameLabel;
 
-	    @FXML
-	    private Text idText2;
+	@FXML
+	private Text idText2;
 
-	    @FXML
-	    private Text dueDateLabel;
+	@FXML
+	private Text dueDateLabel;
 
-	    @FXML
-	    private Pane pane_msg;
+	@FXML
+	private Pane pane_msg;
 
-	    @FXML
-	    private Text textInMsgPane;
+	@FXML
+	private Text textInMsgPane;
 
-	    @FXML
-	    private AnchorPane pane_form;
+	@FXML
+	private AnchorPane pane_form;
 
-	    @FXML
-	    private Button validateBtn;
+	@FXML
+	private Button validateBtn;
 
-	    @FXML
-	    private Button failureReportBtn;
+	@FXML
+	private Button failureReportBtn;
 
-	    @FXML
-	    private TextArea failReportTextArea;
+	@FXML
+	private TextArea failReportTextArea;
 
-	    @FXML
-	    private Text idText11;
+	@FXML
+	private Text idText11;
 
-	    @FXML
-	    private Button noBtn;
+	@FXML
+	private Button noBtn;
 
-	    @FXML
-	    private Text failReportLabel;
+	@FXML
+	private Text failReportLabel;
 
-	    @FXML
-	    private TitledPane titledPane;
+	@FXML
+	private TitledPane titledPane;
 
-	    @FXML
-	    private Text msgFix;
-
-	    @FXML
-	    private Text deadlineText;
+	@FXML
+	private Text titledPane_Text;
 	private boolean responseChairman = false;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		pane_msg.setVisible(false);
+		pane_form.setVisible(false);
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
@@ -122,10 +121,6 @@ public class ValidationController extends AppController implements Initializable
 				dueDateLabel, requestNameLabel, thisRequest);
 
 		checkPreConditions();
-		
-		
-		pane_msg.setVisible(false);
-		pane_form.setVisible(false);
 
 		if (!thisRequest.getCurrentStage().equals("VALIDATION")) {
 			pane_msg.setVisible(true);
@@ -142,15 +137,15 @@ public class ValidationController extends AppController implements Initializable
 
 		// Otherwise: this is the Tester in his stage
 		pane_form.setVisible(true);
-		//titledPane.setVisible(false);
+		// titledPane.setVisible(false);
 		// dueDateLabel.setVisible(true);
 		// rightPane.setVisible(false);
 		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
-		deadlineText.setText(String.valueOf(estimatedTime));
-		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
-
+		estimatedTime+=1;
+		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");
@@ -174,7 +169,7 @@ public class ValidationController extends AppController implements Initializable
 
 		if (init_confirmed && init) {
 			init();
-			//rightPane.setVisible(true);
+			// rightPane.setVisible(true);
 			return;
 		}
 		// else
@@ -197,9 +192,9 @@ public class ValidationController extends AppController implements Initializable
 				titledPane.getStyleClass().add("success");
 				titledPane.setCollapsible(false);
 				titledPane.setText("This stage is done.");
-				msgFix.setText("You have only a viewing permission.");
-				msgFix.setFill(Color.FORESTGREEN);
-				msgFix.setVisible(true);
+				titledPane_Text.setText("You have only a viewing permission.");
+				titledPane_Text.setFill(Color.FORESTGREEN);
+				titledPane_Text.setVisible(true);
 				// workDone.setVisible(false);
 
 				if (!thisRequest.getCurrentStage().equals("VALIDATION")) { // Watching only
@@ -207,9 +202,9 @@ public class ValidationController extends AppController implements Initializable
 					titledPane.getStyleClass().add("success");
 					titledPane.setCollapsible(false);
 					titledPane.setText("This stage is done.");
-					msgFix.setText("You have only a viewing permission.");
-					msgFix.setFill(Color.FORESTGREEN);
-					msgFix.setVisible(true);
+					titledPane_Text.setText("You have only a viewing permission.");
+					titledPane_Text.setFill(Color.FORESTGREEN);
+					titledPane_Text.setVisible(true);
 					// workDone.setVisible(false);
 				}
 			}
@@ -229,7 +224,6 @@ public class ValidationController extends AppController implements Initializable
 		}
 	}
 
-
 	// in this case we need to color validation back to red because it is incomplete
 	@FXML
 	void failureReportBtnClicked(ActionEvent event) {
@@ -245,7 +239,7 @@ public class ValidationController extends AppController implements Initializable
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 
 		query = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
-		+ "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+				+ "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Execution Failed!", "Please notify the execution leader for re-execution",
@@ -268,8 +262,8 @@ public class ValidationController extends AppController implements Initializable
 	void validateBtnClicked(ActionEvent event) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
-		ZonedDateTime tomorrow= ZonedDateTime.now().plusDays(1);
-		String tomorrowFormat = tomorrow.getYear()+"/"+tomorrow.getMonthValue()+"/"+tomorrow.getDayOfMonth();
+		ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
+		String tomorrowFormat = tomorrow.getYear() + "/" + tomorrow.getMonthValue() + "/" + tomorrow.getDayOfMonth();
 		String query = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
@@ -277,7 +271,7 @@ public class ValidationController extends AppController implements Initializable
 		String query3 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query4 = " UPDATE `Stage` SET  `Deadline` = '" + tomorrowFormat
-		+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		OperationType ot = OperationType.VALID_UpdateDB;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));

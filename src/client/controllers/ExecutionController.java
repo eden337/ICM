@@ -83,36 +83,34 @@ public class ExecutionController extends AppController implements Initializable 
 	private Text dueDateLabel;
 
 	@FXML
-	private TitledPane titledPane;
-
-	@FXML
-	private Text msgFix;
-
-	@FXML
-	private Button workDone;
-
-	@FXML
 	private AnchorPane rightPane;
 
 	@FXML
 	private Pane pane_form;
 
 	@FXML
+	private AnchorPane returnedNoteAP;
+
+	@FXML
+	private TextArea returnedNotes;
+
+	@FXML
+	private TitledPane titledPane;
+
+	@FXML
+	private Text titledPane_Text;
+
+	@FXML
+	private Button workDone;
+
+	@FXML
 	private Pane pane_msg;
 
 	@FXML
 	private Text textInMsgPane;
-	@FXML
-	private Text deadlineText;
 
-	@FXML
-	private AnchorPane returnedNoteAP;
-
-    @FXML
-    private TextArea returnedNotes;
-	
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
-	
+
 	static LocalDate saveAfterResponse;
 
 	public void start(Stage primaryStage) {
@@ -137,6 +135,10 @@ public class ExecutionController extends AppController implements Initializable 
 
 		pane_msg.setVisible(false);
 		pane_form.setVisible(false);
+		titledPane.setCollapsible(false);
+		titledPane.setText("Waiting for your action");
+		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
 
 		if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
 			pane_msg.setVisible(true);
@@ -144,7 +146,18 @@ public class ExecutionController extends AppController implements Initializable 
 			return;
 		}
 
-		if (!App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
+		if (!App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)
+				&& !App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+			textInMsgPane.setFill(Color.BLUE);
+			textInMsgPane.setText("Stage in progress");
+			pane_msg.setVisible(true);
+			return;
+		}
+
+		checkPreConditions();
+		// the supervisor should present the stage in progress after he approved the
+		// time
+		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
 			textInMsgPane.setFill(Color.BLUE);
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
@@ -152,24 +165,24 @@ public class ExecutionController extends AppController implements Initializable 
 		}
 
 		// Otherwise: this is the Executer in his stage
-		if(thisRequest.isReturned()) {
+		if (thisRequest.isReturned()) {
 			returnedNoteAP.setVisible(true);
 			returnedNotes.setText(thisRequest.getReturnedNote());
 		}
 		pane_form.setVisible(true);
-		msgFix.setVisible(false);
-		titledPane.setVisible(false);
+		// titledPane_Text.setVisible(true);
+		// titledPane.setVisible(false);
 		// dueDateLabel.setVisible(true);
 		// rightPane.setVisible(false);
-		//TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
-		estimatedTime = Duration.between(ZonedDateTime.now(),thisRequest.getCurrentStageObject().getDeadline())
+		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
+		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
+		// checkPreConditions();
+		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
-		deadlineText.setText(String.valueOf(estimatedTime));
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+		estimatedTime+=1;
+		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
-		checkPreConditions();
-		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
 
 	}
 
@@ -211,9 +224,9 @@ public class ExecutionController extends AppController implements Initializable 
 				titledPane.getStyleClass().add("success");
 				titledPane.setCollapsible(false);
 				titledPane.setText("This stage is done.");
-				msgFix.setText("You have only a viewing permission.");
-				msgFix.setFill(Color.FORESTGREEN);
-				msgFix.setVisible(true);
+				titledPane_Text.setText("You have only a viewing permission.");
+				titledPane_Text.setFill(Color.FORESTGREEN);
+				titledPane_Text.setVisible(true);
 				workDone.setVisible(false);
 
 				if (!thisRequest.getCurrentStage().equals("EXECUTION")) { // Watching only
@@ -221,9 +234,9 @@ public class ExecutionController extends AppController implements Initializable 
 					titledPane.getStyleClass().add("success");
 					titledPane.setCollapsible(false);
 					titledPane.setText("This stage is done.");
-					msgFix.setText("You have only a viewing permission.");
-					msgFix.setFill(Color.FORESTGREEN);
-					msgFix.setVisible(true);
+					titledPane_Text.setText("You have only a viewing permission.");
+					titledPane_Text.setFill(Color.FORESTGREEN);
+					titledPane_Text.setVisible(true);
 					workDone.setVisible(false);
 				}
 			}
@@ -261,7 +274,8 @@ public class ExecutionController extends AppController implements Initializable 
 		OperationType ot1 = OperationType.EXE_UpdateDB;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 		App.client.handleMessageFromClientUI(new Message(ot1, query2));
-		showAlert(AlertType.INFORMATION, "Request #"+thisRequest.getRequestID()+" Excution complete!", "The request move forward to Tester.", null);
+		showAlert(AlertType.INFORMATION, "Request #" + thisRequest.getRequestID() + " Excution complete!",
+				"The request move forward to Tester.", null);
 		loadPage("requestTreatment");
 	}
 

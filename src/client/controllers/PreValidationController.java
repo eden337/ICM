@@ -1,22 +1,32 @@
 package client.controllers;
 
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.ResourceBundle;
+
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import common.entity.OrganizationRole;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class PreValidationController extends AppController implements Initializable {
 
@@ -110,9 +120,19 @@ public class PreValidationController extends AppController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        btnAllocate.setVisible(true);
+        cbValidator.setDisable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
+        inchargeTF.setText("Tester");
+        //getUsersFromServer();
+        if(!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+        	btnAllocate.setVisible(false);
+        	cbValidator.setDisable(true);
+        	return;
+        }
         getUsersFromServer();
-
     }
 
     private void getUsersFromServer() {

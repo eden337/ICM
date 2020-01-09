@@ -86,6 +86,7 @@ public class AllocateController extends AppController implements Initializable {
                 "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
                 "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
                 "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
+                "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
                 "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
         App.client.handleMessageFromClientUI(new Message(ot, query));
 

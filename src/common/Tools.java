@@ -21,6 +21,7 @@ import common.entity.EmployeeUser;
 import common.entity.StageName;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
@@ -34,6 +35,21 @@ public class Tools {
 //		   }
 //	}
 
+	public static void setTitlePane(long estimatedTime,TitledPane titledPane,Text titledPane_Text) {
+		if (estimatedTime >= 0) {
+			titledPane_Text.setText(String.valueOf(estimatedTime) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("info");
+		} 
+		//need to send this to time exceptions..
+		else
+		{
+			titledPane_Text.setText(String.valueOf(Math.abs(estimatedTime)) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("danger");
+		}
+	}
+	
 	public static ArrayList<String> disassemble(ResultSet rs, int NumOfCol) {
 		ArrayList<String> returnString = new ArrayList<String>();
 		try {

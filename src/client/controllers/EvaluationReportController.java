@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class EvaluationReportController extends AppController implements Initializable {
@@ -76,6 +78,12 @@ public class EvaluationReportController extends AppController implements Initial
     private Text dueDateLabel;
 
     @FXML
+    private AnchorPane rightPane;
+
+    @FXML
+    private Pane Pane_Form;
+
+    @FXML
     private Button SbmtEvlBtn;
 
     @FXML
@@ -91,26 +99,19 @@ public class EvaluationReportController extends AppController implements Initial
     private TextArea cnstrntTXT;
 
     @FXML
-    private Text msgFix;
-
-    @FXML
     private TitledPane titledPane;
 
     @FXML
-    private AnchorPane rightPane;
+    private Text titledPane_Text;
 
     @FXML
     private Button btnRequestExtension;
-
-    @FXML
-    private Pane Pane_Form;
 
     @FXML
     private Pane Pane_locked;
 
     @FXML
     private Text txt_locked;
-
 
     @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
@@ -156,7 +157,7 @@ public class EvaluationReportController extends AppController implements Initial
         Pane_Form.setVisible(false);
         Pane_locked.setVisible(false);
 
-        msgFix.setVisible(false);
+        titledPane_Text.setVisible(false);
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
@@ -201,6 +202,10 @@ public class EvaluationReportController extends AppController implements Initial
             if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { // NOT EVALUATOR
                 SbmtEvlBtn.setVisible(true);
                 Pane_Form.setVisible(true);
+                long estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+        				.toDays();
+        		estimatedTime+=1;
+        		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
             }
             else // EVALUATOR
@@ -225,9 +230,9 @@ public class EvaluationReportController extends AppController implements Initial
                     titledPane.getStyleClass().add("success");
                     titledPane.setText("This stage is done.");
                     SbmtEvlBtn.setVisible(false);
-                    msgFix.setText("You have only a viewing permission.");
-                    msgFix.setFill(Color.FORESTGREEN);
-                    msgFix.setVisible(true);
+                    titledPane_Text.setText("You have only a viewing permission.");
+                    titledPane_Text.setFill(Color.FORESTGREEN);
+                    titledPane_Text.setVisible(true);
                     reqChngTXT.setEditable(false);
                     expResTXT.setEditable(false);
                     cnstrntTXT.setEditable(false);
@@ -243,7 +248,7 @@ public class EvaluationReportController extends AppController implements Initial
                     titledPane.getStyleClass().add("info");
 
                     titledPane.setText("Fill in Evaluation report.");
-                    msgFix.setText("After you submit the form, the evaluation will go to decision stage. ");
+                    titledPane_Text.setText("After you submit the form, the evaluation will go to decision stage. ");
                 }
             });
 
@@ -264,7 +269,7 @@ public class EvaluationReportController extends AppController implements Initial
         ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
         if (reports.size() > 0) {
             if (thisRequest.getCurrentStage().equals("EVALUATION"))
-                msgFix.setVisible(true);
+                titledPane_Text.setVisible(true);
             EvaluationReport individualReport = reports.get(0);
             reqChngTXT.setText(individualReport.getRequired_change());
             expResTXT.setText(individualReport.getExpected_result());

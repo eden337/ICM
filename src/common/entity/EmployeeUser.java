@@ -102,7 +102,7 @@ public class EmployeeUser extends User {
 		case "COMMITEE_MEMBER2":
 			roleInOrg = OrganizationRole.COMMITEE_MEMBER2;
 			break;
-		case "COMMITEE_CHAIRMAN":
+		case "CHAIRMAN":
 			roleInOrg = OrganizationRole.COMMITEE_CHAIRMAN;
 			break;
 		case "SUPERVISOR":
@@ -186,7 +186,7 @@ public class EmployeeUser extends User {
 	                return "COMMITEE_MEMBER2";
 	                
 	            case COMMITEE_CHAIRMAN:
-	                return "COMMITEE_CHAIRMAN";
+	                return "CHAIRMAN";
 	                
 	            case SUPERVISOR:
 	                return "SUPERVISOR";

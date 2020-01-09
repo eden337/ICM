@@ -97,6 +97,7 @@ public class ChangeRequestController extends AppController implements Initializa
 			return;
 		insertDataToDB();
 		clearAll();
+		loadPage("Homepage");
 	}
 
 	void createZip(String filename) {

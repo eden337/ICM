@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -11,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -128,6 +130,8 @@ public class PreEvaluationController extends AppController implements Initializa
             OperationType ot = OperationType.PreEVAL_SetInitStat;
             String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
+            showAlert(AlertType.INFORMATION, "Evaluation end time asked", "Evaluation period has been sent to the Supervisor", null);
+            loadPage("requestTreatment");
         }
     }
 
@@ -135,7 +139,10 @@ public class PreEvaluationController extends AppController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-
+        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
+        inchargeTF.setText("Evaluator");
         getCurrentReqestedDays();
 
         // GUI Init

@@ -117,12 +117,7 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="66.0" prefWidth="513.0">
                                  <children>
-                                    <Text fx:id="msgFix" fill="#0058d9" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left">
-                                       <font>
-                                          <Font name="System Italic" size="13.0" />
-                                       </font>
-                                    </Text>
-                                    <Text fx:id="deadlineText" fill="#0058d9" layoutX="103.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="time">
+                                    <Text fx:id="titledPane_Text" fill="#0058d9" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>

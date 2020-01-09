@@ -20,7 +20,9 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,7 +103,7 @@ public class decisionController extends AppController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		long estimatedTime = 0;
 		dueDateLabel.setVisible(false);
 		instance = this;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
@@ -131,7 +133,12 @@ public class decisionController extends AppController implements Initializable {
 				reEvaluateBtn.setVisible(true);
 			}
 		}
+		
 		setFieldsData();
+		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+				.toDays();
+		estimatedTime+=1;
+		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 	}
 
 	private void setFieldsData() {
@@ -200,6 +207,7 @@ public class decisionController extends AppController implements Initializable {
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		thisRequest.setReturned(false);
 		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
+		loadPage("requestTreatment");
 	}
 
 	private static int c = 0;

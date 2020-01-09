@@ -93,10 +93,7 @@ public class ClosureController extends AppController implements Initializable {
 	private TitledPane titledPane;
 
 	@FXML
-	private Text msgFix;
-
-	@FXML
-	private Text deadlineText;
+	private Text titledPane_Text;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -116,7 +113,7 @@ public class ClosureController extends AppController implements Initializable {
 			pane_msg.setVisible(true);
 			return;
 		}
-		
+
 		if (!App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
 			System.out.println("2");
 			textInMsgPane.setFill(Color.BLUE);
@@ -131,8 +128,9 @@ public class ClosureController extends AppController implements Initializable {
 		pane_form.setVisible(true);
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
-		deadlineText.setText(String.valueOf(estimatedTime));
-
+		estimatedTime += 1;
+		// titlePane_Text.setText(String.valueOf(estimatedTime));
+		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 		if (thisRequest.getPrevStage().equals("DECISION")) {
 			finishedStatus.setFill(Color.DARKRED);
 			finishedStatus.setText("FAILED");
@@ -142,7 +140,7 @@ public class ClosureController extends AppController implements Initializable {
 			finishedStatus.setText("Request Processed Correctly");
 		}
 
-		//inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
 
 	}
 
@@ -160,10 +158,12 @@ public class ClosureController extends AppController implements Initializable {
 		if (thisRequest.getPrevStage().equals("DECISION")) {
 			query = "UPDATE Requests SET Treatment_Phase = 'CANCELED' , STATUS = 'CANCELED' WHERE RequestID = '"
 					+ thisRequest.getRequestID() + "'";
+			thisRequest.setStatus("Canceled");
 
 		} else {
 			query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
 					+ thisRequest.getRequestID() + "'";
+			thisRequest.setStatus("Done");
 		}
 		// send email
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
@@ -171,6 +171,9 @@ public class ClosureController extends AppController implements Initializable {
 		OperationType ot = OperationType.updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
+		showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
+				+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
+		loadPage("requestTreatment");
 	}
 
 	private static int c = 0;

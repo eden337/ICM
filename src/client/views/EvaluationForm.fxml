@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.EvaluationReportController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.EvaluationReportController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -86,36 +86,36 @@
                               <Font size="24.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" layoutX="20.0" layoutY="173.0" prefHeight="24.0" prefWidth="251.0" text="*Required change location and description:">
+                        <Label alignment="CENTER" layoutX="20.0" layoutY="173.0" prefHeight="24.0" prefWidth="265.0" text="Required change location and description:">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Bold Italic" size="13.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" layoutX="20.0" layoutY="287.0" prefHeight="20.0" prefWidth="99.0" text="*Expected result:">
+                        <Label alignment="CENTER" layoutX="20.0" layoutY="287.0" prefHeight="20.0" prefWidth="99.0" text="Expected result:">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Bold Italic" size="13.0" />
                            </font>
                         </Label>
                         <Label alignment="CENTER" layoutX="20.0" layoutY="400.0" prefHeight="24.0" prefWidth="74.0" text="Constraints:">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Bold Italic" size="13.0" />
                            </font>
                         </Label>
                         <Button fx:id="SbmtEvlBtn" layoutX="231.0" layoutY="611.0" mnemonicParsing="false" onAction="#SbmtEvlBtnClick" prefHeight="35.0" prefWidth="134.0" styleClass="primary" text="Submit Evaluation" />
-                        <Label alignment="CENTER" layoutX="20.0" layoutY="516.0" prefHeight="20.0" prefWidth="115.0" text="*Time Evaluation:">
+                        <Label alignment="CENTER" layoutX="20.0" layoutY="516.0" prefHeight="20.0" prefWidth="115.0" text="Time Evaluation:">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Bold Italic" size="13.0" />
                            </font>
                         </Label>
                         <DatePicker fx:id="timeEvlBox" layoutX="21.0" layoutY="543.0" prefHeight="24.0" prefWidth="146.0" />
                         <TextArea fx:id="reqChngTXT" layoutX="20.0" layoutY="206.0" prefHeight="71.0" prefWidth="544.0" />
                         <TextArea fx:id="expResTXT" layoutX="20.0" layoutY="309.0" prefHeight="83.0" prefWidth="544.0" />
                         <TextArea fx:id="cnstrntTXT" layoutX="20.0" layoutY="424.0" prefHeight="83.0" prefWidth="544.0" />
-                        <TitledPane fx:id="titledPane" animated="false" layoutX="20.0" layoutY="74.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="20.0" layoutY="74.0" prefHeight="71.0" prefWidth="544.0" styleClass="info" text="Waiting for your action">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Evaluation stage. Seems like you need to fix your last Evaluation-Report.">
+                                    <Text fx:id="titledPane_Text" fill="#0600d9" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Evaluation stage. Seems like you need to fix your last Evaluation-Report.">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>
@@ -125,6 +125,21 @@
                           </content>
                         </TitledPane>
                         <Button fx:id="btnRequestExtension" layoutX="418.0" layoutY="611.0" mnemonicParsing="false" onAction="#requestExtension" prefHeight="32.0" prefWidth="146.0" text="Request Extension" />
+                        <Label alignment="CENTER" layoutX="11.0" layoutY="161.0" prefHeight="24.0" prefWidth="17.0" text="*" textFill="#ff0606">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="13.0" layoutY="272.0" prefHeight="38.0" prefWidth="13.0" text="*" textFill="#ff0606">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="12.0" layoutY="505.0" prefHeight="30.0" prefWidth="17.0" text="*" textFill="#ff0606">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                   <Pane fx:id="Pane_locked" layoutX="10.0" layoutY="10.0" prefHeight="710.0" prefWidth="583.0" visible="false">

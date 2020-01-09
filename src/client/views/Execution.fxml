@@ -91,11 +91,11 @@
                               <TextArea fx:id="returnedNotes" editable="false" layoutX="7.0" layoutY="41.0" prefHeight="263.0" prefWidth="519.0" text="none" />
                            </children>
                         </AnchorPane>
-                        <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="71.0" prefWidth="544.0" styleClass="danger" text="Fix Required">
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="71.0" prefWidth="544.0" styleClass="info" text="Fix Required">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Text fx:id="msgFix" fill="#da0000" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
+                                    <Text fx:id="titledPane_Text" fill="#0016d9" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>
@@ -112,16 +112,6 @@
                         <Text layoutX="21.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on This button when the requested change has been done">
                            <font>
                               <Font size="13.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="24.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You have to finish this stage until:">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Text>
-                        <Text fx:id="deadlineText" layoutX="244.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="date" textAlignment="CENTER" wrappingWidth="35.29296875">
-                           <font>
-                              <Font size="14.0" />
                            </font>
                         </Text>
                      </children>

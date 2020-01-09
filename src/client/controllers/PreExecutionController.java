@@ -1,6 +1,7 @@
 package client.controllers;
 
 import client.App;
+import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
@@ -129,7 +130,10 @@ public class PreExecutionController extends AppController implements Initializab
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-
+        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+				dueDateLabel, requestNameLabel, thisRequest);
+        inchargeTF.setText("Executer");
         getCurrentReqestedDays();
 
         // GUI Init
