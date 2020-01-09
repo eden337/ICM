@@ -163,6 +163,11 @@ public class EchoServer extends AbstractServer {
 				res = mysql.insertOrUpdate(m.getObject().toString());
 				sendToClient(new Message(m.getOperationtype(), res), client);
 				break;
+				
+			case Allocate_UpdateRoles:
+				res = mysql.insertOrUpdate(m.getObject().toString());
+				sendToClient(new Message(m.getOperationtype(), res), client);
+				break;
 			case User_getStageRoleObject:
 				User u1 = (User) m.getObject();
 				// stages permission:
