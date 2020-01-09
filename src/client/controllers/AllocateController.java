@@ -139,7 +139,7 @@ public class AllocateController extends AppController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(r.nextInt());
+                cbEvaluator.getSelectionModel().select(rand);
             }
         });
     }
