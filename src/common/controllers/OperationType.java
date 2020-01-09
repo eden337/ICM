@@ -37,9 +37,10 @@ public enum OperationType {
 	Extension_getData,
 	Extension_submit,
 	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS, getSystemData, VAL_GetInitData,
-	SendGeneralEmail, Allocate_UpdateRoles,
-
+	DECISION_SendEmailToUser, Allocate_UpdateRoles,
+	DECISION_GetPrevStage,DECISION_updateRequestStatus
 
 	;
+
 
 }

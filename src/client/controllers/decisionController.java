@@ -4,11 +4,7 @@ import client.App;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
-import common.entity.ChangeRequest;
-import common.entity.EmailContent;
-import common.entity.EvaluationReport;
-import common.entity.OrganizationRole;
-import common.entity.Stage;
+import common.entity.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,20 +12,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.text.Text;
-import server.controllers.EmailSender;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,373 +33,339 @@ import java.util.concurrent.TimeUnit;
 
 public class decisionController extends AppController implements Initializable {
 
-	/*
-	 * this static variable is supposed to hold all the data of the request chosen
-	 * in request treatment
-	 */
-	// public static ChangeRequest thisRequest;
-	public static decisionController instance;
+    /*
+     * this static variable is supposed to hold all the data of the request chosen
+     * in request treatment
+     */
+    // public static ChangeRequest thisRequest;
+    public static decisionController instance;
 
-	protected ChangeRequest thisRequest;
-	private common.entity.Stage thisStage;
+    protected ChangeRequest thisRequest;
+    private common.entity.Stage thisStage;
+    private Stage prevStage;
 
-	@FXML
-	private Text idText;
+    @FXML
+    private Text idText;
 
-	@FXML
-	private Text requestID;
+    @FXML
+    private Text requestID;
 
-	@FXML
-	private TextArea existingCondition;
+    @FXML
+    private TextArea existingCondition;
 
-	@FXML
-	private TextArea descripitionsTextArea;
+    @FXML
+    private TextArea descripitionsTextArea;
 
-	@FXML
-	private Text msg;
+    @FXML
+    private Text msg;
 
-	@FXML
-	private TextField inchargeTF;
+    @FXML
+    private TextField inchargeTF;
 
-	@FXML
-	private Text departmentID;
+    @FXML
+    private Text departmentID;
 
-	@FXML
-	private Text idText1;
+    @FXML
+    private Text idText1;
 
-	@FXML
-	private Text requestNameLabel;
+    @FXML
+    private Text requestNameLabel;
 
-	@FXML
-	private Text idText2;
+    @FXML
+    private Text idText2;
 
-	@FXML
-	private Text dueDateLabel;
+    @FXML
+    private Text dueDateLabel;
 
-	@FXML
-	private TextArea requiredChangeText;
+    @FXML
+    private TextArea requiredChangeText;
 
-	@FXML
-	private TextArea expectedResultText;
+    @FXML
+    private TextArea expectedResultText;
 
-	@FXML
-	private TextArea constraintText;
+    @FXML
+    private TextArea constraintText;
 
-	@FXML
-	private Text timeEvaluationText;
+    @FXML
+    private Text timeEvaluationText;
 
-	@FXML
-	private Button reEvaluateBtn;
+    @FXML
+    private Button reEvaluateBtn;
 
-	@FXML
-	private Button approveBtn;
+    @FXML
+    private Button approveBtn;
 
-	@FXML
-	private Button declineBtn;
+    @FXML
+    private Button declineBtn;
 
-	@FXML
-	private TitledPane titledPane;
+    @FXML
+    private TitledPane titledPane;
 
-	@FXML
-	private Text titledPane_Text;
+    @FXML
+    private Text titledPane_Text;
 
-	@FXML
-	private Button btnRequestExtension;
+    @FXML
+    private Button btnRequestExtension;
 
-	private Stage prevStage; 
-	
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		long estimatedTime = 0;
-		instance = this;
-		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		thisStage = thisRequest.getCurrentStageObject();
 
-		dueDateLabel.setVisible(false);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        long estimatedTime = 0;
+        instance = this;
+        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
 
-		titledPane.setCollapsible(false);
-		titledPane.setText("Waiting for your action");
+        dueDateLabel.setVisible(false);
 
-		approveBtn.setVisible(false);
-		declineBtn.setVisible(false);
-		reEvaluateBtn.setVisible(false);
-		inchargeTF.setText("Committee Chairman");
-		btnRequestExtension.setVisible(false);
+        titledPane.setCollapsible(false);
+        titledPane.setText("Waiting for your action");
 
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+        approveBtn.setVisible(false);
+        declineBtn.setVisible(false);
+        reEvaluateBtn.setVisible(false);
+        inchargeTF.setText("Committee Chairman");
+        btnRequestExtension.setVisible(false);
 
-		if (!thisRequest.getCurrentStage().equals("DECISION")) {
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+                dueDateLabel, requestNameLabel, thisRequest);
 
-			titledPane.setText("This stage is done");
-			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
-			titledPane.getStyleClass().remove("danger");
-			titledPane.getStyleClass().add("success");
-			return;
-		} else {
-			if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
-				approveBtn.setVisible(true);
-				declineBtn.setVisible(true);
-				reEvaluateBtn.setVisible(true);
-				setExtensionVisability();
-			} else {
-				if (thisStage.getExtension_days() != 0)
-					btnRequestExtension.setVisible(true);
-			}
-		}
+        if (!thisRequest.getCurrentStage().equals("DECISION")) {
 
-		setFieldsData();
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime += 1;
-		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-	}
+            titledPane.setText("This stage is done");
+            titledPane_Text.setText("This Report has Been Approved. The stage is done.");
+            titledPane.getStyleClass().remove("danger");
+            titledPane.getStyleClass().add("success");
+            return;
+        } else {
+            if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+                approveBtn.setVisible(true);
+                declineBtn.setVisible(true);
+                reEvaluateBtn.setVisible(true);
+                setExtensionVisability();
+            } else {
+                if (thisStage.getExtension_days() != 0)
+                    btnRequestExtension.setVisible(true);
+            }
+        }
 
-	private void setFieldsData() {
-		OperationType ot = OperationType.DECISION_GetAllReportsByRID;
-		String query = "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID()
-				+ " ORDER BY Report_ID DESC LIMIT 1;";
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}
+        setFieldsData();
+        estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+                .toDays();
+        estimatedTime += 1;
+        Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+    }
 
-	public void setFieldsData_ServerResponse(Object object) {
-		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
-		if (reports.size() > 0) {
-			// SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
-			EvaluationReport individualReport = reports.get(0);
-			Date reportDate = individualReport.getTimestamp();
-			Calendar reportDateCal = Calendar.getInstance();
-			reportDateCal.setTime(reportDate);
-			reportDateCal.add(Calendar.DATE, 7);
-			reportDateCal.set(Calendar.HOUR_OF_DAY, 0);
-			reportDateCal.set(Calendar.MINUTE, 0);
-			reportDateCal.set(Calendar.SECOND, 0);
-			reportDateCal.set(Calendar.MILLISECOND, 0);
+    private void setFieldsData() {
+        OperationType ot = OperationType.DECISION_GetAllReportsByRID;
+        String query = "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID()
+                + " ORDER BY Report_ID DESC LIMIT 1;";
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+    }
 
-			Date today = new Date(System.currentTimeMillis());
-			Calendar todayCal = Calendar.getInstance();
-			todayCal.set(Calendar.HOUR_OF_DAY, 0);
-			todayCal.set(Calendar.MINUTE, 0);
-			todayCal.set(Calendar.SECOND, 0);
-			todayCal.set(Calendar.MILLISECOND, 0);
+    public void setFieldsData_ServerResponse(Object object) {
+        ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
+        if (reports.size() > 0) {
+            // SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+            EvaluationReport individualReport = reports.get(0);
+            Date reportDate = individualReport.getTimestamp();
+            Calendar reportDateCal = Calendar.getInstance();
+            reportDateCal.setTime(reportDate);
+            reportDateCal.add(Calendar.DATE, 7);
+            reportDateCal.set(Calendar.HOUR_OF_DAY, 0);
+            reportDateCal.set(Calendar.MINUTE, 0);
+            reportDateCal.set(Calendar.SECOND, 0);
+            reportDateCal.set(Calendar.MILLISECOND, 0);
 
-			long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
-			long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+            Date today = new Date(System.currentTimeMillis());
+            Calendar todayCal = Calendar.getInstance();
+            todayCal.set(Calendar.HOUR_OF_DAY, 0);
+            todayCal.set(Calendar.MINUTE, 0);
+            todayCal.set(Calendar.SECOND, 0);
+            todayCal.set(Calendar.MILLISECOND, 0);
 
-			if (thisRequest.getCurrentStage().equals("DECISION")) {
-				if (daysDiff >= 0) {
-					titledPane_Text.setText(
-							TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
-					titledPane.getStyleClass().removeAll();
-					titledPane.getStyleClass().add("info");
-				} else {
-					titledPane_Text
-							.setText("Stage in " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
-					titledPane.getStyleClass().removeAll();
-					titledPane.getStyleClass().add("danger");
-				}
+            long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
+            long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-			}
-			requiredChangeText.setText(individualReport.getRequired_change());
-			expectedResultText.setText(individualReport.getExpected_result());
-			constraintText.setText(individualReport.getExpected_risks());
-			timeEvaluationText.setText(individualReport.getEstimated_time().toLocalDate().toString());
-		}
-	}
+            if (thisRequest.getCurrentStage().equals("DECISION")) {
+                if (daysDiff >= 0) {
+                    titledPane_Text.setText(
+                            TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
+                    titledPane.getStyleClass().removeAll();
+                    titledPane.getStyleClass().add("info");
+                } else {
+                    titledPane_Text
+                            .setText("Stage in " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " days late!");
+                    titledPane.getStyleClass().removeAll();
+                    titledPane.getStyleClass().add("danger");
+                }
 
-	@FXML
-	void approveBtnClick(ActionEvent event) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date today = new Date(System.currentTimeMillis());
+            }
+            requiredChangeText.setText(individualReport.getRequired_change());
+            expectedResultText.setText(individualReport.getExpected_result());
+            constraintText.setText(individualReport.getExpected_risks());
+            timeEvaluationText.setText(individualReport.getEstimated_time().toLocalDate().toString());
+        }
+    }
 
-		String query1 = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "'";
-		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+    @FXML
+    void approveBtnClick(ActionEvent event) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date today = new Date(System.currentTimeMillis());
 
-		OperationType ot = OperationType.DECI_UpdateDB;
-		App.client.handleMessageFromClientUI(new Message(ot, query1));
-		App.client.handleMessageFromClientUI(new Message(ot, query2));
-		thisRequest.setReturned(false);
-		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
-		loadPage("requestTreatment");
-	}
+        String query1 = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
+                + thisRequest.getRequestID() + "'";
+        String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
-	private static int c = 0;
+        OperationType ot = OperationType.DECI_UpdateDB;
+        App.client.handleMessageFromClientUI(new Message(ot, query1));
+        App.client.handleMessageFromClientUI(new Message(ot, query2));
+        thisRequest.setReturned(false);
+        showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
+        loadPage("requestTreatment");
+    }
 
-	public void queryResult(Object object) {
-		c++;
-		boolean res = (boolean) object;
-		if (c == 2) {
-			if (res) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						loadPage("requestTreatment");
-					}
-				});
-			} else
-				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
-		}
-	}
+    private static int c = 0;
 
-	@FXML
-	void declineBtnClick(ActionEvent event) {
-		thisRequest.setPrevStage("DECISION");
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date today = new Date(System.currentTimeMillis());
-		ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
-		String tomorrowFormat = tomorrow.getYear() + "/" + tomorrow.getMonthValue() + "/" + tomorrow.getDayOfMonth();
-		String query1 = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "'";
-		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query3 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query4 = " UPDATE `Stage` SET  `Deadline` = '" + tomorrowFormat
-				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'DECISION' where  `StageName` = 'CLOSURE' AND `RequestID` = '"
-				+ thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query1));
-		App.client.handleMessageFromClientUI(new Message(ot, query2));
-		App.client.handleMessageFromClientUI(new Message(ot, query3));
-		App.client.handleMessageFromClientUI(new Message(ot, query4));
-		App.client.handleMessageFromClientUI(new Message(ot, query5));
-		showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
-	}
-	
-	void setStageTable() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date today = new Date(System.currentTimeMillis());
+    public void queryResult(Object object) {
+        c++;
+        boolean res = (boolean) object;
+        if (c == 2 && res) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
+        }
+    }
 
-		String query = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "'";
-		//put in echo server
-		String query2 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
-				+ thisRequest.getRequestID() + ";";
-		String query3 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query4 = "SELECT * FROM 'Stage'  WHERE 'RequestID' = '" + thisRequest.getRequestID()
-				+ "' AND 'StageName' = 'EVALUATION' LIMIT 1";
-		String query5 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
-				+ thisRequest.getRequestID();
+    @FXML
+    void declineBtnClick(ActionEvent event) {
+        thisRequest.setPrevStage("DECISION");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date today = new Date(System.currentTimeMillis());
+        ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
+        String tomorrowFormat = tomorrow.getYear() + "/" + tomorrow.getMonthValue() + "/" + tomorrow.getDayOfMonth();
+        String query1 = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+                + thisRequest.getRequestID() + "'";
+        String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+        String query3 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+        String query4 = " UPDATE `Stage` SET  `Deadline` = '" + tomorrowFormat
+                + "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+        String query5 = " UPDATE `Stage` SET  `PrevStage` = 'DECISION' where  `StageName` = 'CLOSURE' AND `RequestID` = '"
+                + thisRequest.getRequestID() + "';";
+        OperationType ot = OperationType.updateRequestStatus;
+        App.client.handleMessageFromClientUI(new Message(ot, query1));
+        App.client.handleMessageFromClientUI(new Message(ot, query2));
+        App.client.handleMessageFromClientUI(new Message(ot, query3));
+        App.client.handleMessageFromClientUI(new Message(ot, query4));
+        App.client.handleMessageFromClientUI(new Message(ot, query5));
+        showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
+        reEvaluateBtn.setDisable(true);
+        approveBtn.setDisable(true);
+        declineBtn.setDisable(true);
+        loadPage("requestTreatment");
+    }
 
-		OperationType ot = OperationType.updateRequestStatus;
-		OperationType ot2 = OperationType.SendGeneralEmail;
-		OperationType ot3 = OperationType.updateRequestStatus;
-		OperationType ot4 = OperationType.GetDataForRepeted;
-		OperationType ot5 = OperationType.updateRequestStatus;
 
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		App.client.handleMessageFromClientUI(new Message(ot2, query2));
-		App.client.handleMessageFromClientUI(new Message(ot3, query3));
-		App.client.handleMessageFromClientUI(new Message(ot4, query4));
-		// System.out.println(getPrevStageObject().getIncharge() + " " +
-		// getPrevStageObject().getStageName());
-		App.client.handleMessageFromClientUI(new Message(ot5, query5));
-		// Stage currentStage = thisRequest.getCurrentStageObject();
-	}
-	
-	@FXML
-	void reEvaluateBtnClick(ActionEvent event) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date today = new Date(System.currentTimeMillis());
+    @FXML
+    void reEvaluateBtnClick(ActionEvent event) {
+        OperationType ot = OperationType.DECISION_GetPrevStage;
+        String query = "SELECT * FROM `Stage`  WHERE `RequestID` = " + thisRequest.getRequestID()
+                + " AND `StageName` = 'EVALUATION' LIMIT 1";
+        App.client.handleMessageFromClientUI(new Message(ot, query));
 
-		String query = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "'";
+//		reEvaluateBtn.setDisable(true);
+//		approveBtn.setDisable(true);
+//		declineBtn.setDisable(true);
+//		loadPage("requestTreatment");
+    }
 
-		String query2 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
-				+ thisRequest.getRequestID() + ";";
-		String query3 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query4 = "SELECT * FROM 'Stage'  WHERE 'RequestID' = '" + thisRequest.getRequestID()
-				+ "' AND 'StageName' = 'EVALUATION' LIMIT 1";
-		String query5 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
-				+ thisRequest.getRequestID();
+    // Extensions:
+    private void setExtensionVisability() {
+        btnRequestExtension.setVisible(false);
+        long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if (daysDifference >= -3) {
+            btnRequestExtension.setVisible(true);
+            if (thisStage.getExtension_days() != 0)
+                btnRequestExtension.setDisable(true);
+        }
+    }
 
-		OperationType ot = OperationType.updateRequestStatus;
-		OperationType ot2 = OperationType.SendGeneralEmail;
-		OperationType ot3 = OperationType.updateRequestStatus;
-		OperationType ot4 = OperationType.GetDataForRepeted;
-		OperationType ot5 = OperationType.updateRequestStatus;
+    @FXML
+    void requestExtension(ActionEvent event) {
+        start(new javafx.stage.Stage());
+    }
 
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		App.client.handleMessageFromClientUI(new Message(ot2, query2));
-		App.client.handleMessageFromClientUI(new Message(ot3, query3));
-		App.client.handleMessageFromClientUI(new Message(ot4, query4));
-		// System.out.println(getPrevStageObject().getIncharge() + " " +
-		// getPrevStageObject().getStageName());
-		App.client.handleMessageFromClientUI(new Message(ot5, query5));
-		// Stage currentStage = thisRequest.getCurrentStageObject();
+    public void start(javafx.stage.Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Extension");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Could not load execution prompt");
+            e.printStackTrace();
+        }
+    }
 
-		showAlert(AlertType.INFORMATION, "Need to Re-Evaluate", "Request moved back to evaluation phase...", null);
-// Select Email from Employees where username = thisrequest.getStageObject().getIncharge
-//
+    public void appendPrevStageObject_ServerResponse(Object object) {
+        this.prevStage = (common.entity.Stage) object;
+        if (prevStage == null) {
+            showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
+        } else { // all good
+            setStageTable();
+        }
+    }
 
-		/*
-		 * query =
-		 * "INSERT into 'Repeted'(RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ("
-		 * +prevStageObject.getRequestID() +", "+
-		 * prevStageObject.getStageName()+", "+prevStageObject.getStartTime()+", "+
-		 * prevStageObject.getEndTime()+", " +prevStageObject.getDeadline() +", "+
-		 * prevStageObject.getIncharge()+");";
-		 */
-		// ot = OperationType.updateRequestStatus;
-		// App.client.handleMessageFromClientUI(new Message(ot, query));
 
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
-	}
+    void setStageTable() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date today = new Date(System.currentTimeMillis());
+        //put in echo server
 
-	// Extensions:
-	private void setExtensionVisability() {
-		btnRequestExtension.setVisible(false);
-		long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
-		if (daysDifference >= -3) {
-			btnRequestExtension.setVisible(true);
-			if (thisStage.getExtension_days() != 0)
-				btnRequestExtension.setDisable(true);
-		}
-	}
+        String query1 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
+                + thisRequest.getRequestID() + "'";
+        String query2 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+        String query3 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
+                + thisRequest.getRequestID();
+        String query4 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
+                + thisRequest.getRequestID() + ";";
+        OperationType ot = OperationType.DECISION_updateRequestStatus;
+        OperationType ot2 = OperationType.DECISION_SendEmailToUser;
 
-	@FXML
-	void requestExtension(ActionEvent event) {
-		start(new javafx.stage.Stage());
-	}
+        App.client.handleMessageFromClientUI(new Message(ot, query1));
+        App.client.handleMessageFromClientUI(new Message(ot, query2));
+        App.client.handleMessageFromClientUI(new Message(ot, query3));
+        App.client.handleMessageFromClientUI(new Message(ot2, query4));
+    }
 
-	public void start(javafx.stage.Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Extension");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load execution prompt");
-			e.printStackTrace();
-		}
-	}
+    private static int c2 = 0;
 
-	public void appendStageObject_ServerResponse(Object object) {
-		// TODO Auto-generated method stub
-		common.entity.Stage currentStage = (common.entity.Stage) object;
-		setPrevStage(currentStage);
-	}
+    public void queryResult2(Object object) {
+        c2++;
+        boolean res = (boolean) object;
+        if (c2 == 3 && res) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+        }
+    }
 
-	public Stage getPrevStage() {
-		return prevStage;
-	}
 
-	public void setPrevStage(Stage prevStage) {
-		this.prevStage = prevStage;
-	}
 }

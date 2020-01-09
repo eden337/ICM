@@ -1,13 +1,9 @@
 package client.controllers;
 
-import java.util.ArrayList;
-
 import client.App;
 import common.controllers.Message;
-import common.controllers.OperationType;
-import common.entity.EmployeeUser;
-import common.entity.EvaluationReport;
 //
+
 /**
  * get <Code> Message </code> from server and send it to the relevant
  * controller. Usually used for transfer data from db to client.
@@ -44,11 +40,11 @@ public class ClientMessages {
                 LoginController.instance.getLoginResult(m.getObject());
                 break;
             case getEmployeeData:
-            	ManagerViewPage.Instance.setDataTable(m.getObject());
+                ManagerViewPage.Instance.setDataTable(m.getObject());
                 break;
             case getSystemData:
-            	ManagerViewPage.Instance.setSystemData(m.getObject());
-                  	break;
+                ManagerViewPage.Instance.setSystemData(m.getObject());
+                break;
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;
@@ -76,21 +72,21 @@ public class ClientMessages {
             case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
-            case updateRoleInOrg : 
+            case updateRoleInOrg:
             case deleteMember:
-    
-            	break;
+
+                break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-                
+
             case VAL_GetAllReportsByRID:
                 ValidationController.instance.queryResult(m.getObject());
                 break;
-            
+
             case EXE_UpdateDB:
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
@@ -107,8 +103,8 @@ public class ClientMessages {
                 ExecutionController.instance.checkPreConditions_ServerResponse(m.getObject());
                 break;
             case VAL_GetInitData:
-            	ValidationController.instance.checkPreConditions_ServerResponse(m.getObject());
-            	break;
+                ValidationController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
             // pre EXE
             case PreEXE_SetInitStat:
             case PreEXE_SetConfirmationStatus:
@@ -130,21 +126,24 @@ public class ClientMessages {
             case Extension_submit:
                 ExtensionController.instance.InsertOrUpdate_ServerResponse(m.getObject());
                 break;
-            case GetDataForRepeted:
-            	decisionController.instance.appendStageObject_ServerResponse(m.getObject());
-                break;  
             case ChangeRequest_getStageObject:
                 requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
-                break;        
+                break;
             case updateSystems:
-            	ManagerViewPage.Instance.getquery(m.getObject());
-            	break;
+                ManagerViewPage.Instance.getquery(m.getObject());
+                break;
             case PreValidation_GetCOMMITEE_MEMBERS:
                 PreValidationController.instance.setComboBoxesData(m.getObject());
                 break;
             case PreValidation_SetRole:
                 PreValidationController.instance.queryResult(m.getObject());
-              default:
+            case DECISION_GetPrevStage:
+                decisionController.instance.appendPrevStageObject_ServerResponse(m.getObject());
+                break;
+            case DECISION_updateRequestStatus:
+                decisionController.instance.queryResult2(m.getObject());
+                break;
+            default:
                 break;
         }
     }
