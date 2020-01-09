@@ -1,5 +1,6 @@
 package client.controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,7 +22,10 @@ import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -110,6 +114,13 @@ public class ValidationController extends AppController implements Initializable
 	private Text titledPane_Text;
 	private boolean responseChairman = false;
 
+	@FXML
+	private Button btnRequestExtension;
+
+	@FXML
+	private Button btnAnswerStageExtensionRequest;
+
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		pane_msg.setVisible(false);
@@ -117,6 +128,11 @@ public class ValidationController extends AppController implements Initializable
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+
+
+		btnAnswerStageExtensionRequest.setVisible(false);
+		thisStage = thisRequest.getCurrentStageObject();
+
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
 
@@ -132,11 +148,15 @@ public class ValidationController extends AppController implements Initializable
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
 			inchargeTF.setText("Tester");
+			if(thisStage.getExtension_reason()!=null)
+				btnAnswerStageExtensionRequest.setVisible(true);
 			return;
 		}
 
 		// Otherwise: this is the Tester in his stage
 		pane_form.setVisible(true);
+		setExtensionVisability();
+
 		// titledPane.setVisible(false);
 		// dueDateLabel.setVisible(true);
 		// rightPane.setVisible(false);
@@ -298,6 +318,37 @@ public class ValidationController extends AppController implements Initializable
 				});
 			} else
 				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+		}
+	}
+
+	// Extensions:
+	private void setExtensionVisability() {
+		btnRequestExtension.setVisible(false);
+		long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+		if (daysDifference >= -3) {
+			btnRequestExtension.setVisible(true);
+			if (thisStage.getExtension_days() != 0)
+				btnRequestExtension.setDisable(true);
+		}
+
+	}
+
+	@FXML
+	void requestExtension(ActionEvent event) {
+		start(new javafx.stage.Stage());
+	}
+
+	public void start(javafx.stage.Stage primaryStage) {
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+			Scene scene = new Scene(root);
+			primaryStage.setTitle("Extension");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not load execution prompt");
+			e.printStackTrace();
 		}
 	}
 }

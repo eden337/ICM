@@ -139,6 +139,7 @@ public class decisionController extends AppController implements Initializable {
 			titledPane_Text.setText("This Report has Been Approved. The stage is done.");
 			titledPane.getStyleClass().remove("danger");
 			titledPane.getStyleClass().add("success");
+			return;
 		} else {
 			if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
 				approveBtn.setVisible(true);

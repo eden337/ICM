@@ -114,7 +114,6 @@ public class ExtensionController extends AppController implements Initializable 
 
 
     public void initScreen() {
-        System.out.println(thisStage);
         if (thisStage.getExtension_reason() != null ) { // if request sent
             defualtPane.setVisible(true);
             tfDays.setEditable(false);
