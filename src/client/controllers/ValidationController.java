@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -119,8 +120,8 @@ public class ValidationController extends AppController implements Initializable
 
 	@FXML
 	private Button btnAnswerStageExtensionRequest;
-
-
+	private String reportResult;
+	private Stage prevStage;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		pane_msg.setVisible(false);
@@ -128,16 +129,15 @@ public class ValidationController extends AppController implements Initializable
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-
-
+		
 		btnAnswerStageExtensionRequest.setVisible(false);
 		thisStage = thisRequest.getCurrentStageObject();
 
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-
+		
 		checkPreConditions();
-
+		checkReport();
 		if (!thisRequest.getCurrentStage().equals("VALIDATION")) {
 			pane_msg.setVisible(true);
 			return;
@@ -148,7 +148,7 @@ public class ValidationController extends AppController implements Initializable
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
 			inchargeTF.setText("Tester");
-			if(thisStage.getExtension_reason()!=null)
+			if (thisStage.getExtension_reason() != null)
 				btnAnswerStageExtensionRequest.setVisible(true);
 			return;
 		}
@@ -163,7 +163,7 @@ public class ValidationController extends AppController implements Initializable
 		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
-		estimatedTime+=1;
+		estimatedTime += 1;
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 
@@ -247,26 +247,92 @@ public class ValidationController extends AppController implements Initializable
 	// in this case we need to color validation back to red because it is incomplete
 	@FXML
 	void failureReportBtnClicked(ActionEvent event) {
+		OperationType ot = OperationType.VALID_GetPrevStage;
+		String query = "SELECT * FROM `Stage`  WHERE `RequestID` = " + thisRequest.getRequestID()
+				+ " AND `StageName` = 'EXECUTION' LIMIT 1";
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+	}
+	
+	void setStageTable() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		Calendar c = Calendar.getInstance();
 		Date today = new Date(System.currentTimeMillis());
 		c.setTime(today);
 		c.add(Calendar.DATE, 7);
 		Date deadlineDate = c.getTime();
-		String query = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
+		String query1 = "UPDATE Requests SET Treatment_Phase = 'EXECUTION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
-		OperationType ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-
-		query = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+		String query2 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		ot = OperationType.updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		showAlert(AlertType.INFORMATION, "Execution Failed!", "Please notify the execution leader for re-execution",
-				null);
-		thisRequest.setReturnedNote(failReportTextArea.getText());
-		loadPage("requestTreatment");
+		String query3 = "INSERT INTO Repeted (RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ('"
+				+ prevStage.getRequestID() + "', '" + prevStage.getStageName() + "', '"
+				+ prevStage.getStartTime().format(formatter) + "', '" + prevStage.getEndTime().format(formatter)
+				+ "', '" + prevStage.getDeadline().format(formatter) + "', '" + prevStage.getIncharge() + "');";
+		OperationType ot = OperationType.VALID_GetPrevStage;
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
+		App.client.handleMessageFromClientUI(new Message(ot, query3));
 	}
+	
+	public void appendPrevStageObject_ServerResponse(Object object) {
+		this.prevStage = (common.entity.Stage) object;
+		if (prevStage == null) {
+			showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
+		} else { // all good
+			setStageTable();
+		}
+	}
+	
+	
+	
+	private static int c2 = 0;
+
+	public void queryResult2(Object object) {
+		c2++;
+		boolean res = (boolean) object;
+		if (c2 == 3) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.CONFIRMATION, "Return to Executer",
+								"The report was sent to the execution stage", null);
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Cannot re-execute", null);
+		}
+	}
+	
+	void checkReport() {
+		OperationType ot = OperationType.VALID_CheckReport;
+		String query = "SELECT * FROM `Execution Failure Report` WHERE RequestID = "+thisRequest.getRequestID() ;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+	}
+	
+	public void setValidationTable() {
+		
+		String query3 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUE ( '"
+				+ thisRequest.getRequestID() + "', '" + failReportTextArea.getText() + "')";
+		OperationType ot = OperationType.VALID_updateRequestStatus;
+		App.client.handleMessageFromClientUI(new Message(ot, query3));
+	}
+	
+	public void getReport_ServerResponse(Object object) {
+		this.reportResult = (String) object;
+		System.out.println(reportResult);
+		if (reportResult == null) {
+			setValidationTable();
+		} else { // if the returned result was back 
+			showAlert(AlertType.INFORMATION, "Report already exists", "The report already been sent to the executer", null);
+			noBtn.setVisible(false);
+		}
+	}
+	
+
+	
 
 	@FXML
 	void noBtnClick(ActionEvent event) {
@@ -292,7 +358,8 @@ public class ValidationController extends AppController implements Initializable
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query4 = " UPDATE `Stage` SET  `Deadline` = '" + tomorrowFormat
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'VALIDATION' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'VALIDATION' where  `StageName` = 'CLOSURE' AND `RequestID` = '"
+				+ thisRequest.getRequestID() + "';";
 		OperationType ot = OperationType.VALID_UpdateDB;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
@@ -308,11 +375,13 @@ public class ValidationController extends AppController implements Initializable
 	public void queryResult(Object object) {
 		c++;
 		boolean res = (boolean) object;
-		if (c == 3) {
+		if (c == 5) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+						showAlert(AlertType.INFORMATION, "Return to evaluator",
+								"A email message was sent to the evaluator", null);
 						loadPage("requestTreatment");
 					}
 				});
@@ -351,4 +420,6 @@ public class ValidationController extends AppController implements Initializable
 			e.printStackTrace();
 		}
 	}
+
+	
 }

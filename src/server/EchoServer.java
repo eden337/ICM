@@ -218,7 +218,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
-
+                    
                 case DECISION_GetAllReportsByRID:
                 case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
@@ -238,7 +238,7 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 // need for considerations...
-
+                case VALID_updateRequestStatus:
                 case DECI_UpdateDB:
                 case EVAL_UpdateDB:
                 case VALID_UpdateDB:
@@ -321,6 +321,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case VALID_GetPrevStage:
                 case DECISION_GetPrevStage:
                 case ChangeRequest_getStageObject:
                     rs = mysql.getQuery(m.getObject().toString());
@@ -332,7 +333,7 @@ public class EchoServer extends AbstractServer {
                                 Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge")
                                 , rs.getInt("init"), rs.getInt("init_confirmed"), rs.getInt("extension_days"), rs.getString("extension_reason"), rs.getString("extension_decision"), rs.getString("PrevStage"));
                     }
-                    System.out.println(cStage);
+      
                     sendToClient(new Message(m.getOperationtype(), cStage), client);
                     break;
                 case updateSystems:
@@ -351,10 +352,21 @@ public class EchoServer extends AbstractServer {
                     } finally {
                         break;
                     }
+                    
                 case DECISION_updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case VALID_CheckReport:
+                case EXECUTION_GetFailReport:
+                	rs =mysql.getQuery(m.getObject().toString());
+                	String s = null;
+                	while(rs.next()) {
+                		s = rs.getString("Report");
+                	}
+                	sendToClient(new Message(m.getOperationtype(), s), client);
+                	break;        
+                	
                 default:
                     break;
             }

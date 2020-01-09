@@ -82,7 +82,11 @@ public class ClientMessages {
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-
+            
+            case VALID_updateRequestStatus:
+            	ValidationController.instance.queryResult2(m.getObject());
+            	break;
+                
             case VAL_GetAllReportsByRID:
                 ValidationController.instance.queryResult(m.getObject());
                 break;
@@ -143,6 +147,15 @@ public class ClientMessages {
             case DECISION_updateRequestStatus:
                 decisionController.instance.queryResult2(m.getObject());
                 break;
+            case VALID_CheckReport:
+            	ValidationController.instance.getReport_ServerResponse(m.getObject());
+            	break;
+            case VALID_GetPrevStage:
+            	ValidationController.instance.appendPrevStageObject_ServerResponse(m.getObject());
+            	break;
+            case EXECUTION_GetFailReport:
+            	ExecutionController.instance.getReport_ServerResponse(m.getObject());
+            	break;
             default:
                 break;
         }

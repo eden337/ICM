@@ -114,6 +114,8 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@FXML
 	private Button btnAnswerStageExtensionRequest;
+	
+	private String reportResult;
 
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
@@ -127,7 +129,7 @@ public class ExecutionController extends AppController implements Initializable 
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		thisStage = thisRequest.getCurrentStageObject();
-
+		
 		btnRequestExtension.setVisible(false);
 		btnAnswerStageExtensionRequest.setVisible(false);
 		if(thisStage.getExtension_reason()!=null)
@@ -139,7 +141,9 @@ public class ExecutionController extends AppController implements Initializable 
 		titledPane.setText("Waiting for your action");
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-
+		checkPreConditions();
+		reportNoteUpdater();
+		setExtensionVisability();
 		if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
 			pane_msg.setVisible(true);
 			inchargeTF.setText("Executer");
@@ -154,8 +158,7 @@ public class ExecutionController extends AppController implements Initializable 
 			return;
 		}
 
-		checkPreConditions();
-		setExtensionVisability();
+		
 
 		// the supervisor should present the stage in progress after he approved the
 		// time
@@ -187,6 +190,24 @@ public class ExecutionController extends AppController implements Initializable 
 		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
 
 	}
+	
+	private void reportNoteUpdater() {
+		OperationType ot = OperationType.EXECUTION_GetFailReport;
+		String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID()+" LIMIT 1";
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+	}
+	
+	public void getReport_ServerResponse(Object object) {
+		this.reportResult = (String) object;
+		if (reportResult == null) {
+			//showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
+			returnedNoteAP.setVisible(false);
+		} else { // if the returned result was back 
+			returnedNoteAP.setVisible(true);
+			returnedNotes.setText(reportResult);
+		}
+	}
+	
 
 	// first click on this button to send to supervisor
 	private void checkPreConditions() {
