@@ -53,7 +53,7 @@ public class ClientMessages {
                 break;
 
             case ChangeRequest_File:
-                ChangeRequestController.instance.uploadFileAndqueryResult(m.getObject());
+                ChangeRequestController.instance.uploadFileResult(m.getObject());
                 break;
             case Allocate_GetITUsers:
                 AllocateController.instance.setComboBoxesData(m.getObject());
