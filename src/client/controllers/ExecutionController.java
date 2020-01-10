@@ -213,7 +213,7 @@ public class ExecutionController extends AppController implements Initializable 
 	private void checkPreConditions() {
 		OperationType ot = OperationType.EXE_GetInitData;
 		String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID()
-				+ "' AND `StageName` = 'EXECUTION' LIMIT 1";
+				+ "' AND `StageName` = 'EXECUTION'";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
 

@@ -124,6 +124,7 @@ public class ValidationController extends AppController implements Initializable
 	private Stage prevStage;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		reportResult = null;
 		pane_msg.setVisible(false);
 		pane_form.setVisible(false);
 		instance = this;
@@ -137,7 +138,7 @@ public class ValidationController extends AppController implements Initializable
 				dueDateLabel, requestNameLabel, thisRequest);
 		
 		checkPreConditions();
-		checkReport();
+		
 		if (!thisRequest.getCurrentStage().equals("VALIDATION")) {
 			pane_msg.setVisible(true);
 			return;
@@ -165,8 +166,10 @@ public class ValidationController extends AppController implements Initializable
 				.toDays();
 		estimatedTime += 1;
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+		
+		checkReport();
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-
+		
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");
 		failReportLabel.setVisible(false);
@@ -320,6 +323,8 @@ public class ValidationController extends AppController implements Initializable
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 	}
 	
+	
+	///the problem is here
 	public void getReport_ServerResponse(Object object) {
 		this.reportResult = (String) object;
 		System.out.println(reportResult);
