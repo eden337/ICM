@@ -1,7 +1,6 @@
 package server;
 // This file contains material supporting section 3.7 of the textbook:
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
@@ -352,12 +351,12 @@ public class EchoServer extends AbstractServer {
                     } finally {
                         break;
                     }
-                    
+                case VALID_UpdateRepeated:
                 case DECISION_updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
-                case VALID_CheckReport:
+                case VALID_GetReport:
                 case EXECUTION_GetFailReport:
                 	rs =mysql.getQuery(m.getObject().toString());
                 	String s = null;

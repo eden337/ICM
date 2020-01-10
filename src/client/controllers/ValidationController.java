@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import client.App;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
@@ -254,6 +255,7 @@ public class ValidationController extends AppController implements Initializable
 		String query = "SELECT * FROM `Stage`  WHERE `RequestID` = " + thisRequest.getRequestID()
 				+ " AND `StageName` = 'EXECUTION' LIMIT 1";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		setValidationTable();
 	}
 	
 	void setStageTable() {
@@ -272,7 +274,7 @@ public class ValidationController extends AppController implements Initializable
 				+ prevStage.getRequestID() + "', '" + prevStage.getStageName() + "', '"
 				+ prevStage.getStartTime().format(formatter) + "', '" + prevStage.getEndTime().format(formatter)
 				+ "', '" + prevStage.getDeadline().format(formatter) + "', '" + prevStage.getIncharge() + "');";
-		OperationType ot = OperationType.VALID_GetPrevStage;
+		OperationType ot = OperationType.VALID_UpdateRepeated;
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
@@ -308,36 +310,45 @@ public class ValidationController extends AppController implements Initializable
 				showAlert(AlertType.ERROR, "Error!", "Cannot re-execute", null);
 		}
 	}
-	
+
+
+
 	void checkReport() {
-		OperationType ot = OperationType.VALID_CheckReport;
+		OperationType ot = OperationType.VALID_GetReport;
 		String query = "SELECT * FROM `Execution Failure Report` WHERE RequestID = "+thisRequest.getRequestID() ;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
-	
+
+
 	public void setValidationTable() {
-		
-		String query3 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUE ( '"
+		String query3 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUES ( '"
 				+ thisRequest.getRequestID() + "', '" + failReportTextArea.getText() + "')";
 		OperationType ot = OperationType.VALID_updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 	}
-	
-	
-	///the problem is here
+	public void setValidationTable_ServerResponse(Object object) {
+		boolean res = (boolean) object;
+		if (res) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					showAlert(AlertType.CONFIRMATION, "",
+							"", null);
+					loadPage("requestTreatment");
+				}
+			});
+		}
+	}
+
 	public void getReport_ServerResponse(Object object) {
 		this.reportResult = (String) object;
 		System.out.println(reportResult);
-		if (reportResult == null) {
-			setValidationTable();
-		} else { // if the returned result was back 
+		if (reportResult != null)   { // if the returned result was back
 			showAlert(AlertType.INFORMATION, "Report already exists", "The report already been sent to the executer", null);
 			noBtn.setVisible(false);
 		}
 	}
-	
 
-	
 
 	@FXML
 	void noBtnClick(ActionEvent event) {
