@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -182,13 +185,16 @@ public class requestTreatmentController extends AppController implements Initial
 		String query = "Select * FROM Requests ";
 		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
 			return query;
-
+		if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+			query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
+			return query;
+		}
 		query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
 				+ " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
 				+ " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
 				+ "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
 				" AND `incharge` = '" + App.user.getUserName() + "'";
-
+		
 		if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
@@ -196,8 +202,9 @@ public class requestTreatmentController extends AppController implements Initial
 			// these user
 			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
 
-			if(App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
-				query+= " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
+			if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
+				query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
+
 		}
 		// general:
 		return query;
@@ -432,17 +439,30 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void freezeButtonClick(ActionEvent event) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'SUSPENDED' WHERE RequestID = '"
 				+ getCurrentRequest().getRequestID() + "'";
+		String query2 = "INSERT INTO Frozen (RequestID, StageName, FreezeTime) VALUES ('"
+				+ selectedRequested.getRequestID() + "', '" + getCurrentRequest().getCurrentStage() + "', '"
+				+ dateFormat.format(today) + "'); ";
 		System.out.println(query);
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
+		showAlert(AlertType.INFORMATION, "Request Suspended!", "Please notify your director", null);
 	}
 
 	@FXML
 	void unfreeze(ActionEvent event) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + getCurrentRequest().getRequestID()
 				+ "'";
+		String query2 = "UPDATE Frozen SET UnFreezeTime = '" + dateFormat.format(today) + "' WHERE RequestID = '"
+				+ getCurrentRequest().getRequestID() + "'";
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
+		showAlert(AlertType.INFORMATION, "Request Resumed", "Please notify your Supervisor", null);
 	}
 
 	public void freezeServerResponse(Object object) {
@@ -536,7 +556,7 @@ public class requestTreatmentController extends AppController implements Initial
 	// get Stage Object to Request:
 
 	void appendStageObject() {
-		if(selectedRequested.getCurrentStage().equals("INIT"))
+		if (selectedRequested.getCurrentStage().equals("INIT"))
 			return;
 		String query5 = "SELECT * FROM `Stage` WHERE `RequestID` = '" + selectedRequested.getRequestID()
 				+ "' AND `StageName` = '" + selectedRequested.getCurrentStage() + "' LIMIT 1";
