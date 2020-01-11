@@ -155,7 +155,7 @@ public class ClosureController extends AppController implements Initializable {
 		String query;
 		System.out.println(thisRequest.getCurrentStageObject().getPreStage());
 		if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
-			query = "UPDATE Requests SET Treatment_Phase = 'CANCELED' , STATUS = 'CANCELED' WHERE RequestID = '"
+			query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'CANCELED' WHERE RequestID = '"
 					+ thisRequest.getRequestID() + "'";
 			thisRequest.setStatus("Canceled");
 
