@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.decisionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.decisionController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -39,7 +39,7 @@
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
                                     </Text>
-                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" />
+                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
                                     <Text layoutX="10.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
                                     <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="10.0" layoutY="397.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
                                     <Text layoutX="10.0" layoutY="391.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
@@ -96,29 +96,29 @@
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="25.0" layoutY="184.0" prefHeight="24.0" prefWidth="251.0" text="*Required change location and description:">
+                  <Label alignment="CENTER" layoutX="25.0" layoutY="184.0" prefHeight="24.0" prefWidth="251.0" text="Required change location and description:">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="25.0" layoutY="298.0" prefHeight="20.0" prefWidth="99.0" text="*Expected result:">
+                  <Label alignment="CENTER" layoutX="25.0" layoutY="298.0" prefHeight="20.0" prefWidth="108.0" text="Expected result:">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="25.0" layoutY="411.0" prefHeight="24.0" prefWidth="74.0" text="Constraints:">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" layoutX="25.0" layoutY="527.0" prefHeight="20.0" prefWidth="99.0" text="*Time Evaluation:">
+                  <Label alignment="CENTER" layoutX="25.0" layoutY="527.0" prefHeight="20.0" prefWidth="108.0" text="Time Evaluation:">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="requiredChangeText" editable="false" layoutX="25.0" layoutY="217.0" prefHeight="71.0" prefWidth="447.0" />
-                  <TextArea fx:id="expectedResultText" editable="false" layoutX="25.0" layoutY="320.0" prefHeight="83.0" prefWidth="447.0" />
-                  <TextArea fx:id="constraintText" editable="false" layoutX="25.0" layoutY="435.0" prefHeight="83.0" prefWidth="447.0" />
+                  <TextArea fx:id="requiredChangeText" editable="false" layoutX="25.0" layoutY="217.0" prefHeight="71.0" prefWidth="447.0" wrapText="true" />
+                  <TextArea fx:id="expectedResultText" editable="false" layoutX="25.0" layoutY="320.0" prefHeight="83.0" prefWidth="447.0" wrapText="true" />
+                  <TextArea fx:id="constraintText" editable="false" layoutX="25.0" layoutY="435.0" prefHeight="83.0" prefWidth="447.0" wrapText="true" />
                   <Text fx:id="timeEvaluationText" layoutX="25.0" layoutY="566.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
                   <Button fx:id="reEvaluateBtn" layoutX="208.0" layoutY="635.0" mnemonicParsing="false" onAction="#reEvaluateBtnClick" prefHeight="58.0" prefWidth="146.0" styleClass="info" text="Re-evaluate" />
                   <Button fx:id="approveBtn" layoutX="25.0" layoutY="635.0" mnemonicParsing="false" onAction="#approveBtnClick" prefHeight="58.0" prefWidth="137.0" styleClass="success" text="Approve" />

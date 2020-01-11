@@ -166,6 +166,12 @@ public class requestTreatmentController extends AppController implements Initial
 	@FXML
 	private Button btnDownloadFiles;
 
+	@FXML
+	private TextArea wantedChangeText;
+
+	@FXML
+	private TextArea reasonText;
+
 	ObservableList<ChangeRequest> o;
 
 	protected ChangeRequest getCurrentRequest() {
@@ -194,7 +200,7 @@ public class requestTreatmentController extends AppController implements Initial
 				+ " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
 				+ "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
 				" AND `incharge` = '" + App.user.getUserName() + "'";
-		
+
 		if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
 				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
@@ -248,9 +254,9 @@ public class requestTreatmentController extends AppController implements Initial
 					appendStageObject();
 					initPanes();
 					String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
-
-					if (selectedRequested.getFilesPaths().equals(filename))
-						btnDownloadFiles.setVisible(true);
+					if (selectedRequested.getFilesPaths() != null)
+						if (selectedRequested.getFilesPaths().equals(filename))
+							btnDownloadFiles.setVisible(true);
 
 					rightPane_selectRequest.setVisible(false);
 					if (row.getItem().getCurrentStage().equals("INIT")) {
@@ -263,8 +269,10 @@ public class requestTreatmentController extends AppController implements Initial
 						if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
 								&& (selectedRequested.getStatus() != "DONE"
 										&& selectedRequested.getStatus() != "CANCELED")) {
-							// existingCondition.setEditable(true);
-							// descripitionsTextArea.setEditable(true);
+							wantedChangeText.setEditable(true);
+							reasonText.setEditable(true);
+							existingCondition.setEditable(true);
+							descripitionsTextArea.setEditable(true);
 							dueDateLabel.setDisable(false);
 							updateRemarksBtn.setDisable(false);
 							freezeBtn.setVisible(true);
@@ -272,6 +280,8 @@ public class requestTreatmentController extends AppController implements Initial
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
 								departmentID, null, requestNameLabel, selectedRequested);
+						wantedChangeText.setText(selectedRequested.getSuggestedChange());
+						reasonText.setText(selectedRequested.getReasonForChange());
 						dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
 
 						if (selectedRequested.getStatus().equals("SUSPENDED")) {
@@ -473,9 +483,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
-		// showAlert(AlertType.INFORMATION, "Mock Button",
-		// "Need to import a query for updating the request tuple in the DB table",
-		// null);
 		updateRemarksBtn.setVisible(true);
 		updateRemarksBtn.setDisable(false);
 		submitBtn.setVisible(false);
@@ -486,9 +493,10 @@ public class requestTreatmentController extends AppController implements Initial
 				+ "', '" + supervisorRemarks.getText() + "');";
 		OperationType ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "',Comments = '"
-				+ descripitionsTextArea.getText() + "', Curr_Responsible = '" + inchargeTF.getText() + "', Due_Date = '"
-				+ Date.valueOf(dueDateLabel.getValue()) + "' WHERE RequestID = " + requestID.getText() + ";";
+		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "'" + ",Comments = '"
+				+ descripitionsTextArea.getText() + "', Wanted_Change ='" + wantedChangeText.getText() + "', Reason = '"
+				+ reasonText.getText() + "', " + " Due_Date = '" + Date.valueOf(dueDateLabel.getValue()) + "'"
+				+ " WHERE RequestID = " + requestID.getText() + ";";
 		// ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);

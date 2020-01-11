@@ -39,7 +39,7 @@
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
                                     </Text>
-                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" />
+                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
                                     <Text layoutX="10.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
                                     <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="10.0" layoutY="397.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
                                     <Text layoutX="10.0" layoutY="391.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />

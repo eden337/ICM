@@ -104,6 +104,14 @@ public class ViewRequestController extends AppController implements Initializabl
 
 	@FXML
 	private TextField searchBoxTF;
+	
+
+    @FXML
+    private TextArea wantedChangeText;
+
+    @FXML
+    private TextArea reasonText;
+
 
 	ObservableList<ChangeRequest> o;
 
@@ -144,6 +152,8 @@ public class ViewRequestController extends AppController implements Initializabl
 
 					Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
 							departmentID, dueDateLabel, requestNameLabel, selectedRequestInstance);
+					wantedChangeText.setText(selectedRequestInstance.getSuggestedChange());
+					reasonText.setText(selectedRequestInstance.getReasonForChange());
 				}
 				resetStageImgStyleClass();
 				Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);

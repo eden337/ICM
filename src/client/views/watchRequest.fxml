@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ViewRequestController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ViewRequestController">
    <children>
       <HBox prefHeight="711.0" prefWidth="1000.0">
          <children>
@@ -32,42 +32,44 @@
             </VBox>
             <AnchorPane prefHeight="711.0" prefWidth="425.0">
                <children>
-                  <Text fx:id="idText" layoutX="32.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
-                  <Text fx:id="requestID" layoutX="48.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                  <Text fx:id="idText" layoutX="32.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :">
                      <font>
-                        <Font name="System Bold Italic" size="15.0" />
-                     </font>
-                  </Text>
-                  <TextArea fx:id="existingCondition" editable="false" layoutX="33.0" layoutY="218.0" prefHeight="59.0" prefWidth="466.0" />
-                  <Text layoutX="33.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
-                  <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="33.0" layoutY="307.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
-                  <Text layoutX="36.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
-                  <Text layoutX="32.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In Charge:" wrappingWidth="73.63037107139826" />
-                  <TextField fx:id="inchargeTF" editable="false" layoutX="33.0" layoutY="388.0" prefHeight="31.0" prefWidth="218.0" />
-                  <Label layoutX="32.0" layoutY="52.0" text="DepartmentID:" />
-                  <Text fx:id="departmentID" layoutX="48.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Text>
+                  <Text fx:id="requestID" layoutX="48.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
+                  <TextArea fx:id="existingCondition" editable="false" layoutX="29.0" layoutY="147.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
+                  <Text layoutX="29.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173">
                      <font>
-                        <Font name="System Bold Italic" size="15.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="idText1" layoutX="32.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requester's Name:" />
-                  <Text fx:id="requestNameLabel" layoutX="45.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Text>
+                  <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="29.0" layoutY="399.0" prefHeight="59.0" prefWidth="466.0" wrapText="true" />
+                  <Text layoutX="29.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks:">
                      <font>
-                        <Font name="System Bold Italic" size="15.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="idText2" layoutX="34.0" layoutY="159.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" />
-                  <Text fx:id="dueDateLabel" layoutX="43.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Text>
+                  <Text layoutX="32.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In Charge:" visible="false" wrappingWidth="73.63037107139826" />
+                  <TextField fx:id="inchargeTF" editable="false" layoutX="33.0" layoutY="388.0" prefHeight="31.0" prefWidth="218.0" visible="false" />
+                  <Label layoutX="228.0" layoutY="13.0" text="Department:">
                      <font>
-                        <Font name="System Bold Italic" size="15.0" />
-                     </font>
-                  </Text>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Label>
+                  <Text fx:id="departmentID" layoutX="242.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
+                  <Text fx:id="idText1" layoutX="29.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requester's Name:">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Text>
+                  <Text fx:id="requestNameLabel" layoutX="42.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
+                  <Text fx:id="idText2" layoutX="229.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font></Text>
+                  <Text fx:id="dueDateLabel" layoutX="240.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
                   <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="525.0" layoutY="14.0" onMouseClicked="#refrshBtn" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@img/icons/icon_refresh.png" />
                      </image>
                   </ImageView>
-                  <HBox fx:id="stageHBox" layoutX="26.0" layoutY="442.0" prefHeight="80.0" prefWidth="481.0" visible="false">
+                  <HBox fx:id="stageHBox" layoutX="33.0" layoutY="497.0" prefHeight="80.0" prefWidth="481.0" visible="false">
                      <children>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
@@ -124,6 +126,18 @@
                   <Text fx:id="msg" fill="#0e2eff" layoutX="38.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
                      <font>
                         <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Text>
+                  <TextArea fx:id="wantedChangeText" editable="false" layoutX="29.0" layoutY="229.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
+                  <Text layoutX="29.0" layoutY="223.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wanted Change:" wrappingWidth="145.99999731127173">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Text>
+                  <TextArea fx:id="reasonText" editable="false" layoutX="29.0" layoutY="311.0" prefHeight="59.0" prefWidth="466.0" wrapText="true" />
+                  <Text layoutX="29.0" layoutY="305.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reason:" wrappingWidth="145.99999731127173">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
                      </font>
                   </Text>
                </children>
