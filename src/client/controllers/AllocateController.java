@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -75,6 +76,7 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     void submitForm(ActionEvent event) {
+    	c=0;
     	boolean init=thisRequest.getCurrentStage().equals("INIT");
     	String query;
     	if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
@@ -92,7 +94,7 @@ public class AllocateController extends AppController implements Initializable {
 	        App.client.handleMessageFromClientUI(new Message(ot, query));
 	        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
 	                + thisRequest.getRequestID() + "'";
-	        OperationType ot2 = OperationType.updateRequestStatus;
+	        OperationType ot2 = OperationType.Allocate_UpdateRequestStatus;
 	        App.client.handleMessageFromClientUI(new Message(ot2, query2));
 	    }
 	    else{
@@ -103,8 +105,27 @@ public class AllocateController extends AppController implements Initializable {
 	        App.client.handleMessageFromClientUI(new Message(ot2, query));
 	    	
 	    }
-	        loadPage("requestTreatment");
+	    loadPage("requestTreatment");
     }
+    
+    private static int c = 0;
+
+	public void allocQueryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 1) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Allocation Approved", "The incharges of the request were assigned", null);
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Could not assign employees", null);
+		}
+	}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

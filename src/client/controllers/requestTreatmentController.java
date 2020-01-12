@@ -250,6 +250,7 @@ public class requestTreatmentController extends AppController implements Initial
 			TableRow<ChangeRequest> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty()) {
+					btnDownloadFiles.setDisable(false);
 					selectedRequested = row.getItem();
 					appendStageObject();
 					initPanes();
@@ -269,6 +270,7 @@ public class requestTreatmentController extends AppController implements Initial
 						if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
 								&& (selectedRequested.getStatus() != "DONE"
 										&& selectedRequested.getStatus() != "CANCELED")) {
+
 							wantedChangeText.setEditable(true);
 							reasonText.setEditable(true);
 							existingCondition.setEditable(true);
@@ -286,6 +288,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 						if (selectedRequested.getStatus().equals("SUSPENDED")) {
 							rightPane_Freezed.setVisible(true);
+							btnDownloadFiles.setDisable(true);
 							rightPane_requestTreatment.setDisable(true);
 							stageProgressHBox.setVisible(false);
 							if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
@@ -296,8 +299,14 @@ public class requestTreatmentController extends AppController implements Initial
 							stageProgressHBox.setVisible(true);
 						}
 					}
-					if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+					if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
 						btnIncharges.setVisible(true);
+						updateRemarksBtn.setVisible(true);
+						submitBtn.setVisible(false);
+						supervisorRemarks.setPromptText("Please write your remarks");
+						supervisorRemarks.setVisible(false);
+
+					}
 					resetStageImgStyleClass();
 					Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequested);
 
@@ -306,8 +315,7 @@ public class requestTreatmentController extends AppController implements Initial
 			return row;
 		});
 
-		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
-			updateRemarksBtn.setVisible(true);
+		// if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
 
 	}// initialize
 
@@ -449,6 +457,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void freezeButtonClick(ActionEvent event) {
+		c=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'SUSPENDED' WHERE RequestID = '"
@@ -464,6 +473,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void unfreeze(ActionEvent event) {
+		c=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + getCurrentRequest().getRequestID()
@@ -483,24 +493,43 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
+		c=0;
 		updateRemarksBtn.setVisible(true);
 		updateRemarksBtn.setDisable(false);
 		submitBtn.setVisible(false);
 		submitBtn.setDisable(true);
 		supervisorRemarks.setVisible(false);
-		String query = "INSERT INTO `Supervisor Update History` (`RequestID`, `Updater_Name`, `update_remarks`) VALUES ("
-				+ selectedRequested.getRequestID() + ", '" + App.user.getFirstName() + " " + App.user.getLastName()
-				+ "', '" + supervisorRemarks.getText() + "');";
-		OperationType ot = OperationType.SUPERVISOR_REMARKS;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "'" + ",Comments = '"
+		String query1 = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "'" + ",Comments = '"
 				+ descripitionsTextArea.getText() + "', Wanted_Change ='" + wantedChangeText.getText() + "', Reason = '"
 				+ reasonText.getText() + "', " + " Due_Date = '" + Date.valueOf(dueDateLabel.getValue()) + "'"
 				+ " WHERE RequestID = " + requestID.getText() + ";";
-		// ot = OperationType.SUPERVISOR_REMARKS;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
+		String query2 = "INSERT INTO `Supervisor Update History` (`RequestID`, `Updater_Name`, `update_remarks`) VALUES ("
+				+ selectedRequested.getRequestID() + ", '" + App.user.getFirstName() + " " + App.user.getLastName()
+				+ "', '" + supervisorRemarks.getText() + "');";
+		OperationType ot1 = OperationType.updateRequestStatus;
+		OperationType ot2 = OperationType.SUPERVISOR_REMARKS;
+		App.client.handleMessageFromClientUI(new Message(ot1, query1));
+		App.client.handleMessageFromClientUI(new Message(ot2, query2));
+		
 		stageProgressHBox.setVisible(true);
+	}
+
+	private static int c = 0;
+
+	public void queryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 2) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Cannot send update!", null);
+		}
 	}
 
 	@FXML
@@ -510,6 +539,8 @@ public class requestTreatmentController extends AppController implements Initial
 		submitBtn.setVisible(true);
 		submitBtn.setDisable(false);
 		supervisorRemarks.setVisible(true);
+		supervisorRemarks.setText("");
+		supervisorRemarks.setPromptText("Please write your remarks");
 		stageProgressHBox.setVisible(false);
 	}
 

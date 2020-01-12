@@ -202,8 +202,17 @@ public class Tools {
 
     }
 
-
-
+    /**
+     * 
+     * @param deadLineTime - gets the old deadline of each stage
+     * @param freezeTime - gets the suspension time from the DB via the request treatment controller
+     * @return new extended deadline
+     */
+    public static ZonedDateTime calculatedAddedDaysAfterSuspence(ZonedDateTime oldDeadLineTime, ZonedDateTime freezeTime) {
+    	ZonedDateTime newDeadLineTime = ZonedDateTime.now();
+    	
+    	return newDeadLineTime;
+    }
 
 
 	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,

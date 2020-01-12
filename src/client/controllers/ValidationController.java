@@ -259,6 +259,7 @@ public class ValidationController extends AppController implements Initializable
 	}
 	
 	void setStageTable() {
+		c2=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		Calendar c = Calendar.getInstance();
@@ -362,6 +363,7 @@ public class ValidationController extends AppController implements Initializable
 
 	@FXML
 	void validateBtnClicked(ActionEvent event) {
+		c=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
@@ -396,8 +398,8 @@ public class ValidationController extends AppController implements Initializable
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.INFORMATION, "Return to evaluator",
-								"A email message was sent to the evaluator", null);
+						showAlert(AlertType.INFORMATION, "Validation Complete",
+								"The request moved to the supervisor for closure.", null);
 						loadPage("requestTreatment");
 					}
 				});

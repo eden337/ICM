@@ -222,8 +222,6 @@ public class decisionController extends AppController implements Initializable {
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		thisRequest.setReturned(false);
-		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
-		loadPage("requestTreatment");
 	}
 
 	private static int c = 0;
@@ -236,6 +234,7 @@ public class decisionController extends AppController implements Initializable {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+						showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase", null);
 						loadPage("requestTreatment");
 					}
 				});
@@ -261,17 +260,39 @@ public class decisionController extends AppController implements Initializable {
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'DECISION' where  `StageName` = 'CLOSURE' AND `RequestID` = '"
 				+ thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot = OperationType.DECISION_DeclineUpdate;
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 		App.client.handleMessageFromClientUI(new Message(ot, query4));
 		App.client.handleMessageFromClientUI(new Message(ot, query5));
-		showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
+		//showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
+		//reEvaluateBtn.setDisable(true);
+		//approveBtn.setDisable(true);
+		//declineBtn.setDisable(true);
+		//loadPage("requestTreatment");
+	}
+	
+	private static int c3 = 0;
+
+	public void decisionDeclineQueryResult(Object object) {
+		c3++;
+		boolean res = (boolean) object;
+		if (c3 == 5 && res) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
+						reEvaluateBtn.setDisable(true);
+						approveBtn.setDisable(true);
+						declineBtn.setDisable(true);
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Cannot approve the declinement", null);
+		}
 	}
 
 	@FXML
@@ -365,7 +386,7 @@ public class decisionController extends AppController implements Initializable {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.CONFIRMATION,"Return to evaluator","A email message was sent to the evaluator",null);
+						showAlert(AlertType.INFORMATION,"Return to evaluator","A email message was sent to the evaluator",null);
 						loadPage("requestTreatment");
 					}
 				});

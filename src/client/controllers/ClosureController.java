@@ -150,6 +150,7 @@ public class ClosureController extends AppController implements Initializable {
 
 	@FXML
 	void closeProcessBtnClicked(ActionEvent event) {
+		c=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query;
@@ -167,29 +168,30 @@ public class ClosureController extends AppController implements Initializable {
 		// send email
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot = OperationType.Clousre_UpdateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
-		showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
-				+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
-		loadPage("requestTreatment");
+		
+		//
 	}
 
 	private static int c = 0;
 
-	public void queryResult(Object object) {
+	public void closureQueryResult(Object object) {
 		c++;
 		boolean res = (boolean) object;
-		if (c == 1) { // TODO : Add EMAIL REQUEST.
+		if (c == 2) { // TODO : Add EMAIL REQUEST.
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+						showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
+						+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
 						loadPage("requestTreatment");
 					}
 				});
 			} else
-				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+				showAlert(AlertType.ERROR, "Error!", "Could not close the request", null);
 		}
 	}
 }
