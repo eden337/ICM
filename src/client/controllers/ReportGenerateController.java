@@ -126,12 +126,11 @@ public class ReportGenerateController extends AppController implements Initializ
     @FXML
     void changeType(ActionEvent event) {
     	currentStep(1);
-    	
-
     }
 
     @FXML
     void chooseReportType(ActionEvent event) {
+
     	if(isReportType())
     		currentStep(2);
     }
