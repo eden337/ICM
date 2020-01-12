@@ -38,9 +38,7 @@ public enum OperationType {
 	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS, getSystemData, VAL_GetInitData,
 	DECISION_SendEmailToUser, Allocate_UpdateRoles,
 	DECISION_GetPrevStage, DECISION_updateRequestStatus, VALID_updateRequestStatus, EXECUTION_GetFailReport, VALID_GetReport, VALID_GetPrevStage,
-	VALID_UpdateRepeated
-	ChangeRequest_DownloadFile, SUPERVISOR_REMARKS,
-
+	VALID_UpdateRepeated,
 
 	//Report
 	GenreateReport,InsertReport,

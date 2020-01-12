@@ -3,20 +3,23 @@ package common;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 import common.entity.ChangeRequest;
+import common.entity.EmployeeUser;
+import common.entity.Report;
 import common.entity.StageName;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
@@ -30,6 +33,20 @@ public class Tools {
 //		   }
 //	}
 
+	public static void setTitlePane(long estimatedTime,TitledPane titledPane,Text titledPane_Text) {
+		if (estimatedTime >= 0) {
+			titledPane_Text.setText(String.valueOf(estimatedTime) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("info");
+		}
+		//need to send this to time exceptions..
+		else
+		{
+			titledPane_Text.setText(String.valueOf(Math.abs(estimatedTime)) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("danger");
+		}
+	}
 
 	public static ArrayList<String> disassemble(ResultSet rs, int NumOfCol) {
 		ArrayList<String> returnString = new ArrayList<String>();
@@ -94,20 +111,19 @@ public class Tools {
 		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
 		return t;
 	}
-	public static int convertStageNameToInt(StageName name)
-	{
-		switch(name)
-		{
-		case EVALUATION:
-			return 0;
-		case DECISION:
-			return 1;
-		case EXECUTION:
-			return 2;
-		case VALIDATION:
-			return 3;
-		case CLOUSRE:
-			return 4;
+
+	public static int convertStageNameToInt(StageName name) {
+		switch (name) {
+			case EVALUATION:
+				return 0;
+			case DECISION:
+				return 1;
+			case EXECUTION:
+				return 2;
+			case VALIDATION:
+				return 3;
+			case CLOUSRE:
+				return 4;
 			default:
 				return -1;
 		
@@ -188,14 +204,30 @@ public class Tools {
 
 
 
-	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,TextField inchargeTF, Text departmentID,Text dueDateLabel,Text requestNameLabel, ChangeRequest selectedRequestInstance) {
+	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,
+										TextField inchargeTF, Text departmentID, Text dueDateLabel, Text requestNameLabel,
+										ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());
-        existingCondition.setText(selectedRequestInstance.getExistingCondition());
-        descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
-        departmentID.setText(selectedRequestInstance.getInfoSystem());
-        requestNameLabel.setText(selectedRequestInstance.getInitiator());
-        dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-        inchargeTF.setText(selectedRequestInstance.getIncharges());
+		existingCondition.setText(selectedRequestInstance.getExistingCondition());
+		descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
+		departmentID.setText(selectedRequestInstance.getInfoSystem());
+		requestNameLabel.setText(selectedRequestInstance.getInitiator());
+		if (dueDateLabel != null)
+			dueDateLabel
+					.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+
+	}
+
+	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf, TextField EmailTf,
+										  TextField PositionTf, TextField expertiseTf, EmployeeUser selectedEmployeeInstance) {
+		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
+		nameTf.setText(selectedEmployeeInstance.getFirstName());
+		SurenameTf.setText(selectedEmployeeInstance.getLastName());
+		EmailTf.setText(selectedEmployeeInstance.getEmail());
+		PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
+//		if (expertiseTf != null)
+//			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
+
 	}
 	
 	public static void highlightProgressBar(ImageView stage1, ImageView stage2,ImageView stage3,ImageView stage4,ImageView stage5,ChangeRequest currentRequest) {
@@ -257,5 +289,13 @@ public class Tools {
 
 	private static void imgStage_setAsCurrent(ImageView img) {
 		img.getStyleClass().add("img_stage_current");
+	}
+
+	public static long DaysDifferenceFromToday(ZonedDateTime dateToCompare){
+		if(dateToCompare == null)
+			return -999999999;
+		//return Duration.between(ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")), dateToCompare).toDays();
+		return Period.between(dateToCompare.toLocalDate(),ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")).plusDays(1).toLocalDate()).getDays();
+
 	}
 }

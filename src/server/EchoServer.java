@@ -7,15 +7,24 @@ import common.controllers.OperationType;
 import common.entity.*;
 import common.ocsf.server.AbstractServer;
 import common.ocsf.server.ConnectionToClient;
+import server.controllers.EmailSender;
 
 import java.io.*;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import client.App;
 
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com
@@ -108,7 +117,8 @@ public class EchoServer extends AbstractServer {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
-                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"));
+                                    rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null);
+
                         }
                         rs.close();
                         //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
@@ -295,7 +305,7 @@ public class EchoServer extends AbstractServer {
                 		ResultSet data=mysql.getQuery("SELECT * FROM `Reports` WHERE (ReportType IN('"+report.getType()+"') AND Since IN ('"+report.getFrom().toString()+"') AND Till IN ('"+report.getTo().toString()+"') )");
                 		if(data.next())
                 			break;
-                		boolean period=Duration.between(Tools.convertDateSQLToZoned(report.getFrom()), Tools.convertDateSQLToZoned(report.getTo())).toDays()<12?true:false;
+                		boolean period= Duration.between(Tools.convertDateSQLToZoned(report.getFrom()), Tools.convertDateSQLToZoned(report.getTo())).toDays()<12?true:false;
                 		TreeMap<String, ArrayList<Integer>> frequency =Tools.frequncyDistrbution(report);
                 		Set <String> keys=frequency.keySet();
                 		for (String s : keys)
@@ -623,7 +633,7 @@ public class EchoServer extends AbstractServer {
             // participated in this request right now according to Stage table.
             request = new ChangeRequest(initiator, intiatorType, status, requestID, infoSystem, existingCondition,
                     suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
-                    currResponsible);
+                    currResponsible, null);
             ret.add(request);
         }
         return ret;
@@ -637,74 +647,6 @@ public class EchoServer extends AbstractServer {
         requestIncharge[2] = inCharge.getString("Exec_Incharge");
         requestIncharge[3] = inCharge.getString("Valid_InCharge");
         return requestIncharge;
-
-    }
-
-    public Stage[] getRequestActiveStages(ResultSet stageData, int requestID, int index) throws SQLException {
-        Stage[] requestStages = new Stage[5];
-        int i = 0;
-        while (stageData.next()) {
-
-            String temp = stageData.getString("StageName");
-            ZonedDateTime start = Tools.convertDateSQLToZoned(stageData.getDate("StartTime"));
-            ZonedDateTime deadline = Tools.convertDateSQLToZoned(stageData.getDate("Deadline"));
-            String handler = stageData.getString("Handlers");
-            String incharge = stageData.getString("Incharge");
-            boolean extend = stageData.getBoolean("Extend");
-            boolean delay = stageData.getBoolean("Delay");
-
-            switch (Tools.convertStringToStageName(temp)) {
-                case EVALUATION:
-                    requestStages[0] = new Stage(requestID, StageName.EVALUATION, start, deadline, handler, incharge,
-                            extend, delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-                case DECISION:
-                    requestStages[1] = new Stage(requestID, StageName.DECISION, start, deadline, handler, incharge, extend,
-                            delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-
-                case EXECUTION:
-                    requestStages[2] = new Stage(requestID, StageName.EXECUTION, start, deadline, handler, incharge, extend,
-                            delay);
-                    /*
-                     * need to update sql after delay update
-                     */
-
-                    break;
-                case VALIDATION:
-                    requestStages[3] = new Stage(requestID, StageName.VALIDATION, start, deadline, handler, incharge,
-                            extend, delay);
-
-                    /*
-                     * need to update sql after delay update
-                     */
-                    break;
-
-                case CLOUSRE:
-                    requestStages[4] = new Stage(requestID, StageName.CLOUSRE, start, deadline, handler, incharge, extend,
-                            delay);
-
-                    /*
-                     * need to update sql after delay update
-                     */
-                    break;
-            }
-            /*
-             * if(i<index)
-             * requestStages[i].setEndTime(Tools.convertDateSQLToZoned(stageData.getDate(
-             * "EndTime"))); i++;
-             */
-
-        }
-        return requestStages;
 
     }
 
@@ -872,7 +814,7 @@ public class EchoServer extends AbstractServer {
     	ResultSet repeated=mysql.getQuery("SELECT RequestID,StageName,StartTime,EndTime FROM Repeted WHERE ( EndTime >'"+since+"'AND StartTime < '"+till+ "')");
     	long res=0;
     	ZonedDateTime d1,d2;
-    	ZonedDateTime from=ZonedDateTime.of(Integer.parseInt(since.substring(0, 4)), Integer.parseInt(since.substring(6, 8)), Integer.parseInt(since.substring(10, 12)), 0, 0, 0, 0,ZoneId.systemDefault());
+    	ZonedDateTime from=ZonedDateTime.of(Integer.parseInt(since.substring(0, 4)), Integer.parseInt(since.substring(6, 8)), Integer.parseInt(since.substring(10, 12)), 0, 0, 0, 0, ZoneId.systemDefault());
     	ZonedDateTime to=ZonedDateTime.of(Integer.parseInt(till.substring(0, 4)), Integer.parseInt(till.substring(6, 8)), Integer.parseInt(till.substring(10, 12)), 0, 0, 0, 0,ZoneId.systemDefault());
     	//List<Integer> list=Arrays.asList(avner.getArray("RequestID"));
     	long mainStages=0;

@@ -2,7 +2,9 @@ package client.controllers;
 
 import client.App;
 import common.controllers.Message;
-import common.entity.EvaluationReport;
+
+import java.io.FileNotFoundException;
+//
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -91,9 +93,6 @@ public class ClientMessages {
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
 
-            case EVAL_GetInitData:
-                EvaluationReportController.instance.checkPreConditions_ServerResponse(m.getObject());
-                break;
             // pre Eval
             case PreEVAL_SetInitStat:
             case PreEVAL_SetConfirmationStatus:
