@@ -4,6 +4,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -26,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -50,6 +55,11 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	private TextArea supervisorRemarks;
+	// @FXML
+	// private Pane Footer_defualt;
+
+	@FXML
+	private Button btnIncharges;
 
 	@FXML
 	private Button updateRemarksBtn;
@@ -118,7 +128,7 @@ public class requestTreatmentController extends AppController implements Initial
 	private Text idText2;
 
 	@FXML
-	private Text dueDateLabel;
+	private DatePicker dueDateLabel;
 
 	@FXML
 	private Button freezeBtn;
@@ -156,6 +166,12 @@ public class requestTreatmentController extends AppController implements Initial
 	@FXML
 	private Button btnDownloadFiles;
 
+	@FXML
+	private TextArea wantedChangeText;
+
+	@FXML
+	private TextArea reasonText;
+
 	ObservableList<ChangeRequest> o;
 
 	protected ChangeRequest getCurrentRequest() {
@@ -166,12 +182,38 @@ public class requestTreatmentController extends AppController implements Initial
 		App.client.handleMessageFromClientUI(new Message(OperationType.getRequirementData, setTableByUser()));
 	}
 
+	/**
+	 * Query by Permission
+	 *
+	 * @return
+	 */
 	private String setTableByUser() {
-		/*
-		 * check user premissons and return premissions by role
-		 */
-		// if user is supervisor
-		return "Select * FROM Requests";
+		String query = "Select * FROM Requests ";
+		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+			return query;
+		if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+			query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
+			return query;
+		}
+		query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
+				+ " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
+				+ " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
+				+ "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
+				" AND `incharge` = '" + App.user.getUserName() + "'";
+
+		if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
+				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
+				|| App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+			// add option to see active decision stages in addition to other permission of
+			// these user
+			query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
+
+			if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
+				query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
+
+		}
+		// general:
+		return query;
 	}
 
 	private void initPanes() {
@@ -187,6 +229,8 @@ public class requestTreatmentController extends AppController implements Initial
 		msg.setVisible(false);
 		btnUnfreeze.setVisible(false);
 
+		// panes defualt:
+		// Footer_defualt.setVisible(true);
 	}
 
 	@Override
@@ -196,19 +240,23 @@ public class requestTreatmentController extends AppController implements Initial
 		getDatafromServer();
 		rightPane_selectRequest.setVisible(true);
 		initPanes();
+		btnIncharges.setVisible(false);
 		searchBoxTF.setVisible(true);
+		updateRemarksBtn.setVisible(false);
+		freezeBtn.setVisible(false);
+
 		// event when user click on a row
 		table.setRowFactory(tv -> {
 			TableRow<ChangeRequest> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty()) {
 					selectedRequested = row.getItem();
+					appendStageObject();
 					initPanes();
-
 					String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
-
-					if (selectedRequested.getFilesPaths().equals(filename))
-						btnDownloadFiles.setVisible(true);
+					if (selectedRequested.getFilesPaths() != null)
+						if (selectedRequested.getFilesPaths().equals(filename))
+							btnDownloadFiles.setVisible(true);
 
 					rightPane_selectRequest.setVisible(false);
 					if (row.getItem().getCurrentStage().equals("INIT")) {
@@ -218,16 +266,25 @@ public class requestTreatmentController extends AppController implements Initial
 						}
 
 					} else { // ACTIVE request
-						if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+						if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+								&& (selectedRequested.getStatus() != "DONE"
+										&& selectedRequested.getStatus() != "CANCELED")) {
+							wantedChangeText.setEditable(true);
+							reasonText.setEditable(true);
 							existingCondition.setEditable(true);
 							descripitionsTextArea.setEditable(true);
-							inchargeTF.setEditable(true);
+							dueDateLabel.setDisable(false);
 							updateRemarksBtn.setDisable(false);
+							freezeBtn.setVisible(true);
 						}
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
-								departmentID, dueDateLabel, requestNameLabel, selectedRequested);
-						if (selectedRequested.getStatus().equals("FREEZED")) {
+								departmentID, null, requestNameLabel, selectedRequested);
+						wantedChangeText.setText(selectedRequested.getSuggestedChange());
+						reasonText.setText(selectedRequested.getReasonForChange());
+						dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
+
+						if (selectedRequested.getStatus().equals("SUSPENDED")) {
 							rightPane_Freezed.setVisible(true);
 							rightPane_requestTreatment.setDisable(true);
 							stageProgressHBox.setVisible(false);
@@ -239,14 +296,18 @@ public class requestTreatmentController extends AppController implements Initial
 							stageProgressHBox.setVisible(true);
 						}
 					}
-
+					if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+						btnIncharges.setVisible(true);
 					resetStageImgStyleClass();
 					Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequested);
+
 				} // row selected
 			});
-
 			return row;
 		});
+
+		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+			updateRemarksBtn.setVisible(true);
 
 	}// initialize
 
@@ -354,8 +415,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void allocatePersonelButtonClick(ActionEvent event) {
-		// AllocateController alloControl = new AllocateController();
-		// alloControl.start(new Stage());
 		mainController.instance.loadPage("Allocate",
 				"Request #" + selectedRequested.getRequestID() + " Treatment | Roles Allocation");
 	}
@@ -363,7 +422,6 @@ public class requestTreatmentController extends AppController implements Initial
 	@FXML
 	void closureButtonClick(MouseEvent event) {
 		loadPage("Closure");
-
 	}
 
 	@FXML
@@ -373,7 +431,6 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void evalButtonClick(MouseEvent event) {
-
 		loadPage("EvaluationForm");
 	}
 
@@ -392,17 +449,30 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void freezeButtonClick(ActionEvent event) {
-		String query = "UPDATE Requests SET Status = 'FREEZED' WHERE RequestID = '" + getCurrentRequest().getRequestID()
-				+ "'";
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+		String query = "UPDATE Requests SET Status = 'SUSPENDED' WHERE RequestID = '"
+				+ getCurrentRequest().getRequestID() + "'";
+		String query2 = "INSERT INTO Frozen (RequestID, StageName, FreezeTime) VALUES ('"
+				+ selectedRequested.getRequestID() + "', '" + getCurrentRequest().getCurrentStage() + "', '"
+				+ dateFormat.format(today) + "'); ";
 		System.out.println(query);
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
+		showAlert(AlertType.INFORMATION, "Request Suspended!", "Please notify your director", null);
 	}
 
 	@FXML
 	void unfreeze(ActionEvent event) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + getCurrentRequest().getRequestID()
 				+ "'";
+		String query2 = "UPDATE Frozen SET UnFreezeTime = '" + dateFormat.format(today) + "' WHERE RequestID = '"
+				+ getCurrentRequest().getRequestID() + "'";
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
+		showAlert(AlertType.INFORMATION, "Request Resumed", "Please notify your Supervisor", null);
 	}
 
 	public void freezeServerResponse(Object object) {
@@ -411,45 +481,26 @@ public class requestTreatmentController extends AppController implements Initial
 
 	}
 
-	/*
-	 * public void InsertStartStage(String stageName) { Calendar currenttime =
-	 * Calendar.getInstance(); // creates the Calendar object of the current time
-	 * Date starttime = new Date((currenttime.getTime()).getTime()); // creates the
-	 * sql Date of the above created // object LocalDate duedate =
-	 * LocalDate.of(selectedRequestInstance.getDueDate().getYear(),
-	 * selectedRequestInstance.getDueDate().getMonthValue(),
-	 * selectedRequestInstance.getDueDate().getDayOfMonth()); //
-	 * System.out.println(Date.valueOf(duedate.toString())); String query =
-	 * "INSERT INTO `Stages` (`RequestID`, `StageName`, `StartTime`, `EndTime`, `Deadline`, `Handlers`, `Incharge`, `Delay`, `Extend`)"
-	 * + "VALUES" + "('" + selectedRequestInstance.getRequestID() + "', '" +
-	 * stageName + "', '" + starttime + "', NULL, '" + duedate.toString() +
-	 * "', '', '', '0', '1');";
-	 * 
-	 * OperationType ot = OperationType.InsertStartStage;
-	 * App.client.handleMessageFromClientUI(new Message(ot, query)); }
-	 */
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
-		// showAlert(AlertType.INFORMATION, "Mock Button",
-		// "Need to import a query for updating the request tuple in the DB table",
-		// null);
 		updateRemarksBtn.setVisible(true);
 		updateRemarksBtn.setDisable(false);
 		submitBtn.setVisible(false);
 		submitBtn.setDisable(true);
 		supervisorRemarks.setVisible(false);
-		String query = "INSERT INTO `Supervisor Update History` (RequestID, update_remarks, Updater_Name) VALUES ("
-				+ selectedRequested.getRequestID() + ", '" + supervisorRemarks.getText() + "', '"+App.user.getFirstName()+" "+ App.user.getLastName()+"');";
+		String query = "INSERT INTO `Supervisor Update History` (`RequestID`, `Updater_Name`, `update_remarks`) VALUES ("
+				+ selectedRequested.getRequestID() + ", '" + App.user.getFirstName() + " " + App.user.getLastName()
+				+ "', '" + supervisorRemarks.getText() + "');";
 		OperationType ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
-		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "',Comments = '"
-				+ descripitionsTextArea.getText() + "', Curr_Responsible = '" + inchargeTF.getText()
-				+ "' WHERE RequestID = " + requestID.getText() + ";";
-		ot = OperationType.SUPERVISOR_REMARKS;
+		query = "UPDATE Requests SET Existing_Cond = '" + existingCondition.getText() + "'" + ",Comments = '"
+				+ descripitionsTextArea.getText() + "', Wanted_Change ='" + wantedChangeText.getText() + "', Reason = '"
+				+ reasonText.getText() + "', " + " Due_Date = '" + Date.valueOf(dueDateLabel.getValue()) + "'"
+				+ " WHERE RequestID = " + requestID.getText() + ";";
+		// ot = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		showAlert(AlertType.INFORMATION, "Request Updated!", "The request details were changed", null);
 		stageProgressHBox.setVisible(true);
-
 	}
 
 	@FXML
@@ -500,7 +551,8 @@ public class requestTreatmentController extends AppController implements Initial
 					fos.flush();
 					bos.close();
 					fos.close();
-					showAlert(AlertType.CONFIRMATION, "Download succeed", "The requested files not found.", null);
+					showAlert(AlertType.CONFIRMATION, "Download succeed",
+							"Files downloaded to the directory you picked.", null);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -508,6 +560,23 @@ public class requestTreatmentController extends AppController implements Initial
 			}
 
 		});
+	}
+	// get Stage Object to Request:
+
+	void appendStageObject() {
+		if (selectedRequested.getCurrentStage().equals("INIT"))
+			return;
+		String query5 = "SELECT * FROM `Stage` WHERE `RequestID` = '" + selectedRequested.getRequestID()
+				+ "' AND `StageName` = '" + selectedRequested.getCurrentStage() + "' LIMIT 1";
+		App.client.handleMessageFromClientUI(new Message(OperationType.ChangeRequest_getStageObject, query5));
+		rightPane_requestTreatment.setDisable(true);
+	}
+
+	void appendStageObject_ServerResponse(Object object) {
+		common.entity.Stage currentStage = (common.entity.Stage) object;
+		selectedRequested.setCurrentStageObject(currentStage);
+		rightPane_requestTreatment.setDisable(false);
 
 	}
+
 }

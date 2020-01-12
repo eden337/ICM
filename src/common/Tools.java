@@ -3,9 +3,12 @@ package common;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +17,11 @@ import java.util.Map;
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 import common.entity.ChangeRequest;
+import common.entity.EmployeeUser;
 import common.entity.StageName;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
@@ -30,7 +35,21 @@ public class Tools {
 //		   }
 //	}
 
-
+	public static void setTitlePane(long estimatedTime,TitledPane titledPane,Text titledPane_Text) {
+		if (estimatedTime >= 0) {
+			titledPane_Text.setText(String.valueOf(estimatedTime) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("info");
+		} 
+		//need to send this to time exceptions..
+		else
+		{
+			titledPane_Text.setText(String.valueOf(Math.abs(estimatedTime)) + " Days left to complete this stage");
+			titledPane.getStyleClass().removeAll();
+			titledPane.getStyleClass().add("danger");
+		}
+	}
+	
 	public static ArrayList<String> disassemble(ResultSet rs, int NumOfCol) {
 		ArrayList<String> returnString = new ArrayList<String>();
 		try {
@@ -64,114 +83,131 @@ public class Tools {
 
 		return map;
 	}
+
 	/**
-	 * 
-	 * @author Ira Goor 
-	 * method purpose:convert String from DB to Enum StageName
+	 *
+	 * @author Ira Goor method purpose:convert String from DB to Enum StageName
 	 *
 	 * @param str
 	 * @return
 	 */
-	public static StageName convertStringToStageName(String str)
-	{
-		String name=str.toUpperCase();
-		if(name.equals("EVALUATION"))
+	public static StageName convertStringToStageName(String str) {
+		String name = str.toUpperCase();
+		if (name.equals("EVALUATION"))
 			return StageName.EVALUATION;
-		else if(name.equals("DECISION"))
+		else if (name.equals("DECISION"))
 			return StageName.DECISION;
-		else if(name.equals("EXECUTION"))
+		else if (name.equals("EXECUTION"))
 			return StageName.EXECUTION;
-		else if(name.equals("VALIDATION"))
+		else if (name.equals("VALIDATION"))
 			return StageName.VALIDATION;
-		else if(name.equals("CLOUSRE"))
+		else if (name.equals("CLOUSRE"))
 			return StageName.CLOUSRE;
 		else
 			return StageName.INIT;
-		
+
 	}
-	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate)
-	{
-		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
+
+	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate) {
+		if (sqlDate == null)
+			return null;
+		ZonedDateTime t = ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(), ZoneId.systemDefault());
 		return t;
 	}
-	public static int convertStageNameToInt(StageName name)
-	{
-		switch(name)
-		{
-		case EVALUATION:
-			return 0;
-		case DECISION:
-			return 1;
-		case EXECUTION:
-			return 2;
-		case VALIDATION:
-			return 3;
-		case CLOUSRE:
-			return 4;
+
+	public static int convertStageNameToInt(StageName name) {
+		switch (name) {
+			case EVALUATION:
+				return 0;
+			case DECISION:
+				return 1;
+			case EXECUTION:
+				return 2;
+			case VALIDATION:
+				return 3;
+			case CLOUSRE:
+				return 4;
 			default:
 				return -1;
-		
+
 		}
 	}
-	
-	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,TextField inchargeTF, Text departmentID,Text dueDateLabel,Text requestNameLabel, ChangeRequest selectedRequestInstance) {
+
+	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,
+										TextField inchargeTF, Text departmentID, Text dueDateLabel, Text requestNameLabel,
+										ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());
-        existingCondition.setText(selectedRequestInstance.getExistingCondition());
-        descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
-        departmentID.setText(selectedRequestInstance.getInfoSystem());
-        requestNameLabel.setText(selectedRequestInstance.getInitiator());
-        dueDateLabel.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-        inchargeTF.setText(selectedRequestInstance.getIncharges());
+		existingCondition.setText(selectedRequestInstance.getExistingCondition());
+		descripitionsTextArea.setText(selectedRequestInstance.getRemarks());
+		departmentID.setText(selectedRequestInstance.getInfoSystem());
+		requestNameLabel.setText(selectedRequestInstance.getInitiator());
+		if (dueDateLabel != null)
+			dueDateLabel
+					.setText(selectedRequestInstance.getDueDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+
 	}
-	
-	public static void highlightProgressBar(ImageView stage1, ImageView stage2,ImageView stage3,ImageView stage4,ImageView stage5,ChangeRequest currentRequest) {
+
+	public static void fillEmployeesPanes(Text WorkerID, TextField nameTf, TextField SurenameTf, TextField EmailTf,
+										  TextField PositionTf, TextField expertiseTf, EmployeeUser selectedEmployeeInstance) {
+		WorkerID.setText("" + selectedEmployeeInstance.getWorkerID());
+		nameTf.setText(selectedEmployeeInstance.getFirstName());
+		SurenameTf.setText(selectedEmployeeInstance.getLastName());
+		EmailTf.setText(selectedEmployeeInstance.getEmail());
+		PositionTf.setText(selectedEmployeeInstance.getRoleInOrg());
+//		if (expertiseTf != null)
+//			expertiseTf.setText(selectedEmployeeInstance.getSystemID());
+
+	}
+
+	public static void highlightProgressBar(ImageView stage1, ImageView stage2, ImageView stage3, ImageView stage4,
+											ImageView stage5, ChangeRequest currentRequest) {
 		switch (currentRequest.getCurrentStage()) {
 
-		case "EVALUATION":
-			imgStage_setAsCurrent(stage1);
-			imgStage_setAsBlocked(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "DECISION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsCurrent(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "EXECUTION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsCurrent(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "VALIDATION":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsPassed(stage3);
-			imgStage_setAsCurrent(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
-		case "CLOSURE":
-			imgStage_setAsPassed(stage1);
-			imgStage_setAsPassed(stage2);
-			imgStage_setAsPassed(stage3);
-			imgStage_setAsPassed(stage4);
-			imgStage_setAsCurrent(stage5);
-			break;
-		default:
-			imgStage_setAsBlocked(stage1);
-			imgStage_setAsBlocked(stage2);
-			imgStage_setAsBlocked(stage3);
-			imgStage_setAsBlocked(stage4);
-			imgStage_setAsBlocked(stage5);
-			break;
+			case "EVALUATION":
+				imgStage_setAsCurrent(stage1);
+				imgStage_setAsBlocked(stage2);
+				imgStage_setAsBlocked(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "DECISION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsCurrent(stage2);
+				imgStage_setAsBlocked(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "EXECUTION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsCurrent(stage3);
+				imgStage_setAsBlocked(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "VALIDATION":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsPassed(stage3);
+				imgStage_setAsCurrent(stage4);
+				imgStage_setAsBlocked(stage5);
+				break;
+			case "CLOSURE":
+				imgStage_setAsPassed(stage1);
+				imgStage_setAsPassed(stage2);
+				imgStage_setAsPassed(stage3);
+				imgStage_setAsPassed(stage4);
+				imgStage_setAsCurrent(stage5);
+				break;
+			default:
+//				imgStage_setAsBlocked(stage1);
+//				imgStage_setAsBlocked(stage2);
+//				imgStage_setAsBlocked(stage3);
+//				imgStage_setAsBlocked(stage4);
+//				imgStage_setAsBlocked(stage5);
+				break;
 		}
 	}
-	
+
 	private static void imgStage_setAsBlocked(ImageView img) {
 		img.getStyleClass().add("img_stage_blocked");
 		img.setOnMouseClicked(null);
@@ -183,5 +219,13 @@ public class Tools {
 
 	private static void imgStage_setAsCurrent(ImageView img) {
 		img.getStyleClass().add("img_stage_current");
+	}
+
+	public static long DaysDifferenceFromToday(ZonedDateTime dateToCompare){
+		if(dateToCompare == null)
+			return -999999999;
+		//return Duration.between(ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")), dateToCompare).toDays();
+		return Period.between(dateToCompare.toLocalDate(),ZonedDateTime.now(ZoneId.of( "Asia/Jerusalem")).plusDays(1).toLocalDate()).getDays();
+
 	}
 }

@@ -34,8 +34,6 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private ComboBox<String> cbExecuter;
 
-    @FXML
-    private ComboBox<String> cbValidator;
 
     @FXML
     private Text txtWarning;
@@ -77,33 +75,40 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     void submitForm(ActionEvent event) {
-        if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null ||
-                cbValidator.getValue() == null) {
+    	boolean init=thisRequest.getCurrentStage().equals("INIT");
+    	String query;
+    	if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
             txtWarning.setVisible(true);
             return;
         }
-
-        OperationType ot = OperationType.Allocate_SetRoles;
-        String query;
-        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
-                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
-                "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
-                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
-                "('" + thisRequest.getRequestID() + "','VALIDATION','" + cbValidator.getValue() + "')," +
-                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
-        App.client.handleMessageFromClientUI(new Message(ot, query));
-
-        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
-                + thisRequest.getRequestID() + "'";
-
-        OperationType ot2 = OperationType.updateRequestStatus;
-        App.client.handleMessageFromClientUI(new Message(ot2, query2));
-        loadPage("requestTreatment");
+	    if(init) {
+	        OperationType ot = OperationType.Allocate_SetRoles;
+	        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
+	                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
+	                "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
+	                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
+	                "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
+	                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
+	        App.client.handleMessageFromClientUI(new Message(ot, query));
+	        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
+	                + thisRequest.getRequestID() + "'";
+	        OperationType ot2 = OperationType.updateRequestStatus;
+	        App.client.handleMessageFromClientUI(new Message(ot2, query2));
+	    }
+	    else{
+	    	query="UPDATE Stage SET Incharge = '"+cbEvaluator.getValue()+"' WHERE StageName = 'EVALUATION' AND RequestID = '"+thisRequest.getRequestID()+"';";
+	    	OperationType ot2 = OperationType.Allocate_UpdateRoles;
+	        App.client.handleMessageFromClientUI(new Message(ot2, query));
+	        query="UPDATE Stage SET Incharge = '"+cbExecuter.getValue()+"' WHERE StageName = 'EXECUTION' AND RequestID = '"+thisRequest.getRequestID()+"';";
+	        App.client.handleMessageFromClientUI(new Message(ot2, query));
+	    	
+	    }
+	        loadPage("requestTreatment");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        txtWarning.setVisible(false);
+    	txtWarning.setVisible(false);
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
@@ -127,17 +132,14 @@ public class AllocateController extends AppController implements Initializable {
 
         cbEvaluator.setItems(oblist);
         cbExecuter.setItems(oblist);
-        cbValidator.setItems(oblist);
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
-        new AutoCompleteBox<String>(cbValidator);
         int rand = r.nextInt(size);
-        //System.out.println(rand);
-       // oblist.get(rand);
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(2);
+                cbEvaluator.getSelectionModel().select(rand);
             }
         });
     }

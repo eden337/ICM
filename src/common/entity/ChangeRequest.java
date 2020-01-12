@@ -39,7 +39,42 @@ public class ChangeRequest implements Serializable{
 	private String filesPaths;
 	private ZonedDateTime submitTime;
 	private String incharges;
+	private Stage currentStageObject;
+	private boolean returned;
+	private String returnedNote;
+	private String email;
+	private String prevStage;
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		return "ChangeRequest{" +
+				"initiator='" + initiator + '\'' +
+				", currentStage='" + currentStage + '\'' +
+				", intiatorType='" + intiatorType + '\'' +
+				", status='" + status + '\'' +
+				", requestID=" + requestID +
+				", infoSystem='" + infoSystem + '\'' +
+				", existingCondition='" + existingCondition + '\'' +
+				", suggestedChange='" + suggestedChange + '\'' +
+				", reasonForChange='" + reasonForChange + '\'' +
+				", remarks='" + remarks + '\'' +
+				", dueDate=" + dueDate +
+				", filesPaths='" + filesPaths + '\'' +
+				", submitTime=" + submitTime +
+				", incharges='" + incharges + '\'' +
+				", currentStageObject=" + currentStageObject +
+				", prevStage='" + prevStage + '\'' +
+				'}';
+	}
+
 	public String getPrevStage() {
 		return prevStage;
 	}
@@ -50,8 +85,7 @@ public class ChangeRequest implements Serializable{
 	}
 
 
-	private String prevStage;
-	
+
 	public String getCurrentStage() {
 		return currentStage;
 	}
@@ -82,10 +116,13 @@ public class ChangeRequest implements Serializable{
 	}
 
 
+	public void setCurrentStageObject(Stage currentStageObject) {
+		this.currentStageObject = currentStageObject;
+	}
 
 	public ChangeRequest(String initiator, String intiatorType, String status, int requestID, String infoSystem,
-			String existingCondition, String suggestedChange, String reasonForChange, String remarks,
-			ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage,String filesPaths,String incharges) {
+						 String existingCondition, String suggestedChange, String reasonForChange, String remarks,
+						 ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage, String filesPaths, String incharges , Stage currentStageObject) {
 		this.initiator=initiator;
 		this.intiatorType=intiatorType;
 		this.status=status;
@@ -100,10 +137,16 @@ public class ChangeRequest implements Serializable{
 		this.currentStage = currentStage;
 		this.filesPaths = filesPaths;
 		this.incharges =incharges;
-		prevStage="INIT";
+		this.currentStageObject = currentStageObject;
+		this.prevStage="INIT";
+		this.returned= false;
+		this.returnedNote="";
 		
 	}
 
+	public Stage getCurrentStageObject() {
+		return currentStageObject;
+	}
 
 	/**
 	 * @return the requestID
@@ -240,5 +283,21 @@ public class ChangeRequest implements Serializable{
 
 	public String getIntiatorType() {
 		return intiatorType;
+	}
+
+	public boolean isReturned() {
+		return returned;
+	}
+
+	public void setReturned(boolean returned) {
+		this.returned = returned;
+	}
+
+	public String getReturnedNote() {
+		return returnedNote;
+	}
+
+	public void setReturnedNote(String returnedNote) {
+		this.returnedNote = returnedNote;
 	}
 }

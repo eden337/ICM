@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -32,41 +33,46 @@
                            <children>
                               <AnchorPane prefHeight="665.0" prefWidth="423.0">
                                  <children>
-                                    <Text fx:id="idText" layoutX="30.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :" />
-                                    <Text fx:id="requestID" layoutX="30.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                                    <Text fx:id="idText" layoutX="30.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :">
                                        <font>
-                                          <Font name="System Bold Italic" size="15.0" />
-                                       </font>
-                                    </Text>
-                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" />
-                                    <Text layoutX="10.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173" />
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
+                                    <Text fx:id="requestID" layoutX="30.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
+                                    <TextArea fx:id="existingCondition" editable="false" layoutX="10.0" layoutY="258.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
+                                    <Text layoutX="10.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173">
+                                       <font>
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
                                     <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="10.0" layoutY="397.0" prefHeight="100.0" prefWidth="400.0" wrapText="true" />
-                                    <Text layoutX="10.0" layoutY="391.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
+                                    <Text layoutX="10.0" layoutY="391.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks:">
+                                       <font>
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
                                     <Text fx:id="msg" fill="#0e2eff" layoutX="38.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
                                        <font>
                                           <Font name="System Bold" size="38.0" />
                                        </font>
                                     </Text>
-                                    <Text layoutX="10.0" layoutY="523.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In Charge:" wrappingWidth="73.63037107139826" />
+                                    <Text layoutX="10.0" layoutY="523.0" strokeType="OUTSIDE" strokeWidth="0.0" text="In Charge:" wrappingWidth="73.63037107139826">
+                                       <font>
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
                                     <TextField fx:id="inchargeTF" editable="false" layoutX="10.0" layoutY="528.0" prefHeight="100.0" prefWidth="400.0" />
-                                    <Label layoutX="230.0" layoutY="45.0" text="DepartmentID:" textAlignment="CENTER" />
-                                    <Text fx:id="departmentID" layoutX="230.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" textAlignment="CENTER">
+                                    <Label layoutX="230.0" layoutY="45.0" text="DepartmentID:" textAlignment="CENTER">
                                        <font>
-                                          <Font name="System Bold Italic" size="15.0" />
-                                       </font>
-                                    </Text>
-                                    <Text fx:id="idText1" layoutX="30.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requester's Name:" />
-                                    <Text fx:id="requestNameLabel" layoutX="30.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Label>
+                                    <Text fx:id="departmentID" layoutX="230.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" textAlignment="CENTER" />
+                                    <Text fx:id="idText1" layoutX="30.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requester's Name:">
                                        <font>
-                                          <Font name="System Bold Italic" size="15.0" />
-                                       </font>
-                                    </Text>
-                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:" />
-                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#">
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
+                                    <Text fx:id="requestNameLabel" layoutX="30.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
+                                    <Text fx:id="idText2" layoutX="230.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:">
                                        <font>
-                                          <Font name="System Bold Italic" size="15.0" />
-                                       </font>
-                                    </Text>
+                                          <Font name="System Bold Italic" size="13.0" />
+                                       </font></Text>
+                                    <Text fx:id="dueDateLabel" layoutX="230.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
                                  </children>
                               </AnchorPane>
                            </children>
@@ -75,26 +81,62 @@
                   </VBox>
                </children>
             </Pane>
-            <AnchorPane prefHeight="710.0" prefWidth="585.0">
+            <Pane prefHeight="710.0" prefWidth="580.0">
                <children>
-                  <Text layoutX="242.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="56.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm the closure of the process" wrappingWidth="371.009765625">
-                     <font>
-                        <Font name="System Bold Italic" size="19.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="closeProcessBtn" layoutX="56.0" layoutY="215.0" mnemonicParsing="false" onAction="#closeProcessBtnClicked" text="Close Process" />
-                  <Text layoutX="56.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Status of current request is:" wrappingWidth="371.009765625">
-                     <font>
-                        <Font name="System Bold Italic" size="19.0" />
-                     </font>
-                  </Text>
-                  <TextField fx:id="finishedStatusTF" layoutX="56.0" layoutY="122.0" />
-               </children></AnchorPane>
+                  <Pane fx:id="pane_msg" prefHeight="712.0" prefWidth="580.0" visible="false">
+                     <children>
+                        <Text layoutX="233.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
+                           <font>
+                              <Font size="31.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="211.0" layoutY="362.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure stage is done.">
+                           <font>
+                              <Font name="System Bold Italic" size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+                  <AnchorPane fx:id="pane_form" prefHeight="710.0" prefWidth="585.0">
+                     <children>
+                        <Text fx:id="finishedStatus" fill="#2fba0f" layoutX="269.0" layoutY="219.0" strokeType="OUTSIDE" strokeWidth="0.0" text="null">
+                           <font>
+                              <Font name="System Bold Italic" size="15.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="236.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
+                           <font>
+                              <Font size="30.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="21.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm the closure of the process" wrappingWidth="371.009765625">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="closeProcessBtn" layoutX="231.0" layoutY="355.0" mnemonicParsing="false" onAction="#closeProcessBtnClicked" styleClass="primary" text="Close Process" />
+                        <Text layoutX="21.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The Status of current request is:" wrappingWidth="371.009765625">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="21.0" layoutY="76.0" prefHeight="83.0" prefWidth="529.0" styleClass="info" text="Closure Required">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="66.0" prefWidth="513.0">
+                                 <children>
+                                    <Text fx:id="titledPane_Text" fill="#0058d9" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time left">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </Pane>
          </children>
       </HBox>
    </children>

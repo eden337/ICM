@@ -2,7 +2,7 @@ package client.controllers;
 
 import client.App;
 import common.controllers.Message;
-import common.entity.EvaluationReport;
+//
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -39,7 +39,12 @@ public class ClientMessages {
             case LoginResult:
                 LoginController.instance.getLoginResult(m.getObject());
                 break;
-
+            case getEmployeeData:
+                ManagerViewPage.Instance.setDataTable(m.getObject());
+                break;
+            case getSystemData:
+                ManagerViewPage.Instance.setSystemData(m.getObject());
+                break;
             case InsertRequirement:
                 ChangeRequestController.instance.queryResult(m.getObject());
                 break;
@@ -48,11 +53,12 @@ public class ClientMessages {
                 break;
 
             case ChangeRequest_File:
-                ChangeRequestController.instance.uploadFileAndqueryResult(m.getObject());
+                ChangeRequestController.instance.uploadFileResult(m.getObject());
                 break;
             case Allocate_GetITUsers:
                 AllocateController.instance.setComboBoxesData(m.getObject());
                 break;
+            case Allocate_UpdateRoles:
             case Allocate_SetRoles:
                 AllocateController.instance.showResult(m.getObject());
                 break;
@@ -66,24 +72,29 @@ public class ClientMessages {
             case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
+            case updateRoleInOrg:
+            case deleteMember:
+
+                break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
+            
+            case VALID_updateRequestStatus:
+            	ValidationController.instance.setValidationTable_ServerResponse(m.getObject());
+            	break;
                 
             case VAL_GetAllReportsByRID:
-                ValidationController.instance.setFieldsData_ServerResponse(m.getObject());
+                ValidationController.instance.queryResult(m.getObject());
                 break;
-            
+
             case EXE_UpdateDB:
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
 
-            case EVAL_GetInitData:
-                EvaluationReportController.instance.checkPreConditions_ServerResponse(m.getObject());
-                break;
             // pre Eval
             case PreEVAL_SetInitStat:
             case PreEVAL_SetConfirmationStatus:
@@ -94,6 +105,9 @@ public class ClientMessages {
                 break;
             case EXE_GetInitData:
                 ExecutionController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
+            case VAL_GetInitData:
+                ValidationController.instance.checkPreConditions_ServerResponse(m.getObject());
                 break;
             // pre EXE
             case PreEXE_SetInitStat:
@@ -112,9 +126,40 @@ public class ClientMessages {
             case ChangeRequest_DownloadFile:
                 requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
                 break;
+
+            case Extension_submit:
+                ExtensionController.instance.InsertOrUpdate_ServerResponse(m.getObject());
+                break;
+            case ChangeRequest_getStageObject:
+                requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
+                break;
+            case updateSystems:
+                ManagerViewPage.Instance.getquery(m.getObject());
+                break;
+            case PreValidation_GetCOMMITEE_MEMBERS:
+                PreValidationController.instance.setComboBoxesData(m.getObject());
+                break;
+            case PreValidation_SetRole:
+                PreValidationController.instance.queryResult(m.getObject());
+            case DECISION_GetPrevStage:
+                decisionController.instance.appendPrevStageObject_ServerResponse(m.getObject());
+                break;
+            case DECISION_updateRequestStatus:
+                decisionController.instance.queryResult2(m.getObject());
+                break;
+            case VALID_UpdateRepeated:
+            	ValidationController.instance.queryResult2(m.getObject());
+            	break;
+            case VALID_GetPrevStage:
+            	ValidationController.instance.appendPrevStageObject_ServerResponse(m.getObject());
+            	break;
+            case VALID_GetReport:
+                break;
+            case EXECUTION_GetFailReport:
+            	ExecutionController.instance.getReport_ServerResponse(m.getObject());
+            	break;
             default:
                 break;
-
         }
     }
 }// class

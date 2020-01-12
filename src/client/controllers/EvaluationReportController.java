@@ -6,21 +6,33 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import common.entity.EvaluationReport;
+import common.entity.StageRole;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ResourceBundle;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -30,9 +42,8 @@ public class EvaluationReportController extends AppController implements Initial
      */
     // public static ChangeRequest thisRequest;
     public static EvaluationReportController instance;
-
+    private common.entity.Stage thisStage;
     protected ChangeRequest thisRequest;
-    private boolean firstReportForRequest;
 
     @FXML
     private Text idText;
@@ -68,6 +79,12 @@ public class EvaluationReportController extends AppController implements Initial
     private Text dueDateLabel;
 
     @FXML
+    private AnchorPane rightPane;
+
+    @FXML
+    private Pane Pane_Form;
+
+    @FXML
     private Button SbmtEvlBtn;
 
     @FXML
@@ -83,14 +100,22 @@ public class EvaluationReportController extends AppController implements Initial
     private TextArea cnstrntTXT;
 
     @FXML
-    private Text msgFix;
-
-    @FXML
     private TitledPane titledPane;
 
     @FXML
-    private AnchorPane rightPane;
+    private Text titledPane_Text;
 
+    @FXML
+    private Button btnRequestExtension;
+
+    @FXML
+    private Pane Pane_locked;
+
+    @FXML
+    private Text txt_locked;
+
+    @FXML
+    private Button btnAnswerStageExtensionRequest;
 
     @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
@@ -108,6 +133,11 @@ public class EvaluationReportController extends AppController implements Initial
         expectedRisk = this.cnstrntTXT.getText();
         LocalDate date = this.timeEvlBox.getValue();
         estimatedTime = date.toString();
+        btnAnswerStageExtensionRequest.setVisible(false);
+
+        if(thisStage.getExtension_reason()!=null)
+            btnAnswerStageExtensionRequest.setVisible(true);
+
 
         String query = "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
 
@@ -127,43 +157,62 @@ public class EvaluationReportController extends AppController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
+        SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
-        msgFix.setVisible(false);
+        Pane_Form.setVisible(false);
+        Pane_locked.setVisible(false);
+        //titledPane_Text.setVisible(false);
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
 
-        instance = this;
+        btnRequestExtension.setVisible(false);
+
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
-        checkPreConditions();
 
-    }
-
-    private void checkPreConditions() {
-        OperationType ot = OperationType.EVAL_GetInitData;
-        String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID() + "' AND `StageName` = 'EVALUATION' LIMIT 1";
-        App.client.handleMessageFromClientUI(new Message(ot, query));
-    }
-
-    public void checkPreConditions_ServerResponse(Object object) {
-        List<Boolean> init_res = (List<Boolean>) object;
-        boolean init = init_res.get(0);
-        boolean init_confirmed = init_res.get(1);
-
-        if (init_confirmed && init) {
+        if (!thisRequest.getCurrentStage().equals("EVALUATION")) {
             formInit();
+            Pane_Form.setVisible(true);
             rightPane.setVisible(true);
-            return;
-        }
-        Platform.runLater(new Runnable() {
 
-            @Override
-            public void run() {
-                loadPage("PreEvaluation");
+            inchargeTF.setText("Evaluator");
+            return;
+        } else { // in Eval Stage
+            if (thisStage.getInit_confirmed() == 1 && thisStage.getInit() == 1)
+                rightPane.setVisible(true);
+            else {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPage("PreEvaluation");
+                    }
+                });
+                return;
             }
-        });
+
+            if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { //  EVALUATOR
+                SbmtEvlBtn.setVisible(true);
+                Pane_Form.setVisible(true);
+                long estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+                        .toDays();
+                estimatedTime += 1;
+                Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+                setExtensionVisability();
+
+
+            } else { // NOT EVALUATOR
+                Pane_locked.setVisible(true);
+                if (thisStage.getExtension_days() != 0)
+                    btnRequestExtension.setVisible(true);
+
+            }
+            inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
+        }
+
 
     }
 
@@ -171,16 +220,15 @@ public class EvaluationReportController extends AppController implements Initial
     private void formInit() {
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
             Platform.runLater(new Runnable() {
-
                 @Override
                 public void run() {
+                    titledPane.getStyleClass().remove("danger");
                     titledPane.getStyleClass().add("success");
                     titledPane.setText("This stage is done.");
                     SbmtEvlBtn.setVisible(false);
-                    timeEvlBox.setDisable(true);
-                    msgFix.setText("You have only a viewing permission.");
-                    msgFix.setFill(Color.FORESTGREEN);
-                    msgFix.setVisible(true);
+                    titledPane_Text.setText("You have only a viewing permission.");
+                    titledPane_Text.setFill(Color.FORESTGREEN);
+                    titledPane_Text.setVisible(true);
                     reqChngTXT.setEditable(false);
                     expResTXT.setEditable(false);
                     cnstrntTXT.setEditable(false);
@@ -188,12 +236,20 @@ public class EvaluationReportController extends AppController implements Initial
                 }
             });
 
+        } else { // currently doing this stage
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    titledPane.getStyleClass().remove("danger");
+                    titledPane.getStyleClass().add("info");
+
+                    titledPane.setText("Fill in Evaluation report.");
+                    titledPane_Text.setText("After you submit the form, the evaluation will go to decision stage. ");
+                }
+            });
+
         }
-        else{ // currently doing this stage
-            titledPane.getStyleClass().remove("danger");
-            titledPane.getStyleClass().add("info");
-            titledPane.setText("Fill in Evaluation report.");
-        }
+
         setFieldsData();
     }
 
@@ -208,7 +264,7 @@ public class EvaluationReportController extends AppController implements Initial
         ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
         if (reports.size() > 0) {
             if (thisRequest.getCurrentStage().equals("EVALUATION"))
-                msgFix.setVisible(true);
+                titledPane_Text.setVisible(true);
             EvaluationReport individualReport = reports.get(0);
             reqChngTXT.setText(individualReport.getRequired_change());
             expResTXT.setText(individualReport.getExpected_result());
@@ -240,7 +296,6 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     private static int c = 0;
-
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -255,6 +310,38 @@ public class EvaluationReportController extends AppController implements Initial
                 });
             } else
                 showAlert(AlertType.ERROR, "Error!", "Data Error.", null);
+        }
+    }
+
+
+    // Extensions:
+    private void setExtensionVisability() {
+        btnRequestExtension.setVisible(false);
+        long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if (daysDifference >= -3) {
+            btnRequestExtension.setVisible(true);
+            if (thisStage.getExtension_days() != 0)
+                btnRequestExtension.setDisable(true);
+        }
+
+    }
+
+    @FXML
+    void requestExtension(ActionEvent event) {
+        start(new Stage());
+    }
+
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Extension");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Could not load execution prompt");
+            e.printStackTrace();
         }
     }
 }

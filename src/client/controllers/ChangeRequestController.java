@@ -80,7 +80,7 @@ public class ChangeRequestController extends AppController implements Initializa
 		instance = this;
 		resetWarnings();
 		fileNames.setVisible(false);
-		infoSystemCombo.getItems().addAll("moodle", "Information Station", "Library System", "Class Computers", "Labs",
+		infoSystemCombo.getItems().addAll("Moodle", "Information Station", "Library System", "Class Computers", "Labs",
 				"Computer Farm", "Collage Website");
 	}
 
@@ -97,20 +97,7 @@ public class ChangeRequestController extends AppController implements Initializa
 			return;
 		insertDataToDB();
 		clearAll();
-	}
-
-	void createZip(String filename) {
-		File myZip = new File(filename);
-		File[] files = new File[filelist.size()];
-		files = filelist.toArray(files);
-		if (!filelist.isEmpty()) {
-			try {
-				zipFile(files, myZip);
-				UploadRequestFilesToServer(myZip);
-			} catch (Exception e) {
-				showAlert(AlertType.ERROR, "Error!", "Files Compressions Error.", null);
-			}
-		}
+		//loadPage("Homepage");
 	}
 
 	/**
@@ -181,21 +168,36 @@ public class ChangeRequestController extends AppController implements Initializa
 		openFile();
 	}
 
+	void createZip(String filename) {
+		if(filelist==null)
+		{
+			return;
+		}
+		File myZip = new File(filename);
+		File[] files = new File[filelist.size()];
+		files = filelist.toArray(files);
+		if (!filelist.isEmpty()) {
+			try {
+				zipFile(files, myZip);
+				UploadRequestFilesToServer(myZip);
+			} catch (Exception e) {
+				showAlert(AlertType.ERROR, "Error!", "Files Compressions Error.", null);
+			}
+		}
+		
+	}
 	/**
 	 * create the open browser.
 	 */
-	private void openFile() {
-		try {
+	private void openFile() {		
 			FileChooser fileChooser = new FileChooser();
 			filelist = fileChooser.showOpenMultipleDialog(stage);
+			if(filelist==null) {
+					return;
+			}
 			fileChooser.setTitle("Open Resource File");
 			fileNames.setVisible(true);
 			fileNames.setText(printNameFiles(filelist));
-
-		} catch (Exception e) {
-			System.out.println("error file");
-			e.printStackTrace();
-		}
 	}
 
 	private boolean UploadRequestFilesToServer(File file) {
@@ -264,15 +266,35 @@ public class ChangeRequestController extends AppController implements Initializa
 	 */
 	public void queryResult(Object object) {
 		int rid = (int) object;
-		if (rid > 0) {
-			createZip("Request_" + rid + ".zip");
+		if (rid>0) {
+			if (filelist != null) {
+				createZip("Request_" + rid + ".zip");
+			} else {
+				showAlert(AlertType.INFORMATION, "Request sent successfuly",
+						"\t\the will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThanks! ",
+						null);
+			}
 		} else
-			showAlert(AlertType.ERROR, "Error!", "Data Error1 : queryResult", null);
-	}
+			showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
 
+	}
 	/**
 	 * Check the return from the server of the file.
 	 *
+	 * @param object the object that return from the server is boolean
+	 */
+	public void uploadFileResult(Object object) {
+		boolean fileRes = (boolean) object;
+		if (fileRes) {
+			showAlert(AlertType.INFORMATION, "Request sent successfuly",
+					"\t\the mail will receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThanks! ", null);
+		}
+		else
+			showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);
+	}
+	/**
+	 * Check the return from the server of the file.
+	 * 
 	 * @param object the object that return from the server is boolean
 	 */
 	public void uploadFileAndqueryResult(Object object) {
@@ -313,7 +335,7 @@ public class ChangeRequestController extends AppController implements Initializa
 			zos.close();
 			fos.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found : " + e);
+			System.out.println("File not found");
 		}
 
 	}
