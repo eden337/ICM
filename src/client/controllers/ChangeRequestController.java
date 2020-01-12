@@ -80,8 +80,8 @@ public class ChangeRequestController extends AppController implements Initializa
 		instance = this;
 		resetWarnings();
 		fileNames.setVisible(false);
-		infoSystemCombo.getItems().addAll("Moodle", "Information Station", "Library System", "Class Computers", "Labs",
-				"Computer Farm", "Collage Website");
+		infoSystemCombo.getItems().addAll("Moodle", "Information Station", "Library", "Class Computers", "Labs",
+				"Computer Farm", "Collage website");
 	}
 
 	/**
@@ -97,7 +97,6 @@ public class ChangeRequestController extends AppController implements Initializa
 			return;
 		insertDataToDB();
 		clearAll();
-		//loadPage("Homepage");
 	}
 
 	/**

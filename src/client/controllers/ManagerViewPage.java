@@ -252,6 +252,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 			if (e.getRoleInOrg().equals(roleInOrg))
 				e.setOrgRoleServerResponse("");
 		}
+		
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 		query1 = "UPDATE Employees SET RoleInOrg = '" + roleInOrg + "' WHERE WorkerID = '"
 				+ selectedEmployeeInstance.getWorkerID() + "';";
@@ -357,7 +358,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 		for (InfoSystem infoSystem : is) {
 			if(infoSystem.getSystemID().equals(((CheckBox)event.getTarget()).getText())) {
 				infoSystem.setUserName(selectedEmployeeInstance.getUserName());
-				
+				showAlert(AlertType.INFORMATION, "Select", selectedEmployeeInstance.getUserName()+" is now incharge of "+((CheckBox)event.getTarget()).getText(), null);
 			}
 		}
 	}
