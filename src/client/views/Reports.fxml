@@ -20,7 +20,7 @@
          <children>
             <AnchorPane fx:id="reportTypePane" prefHeight="200.0" prefWidth="333.0" style="-fx-background-color: #d5f6ff;" styleClass="roundedRect_Reports">
                <children>
-                  <RadioButton fx:id="radioActivty" layoutX="95.0" layoutY="113.0" mnemonicParsing="false" onAction="#changeType_Period" text="Activtiy">
+                  <RadioButton fx:id="radioActivty" layoutX="95.0" layoutY="113.0" mnemonicParsing="false" onAction="#chooseReportType" text="Activtiy">
                      <toggleGroup>
                         <ToggleGroup fx:id="ReportType" />
                      </toggleGroup>
@@ -92,7 +92,7 @@
       </HBox>
       <AnchorPane prefHeight="121.0" prefWidth="1000.0" style="-fx-background-color: #ffffff;">
          <children>
-            <Button fx:id="btnViewReports" layoutX="477.0" layoutY="49.0" mnemonicParsing="false" onAction="#viewReports" styleClass="primary" text="View Previous Reports" />
+            <Button fx:id="btnViewReports" layoutX="477.0" layoutY="50.0" mnemonicParsing="false" onAction="#viewReports" styleClass="primary" text="View Previous Reports" />
             <ImageView fx:id="imgArrow" fitHeight="63.0" fitWidth="425.0" layoutX="285.0" layoutY="-287.0" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
                   <Image url="@img/reports/report_arrow.png" />
