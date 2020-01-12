@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 /**
  * <code>Main controller</code>
  * class controls the template: 'main'
+ * The main screen of the application. all the others pages will be open in this 'center' pane
  * menu actions,
  * log out,
  * Notifications
