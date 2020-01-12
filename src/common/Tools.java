@@ -3,17 +3,22 @@ package common;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 import common.entity.ChangeRequest;
+import common.entity.Report;
 import common.entity.StageName;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -113,6 +118,80 @@ public class Tools {
 		
 		}
 	}
+	
+	public static TreeMap<String, ArrayList<Integer>> frequncyDistrbution(Report report)
+	{
+		/**
+		 * frequency: map Key Holds period of time as a string,arraylist holds value of data wanted(active/canceled/frozen/done)
+		 * from: report start time
+		 * to: report end time
+		 * totalTime: total days in report
+		 * periodTime: Duration of frequency
+		 * 
+		 */
+		
+		TreeMap<String, ArrayList<Integer>> frequency = new TreeMap<String, ArrayList<Integer>>();
+		ZonedDateTime from = Tools.convertDateSQLToZoned(report.getFrom());
+
+		ZonedDateTime to = Tools.convertDateSQLToZoned(report.getTo());
+		long totalTime = Duration.between(from, to).toDays();
+		boolean check = totalTime < 12 ? false : true;
+		long peirodTime = totalTime < 12 ? totalTime : totalTime % 12 == 0 ? totalTime / 12 : (totalTime / 12) + 1;
+		int groups = (int) (totalTime / peirodTime);
+		System.out.println(groups);
+		ZonedDateTime startTime = from;
+		ZonedDateTime endPeriod = null;
+		String period;
+
+		if (check) {
+			for (int i = 1; i < groups; i++) {
+				endPeriod = startTime.plusDays(peirodTime - 1);
+				period = DateTimeFormatter.ofPattern("yyyy--MM--dd").format(startTime) + " "
+						+ DateTimeFormatter.ofPattern("yyyy--MM--dd").format(endPeriod);
+				frequency.put(period, new ArrayList<Integer>());
+				startTime = startTime.plusDays(peirodTime);
+
+			}
+
+			period = DateTimeFormatter.ofPattern("yyyy--MM--dd").format(startTime) + " "
+					+ DateTimeFormatter.ofPattern("yyyy--MM--dd").format(to);
+			frequency.put(period, new ArrayList<Integer>());
+
+		} else {
+			for (int i = 0; i <= (int) totalTime; i++) {
+				frequency.put(DateTimeFormatter.ofPattern("yyyy--MM--dd").format(startTime), new ArrayList<Integer>());
+				startTime = startTime.plusDays(1);
+			}
+
+		}
+		return frequency;
+		
+	}
+	
+    public static double calculateSD(ArrayList<Integer> numArray)
+    {
+        double sum = 0.0, standardDeviation = 0.0;
+        int length = numArray.size();
+        for(double num : numArray) {
+            sum += num;
+        }
+        double mean = sum/length;
+        for(double num: numArray) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+        return Math.sqrt(standardDeviation/length);
+    }
+    public static int calcMedian(ArrayList<Integer> numArray)
+    {
+    	Collections.sort(numArray);
+    	int middle=(numArray.size()/2);
+    	return numArray.get(middle);
+    	
+    }
+
+	
+	
+	
 	
 	public static void fillRequestPanes(Text requestID, TextArea existingCondition, TextArea descripitionsTextArea,TextField inchargeTF, Text departmentID,Text dueDateLabel,Text requestNameLabel, ChangeRequest selectedRequestInstance) {
 		requestID.setText("" + selectedRequestInstance.getRequestID());

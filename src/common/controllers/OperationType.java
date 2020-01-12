@@ -33,6 +33,10 @@ public enum OperationType {
 	EVAL_UpdateDB,
 	DECI_UpdateDB,
 	ChangeRequest_DownloadFile, SUPERVISOR_REMARKS,
+	
+	
+	//Report
+	GenreateReport,InsertReport,
 	;
 
 }

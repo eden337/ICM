@@ -1,5 +1,7 @@
 package client.controllers;
 
+import java.io.FileNotFoundException;
+
 import client.App;
 import common.controllers.Message;
 import common.entity.EvaluationReport;
@@ -112,6 +114,14 @@ public class ClientMessages {
             case ChangeRequest_DownloadFile:
                 requestTreatmentController.Instance.DownloadFiles_ServerResponse(m.getObject());
                 break;
+            case InsertReport:
+			try {
+				ReportGenerateController.instance.openNewReport(m.getObject());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            	break;
             default:
                 break;
 

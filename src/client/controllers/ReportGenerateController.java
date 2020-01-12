@@ -1,11 +1,20 @@
 package client.controllers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import client.App;
+import common.controllers.Message;
+import common.controllers.OperationType;
+import common.entity.Report;
 //import common.entity.Reports;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,13 +27,19 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 
 public class ReportGenerateController extends AppController implements Initializable {
 
+	public static ReportGenerateController instance;
 	private ArrayList<RadioButton> types;
 	
 	//private Reports newReport;
 
+	private static File file;
+	
     @FXML
     private AnchorPane reportTypePane;
     
@@ -75,6 +90,8 @@ public class ReportGenerateController extends AppController implements Initializ
     private Button btnViewReports;
     
     
+    private Stage stage;
+    
     /*
      * all need to go into report entity
      * 
@@ -85,6 +102,9 @@ public class ReportGenerateController extends AppController implements Initializ
     
     private LocalDate to;
     
+	private String path = System.getProperty("user.dir") + "\\ReportsFiles\\";
+    private static String periodReport; 
+    private static String regularReport;
     
 
     @FXML
@@ -106,6 +126,7 @@ public class ReportGenerateController extends AppController implements Initializ
     @FXML
     void changeType(ActionEvent event) {
     	currentStep(1);
+    	
 
     }
 
@@ -118,7 +139,36 @@ public class ReportGenerateController extends AppController implements Initializ
 
     @FXML
     void submit(ActionEvent event) {
-    	showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
+    	Report report=new Report(reportName, Date.valueOf(LocalDate.now()),Date.valueOf(from), Date.valueOf(to));
+   	 	periodReport = report.getType()+" "+report.getFrom().toString()+" "+report.getTo().toString();
+   	 	regularReport=report.getType()+report.getCreated().toString();
+   	 	
+    	if(report.isPeriodReport())
+    	{
+    		
+    		if(!(file=new File(path+report.toString()+".csv")).exists())
+    		{
+    		App.client.handleMessageFromClientUI(new Message(OperationType.InsertReport, report));
+        	App.client.handleMessageFromClientUI(new Message(OperationType.GenreateReport, "Select * From Reports WHERE ReportType='"+report.getType()+"' And Since ='"+report.getFrom().toString()+"' AND Till ='"+report.getTo().toString() +"'"));
+    		}
+    		else
+    		{
+    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path+periodReport, null);
+    		}
+    	}
+    	else
+    	{
+    		//if(!(file=new File(path+regularReport+".csv")).exists())
+    		file=new File(path+report.toString()+".csv");
+    		App.client.handleMessageFromClientUI(new Message(OperationType.InsertReport, report));
+        	App.client.handleMessageFromClientUI(new Message(OperationType.GenreateReport, "Select * From Reports WHERE ReportType='"+report.getType()+"' And Created ='"+report.getCreated().toString()+"'"));
+    		
+
+    	}
+    	
+    	
+    	
+    	//showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
 
     }
     private boolean isReportType()
@@ -168,11 +218,112 @@ public class ReportGenerateController extends AppController implements Initializ
 				showAlert(AlertType.ERROR, "Dates input failure","date 'from' needs to be before 'to' " , null);
 				return false;
 			}
+			else if(from.isAfter(LocalDate.now())|| to.isAfter(LocalDate.now()))
+			{
+				showAlert(AlertType.ERROR, "Dates input failure","report period can't contain time after today' " , null);
+				return false;
+			}
 			else
 			{
 				System.out.println("you chose Dates from: "+ from.toString()+ "and to:"+to.toString() );
 				return true;
 			}
+    	
+    }
+    
+    
+   
+	public void openNewReport(Object obj) throws FileNotFoundException
+    {
+		PrintWriter csvFile;
+    	Report report=(Report)obj;
+   	 
+
+   	 	new File(path).mkdirs();   
+   	 	
+		 csvFile=new PrintWriter(file);
+         csvFile.write(report.getData());
+         csvFile.close();
+         showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
+         
+    	/*if(reportStyle(report))
+    	{
+			 csvFile=new PrintWriter(file);
+	         csvFile.write(report.getData());
+	         csvFile.close();
+	         showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
+    		
+    		/*if(!(file=new File(path+periodReport+".csv")).exists())
+    		{
+    			System.out.println(file.getPath());
+    			 csvFile=new PrintWriter(file);
+    	         csvFile.write(report.getData());
+    	         csvFile.close();
+    	     	showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
+
+    	         
+    		}
+    		else
+    		{
+    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path+periodReport, null);
+    			
+    		}
+    	}
+    	else
+    	{
+    		if(!(file=new File(path+regularReport+".csv")).exists())
+    		{
+    			 csvFile=new PrintWriter(file);
+    	         csvFile.write(report.getData());
+    	         csvFile.close();
+    	     	showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
+
+    		}
+    		else
+    		{
+    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path, null);
+    			
+    		}
+    		
+    	}*/
+    	
+    	/*File temp=new File(report.getType()+"_"+report.getFrom().toString()+"_"+report.getTo().toString()+".csv");
+    	if(!temp.exists())
+			try {
+				temp.createNewFile();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
+    /*	FileChooser fc=new FileChooser();
+    	fc.setTitle("SaveDialog");
+    	fc.setInitialFileName(report.getType()+"_"+report.getCreated()+"_"+".csv");
+    	fc.getExtensionFilters().add(new ExtensionFilter("CSV File", "*.csv"));
+    	*/
+    
+
+        
+   
+         /*
+		try {
+			File file= fc.showSaveDialog(stage);
+			fc.setInitialDirectory(file.getParentFile());
+			
+			csvFile = new PrintWriter(file);
+			csvFile.write(report.getData());
+		
+			csvFile.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
+    
+   
+    		
+    	
+    
     	
     }
     
@@ -197,7 +348,7 @@ public class ReportGenerateController extends AppController implements Initializ
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+		instance=this;
 		setupReportType();
 		currentStep(1);
 	}
@@ -224,7 +375,7 @@ public class ReportGenerateController extends AppController implements Initializ
 		}
 	}
 	
-	
+
 	void openPane(AnchorPane pane)
 	{
 		pane.setOpacity(1);
@@ -249,10 +400,19 @@ public class ReportGenerateController extends AppController implements Initializ
 		
 	}
 	
+	private boolean reportStyle(Report style)
+	{
+		
+		if(style.isPeriodReport())
+			return true;
+		else
+			return false;
+	}
 	private String identifyReportType(RadioButton rb)
 	{
+		
 		if(rb.equals(radioActivty))
-			return "activity";
+			return "Activity";
 		else if(rb.equals(radioDelays))
 			return "Delays";
 		else if(rb.equals(radioPerformences))
@@ -262,5 +422,7 @@ public class ReportGenerateController extends AppController implements Initializ
 		
 	
 	}
+	
+
 
 }
