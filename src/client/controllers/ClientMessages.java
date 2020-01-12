@@ -2,7 +2,7 @@ package client.controllers;
 
 import client.App;
 import common.controllers.Message;
-//
+import common.entity.EvaluationReport;
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -72,21 +72,17 @@ public class ClientMessages {
             case SUPERVISOR_REMARKS:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
-            case updateRoleInOrg:
-            case deleteMember:
-
-                break;
             case EVAL_GetAllReportsByRID:
                 EvaluationReportController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-            
+
             case VALID_updateRequestStatus:
             	ValidationController.instance.setValidationTable_ServerResponse(m.getObject());
             	break;
-                
+
             case VAL_GetAllReportsByRID:
                 ValidationController.instance.queryResult(m.getObject());
                 break;
@@ -95,6 +91,9 @@ public class ClientMessages {
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
 
+            case EVAL_GetInitData:
+                EvaluationReportController.instance.checkPreConditions_ServerResponse(m.getObject());
+                break;
             // pre Eval
             case PreEVAL_SetInitStat:
             case PreEVAL_SetConfirmationStatus:
@@ -158,8 +157,17 @@ public class ClientMessages {
             case EXECUTION_GetFailReport:
             	ExecutionController.instance.getReport_ServerResponse(m.getObject());
             	break;
+            case InsertReport:
+			try {
+				ReportGenerateController.instance.openNewReport(m.getObject());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            	break;
             default:
                 break;
+
         }
     }
 }// class

@@ -9,7 +9,7 @@ public enum OperationType {
 	InsertEvaluation,
 	getViewRequestData,
 	// Results:
-//
+
 	LoginResult, ChangeRequest_File,
 	Allocate_GetITUsers,
 	Allocate_SetRoles,
@@ -39,7 +39,11 @@ public enum OperationType {
 	DECISION_SendEmailToUser, Allocate_UpdateRoles,
 	DECISION_GetPrevStage, DECISION_updateRequestStatus, VALID_updateRequestStatus, EXECUTION_GetFailReport, VALID_GetReport, VALID_GetPrevStage,
 	VALID_UpdateRepeated
-	;
+	ChangeRequest_DownloadFile, SUPERVISOR_REMARKS,
 
+
+	//Report
+	GenreateReport,InsertReport,
+	;
 
 }
