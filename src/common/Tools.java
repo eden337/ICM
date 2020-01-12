@@ -106,9 +106,11 @@ public class Tools {
 			return StageName.INIT;
 		
 	}
-	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate)
-	{
-		ZonedDateTime t=ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(),  ZoneId.systemDefault());
+
+	public static ZonedDateTime convertDateSQLToZoned(Date sqlDate) {
+		if (sqlDate == null)
+			return null;
+		ZonedDateTime t = ZonedDateTime.of(sqlDate.toLocalDate().atStartOfDay(), ZoneId.systemDefault());
 		return t;
 	}
 

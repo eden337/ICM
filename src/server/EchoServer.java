@@ -84,10 +84,26 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.getRequirementData, requestsData), client);
                     rs.close();
                     break;
-
+                case getEmployeeData:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    // Map<Object, List<Object>> ma = Tools.resultSetToMap(rs);
+                    ArrayList<EmployeeUser> EmployeeData = getEmployees(rs);
+                    sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
+                    rs.close();
+                    break;
+                case updateRoleInOrg:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
+                    break;
+                case getSystemData:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    ArrayList<InfoSystem> infoSystem = getSystemData(rs);
+                    sendToClient(new Message(OperationType.getSystemData, infoSystem), client);
+                    rs.close();
+                    break;
                 case getViewRequestData:
                     rs = mysql.getQuery(m.getObject().toString());
-                    //Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
+                    // Map<Object, List<Object>> ma1 = Tools.resultSetToMap(rs);
                     ArrayList<ChangeRequest> requestsData1 = getRequsets(rs);
                     sendToClient(new Message(OperationType.getViewRequestData, requestsData1), client);
                     rs.close();
@@ -117,11 +133,13 @@ public class EchoServer extends AbstractServer {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
+
                                     rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null);
 
                         }
                         rs.close();
-                        //  EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has just logged in. Yoooho","That's really exciting moment.");
+                        // EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has
+                        // just logged in. Yoooho","That's really exciting moment.");
 
                         sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
                     } else
@@ -135,18 +153,25 @@ public class EchoServer extends AbstractServer {
                     resultFile = FileAttacedInServer((MyFile) m.getObject(), client);
                     sendToClient(new Message(OperationType.ChangeRequest_File, resultFile), client);
                     break;
+                case PreValidation_GetCOMMITEE_MEMBERS:
                 case Allocate_GetITUsers:
                     List<String> listOfUsers = new ArrayList<>();
                     rs = mysql.getQuery(m.getObject().toString());
                     while (rs.next()) {
                         listOfUsers.add(rs.getString("USERNAME"));
                     }
-                    sendToClient(new Message(OperationType.Allocate_GetITUsers, listOfUsers), client);
+                    sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
                     break;
+                case PreValidation_SetRole:
                 case Allocate_SetRoles:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.Allocate_SetRoles, res), client);
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+
+                case Allocate_UpdateRoles:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
@@ -199,6 +224,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
+
                 case DECISION_GetAllReportsByRID:
                 case VAL_GetAllReportsByRID:
                 case EVAL_GetAllReportsByRID:
@@ -207,24 +233,18 @@ public class EchoServer extends AbstractServer {
 
                     while (rs.next()) {
 
-                        EvaluationReport IndividualReport = new EvaluationReport(
-                                rs.getInt("Report_ID"),
-                                rs.getString("RequestID"),
-                                rs.getString("System_ID"),
-                                rs.getString("Required_Change"),
-                                rs.getString("Expected_Result"),
-                                rs.getString("Expected_Risks"),
-                                rs.getDate("Estimated_Time"),
-                                rs.getTimestamp("TIMESTAMP")
-                        );
+                        EvaluationReport IndividualReport = new EvaluationReport(rs.getInt("Report_ID"),
+                                rs.getString("RequestID"), rs.getString("System_ID"), rs.getString("Required_Change"),
+                                rs.getString("Expected_Result"), rs.getString("Expected_Risks"),
+                                rs.getDate("Estimated_Time"), rs.getTimestamp("TIMESTAMP"));
 
                         reportsToReturn.add(IndividualReport);
                     } // while
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
-                //need for considerations...
-                
+                // need for considerations...
+                case VALID_updateRequestStatus:
                 case DECI_UpdateDB:
                 case EVAL_UpdateDB:
                 case VALID_UpdateDB:
@@ -232,6 +252,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case VAL_GetInitData:
                 case EXE_GetInitData:
                 case EVAL_GetInitData:
                     List<Boolean> init_res = new ArrayList<Boolean>();
@@ -275,8 +296,9 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 case ChangeRequest_DownloadFile:
-                    String fileToSend = "Request_"+m.getObject() + ".zip";
-                    String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir")).append("\\serverFiles\\").append(fileToSend).toString();
+                    String fileToSend = "Request_" + m.getObject() + ".zip";
+                    String LocalfilePath = new StringBuilder().append(System.getProperty("user.dir"))
+                            .append("\\serverFiles\\").append(fileToSend).toString();
                     try {
                         File newFile = new File(LocalfilePath);
                         MyFile msgFile = new MyFile(LocalfilePath, fileToSend);
@@ -289,13 +311,68 @@ public class EchoServer extends AbstractServer {
 
                         bis.read(msgFile.getMybytearray(), 0, mybytearray.length);
                         sendToClient(new Message(m.getOperationtype(), msgFile), client);
-                    }
-                    catch(FileNotFoundException e)
-                    {
+                    } catch (FileNotFoundException e) {
                         sendToClient(new Message(m.getOperationtype(), null), client);
 
                         e.printStackTrace();
                     }
+
+                    break;
+                case deleteMember:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.deleteMember, res), client);
+                    break;
+
+                case Extension_submit:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+                case VALID_GetPrevStage:
+                case DECISION_GetPrevStage:
+                case ChangeRequest_getStageObject:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    Stage cStage = null;
+                    while (rs.next()) {
+                        cStage = new Stage(rs.getInt("RequestID"), rs.getString("StageName"),
+                                Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+                                Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge")
+                                , rs.getInt("init"), rs.getInt("init_confirmed"), rs.getInt("extension_days"), rs.getString("extension_reason"), rs.getString("extension_decision"), rs.getString("PrevStage"));
+                    }
+
+                    sendToClient(new Message(m.getOperationtype(), cStage), client);
+                    break;
+                case updateSystems:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.updateSystems, res), client);
+                    break;
+                case DECISION_SendEmailToUser:
+                    try {
+                        rs = mysql.getQuery(m.getObject().toString());
+                        while (rs.next()) {
+                            EmailSender.sendEmail(rs.getString("EMAIL"),"ICM Notification", "Please view your progress");
+                        }
+                        break;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        break;
+                    }
+                case VALID_UpdateRepeated:
+                case DECISION_updateRequestStatus:
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(m.getOperationtype(), res), client);
+                    break;
+                case VALID_GetReport:
+                case EXECUTION_GetFailReport:
+                    rs =mysql.getQuery(m.getObject().toString());
+                    String s = null;
+                    while(rs.next()) {
+                        s = rs.getString("Report");
+                    }
+                    sendToClient(new Message(m.getOperationtype(), s), client);
+                    break;
+
                 case InsertReport:
                 	Report report=(Report)m.getObject();
 
@@ -308,39 +385,39 @@ public class EchoServer extends AbstractServer {
                 		boolean period= Duration.between(Tools.convertDateSQLToZoned(report.getFrom()), Tools.convertDateSQLToZoned(report.getTo())).toDays()<12?true:false;
                 		TreeMap<String, ArrayList<Integer>> frequency =Tools.frequncyDistrbution(report);
                 		Set <String> keys=frequency.keySet();
-                		for (String s : keys)
+                		for (String s2 : keys)
                 		{
 
                 			String from;
                 			String to;
                 			if(period)
                 			{
-                				from=s;
-                				to=s;
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"+to+"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"+from+"') ))", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"+from+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"+to+"')", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s);
-                    			ArrayList<Integer> temp=frequency.get(s);
+                				from=s2;
+                				to=s2;
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"+to+"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"+from+"') ))", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"+from+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"+to+"')", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s2);
+                    			ArrayList<Integer> temp=frequency.get(s2);
                     			int active=temp.get(0);
                 				int freezed=temp.get(2);
                 				int realActive=active-freezed;
-                				frequency.get(s).set(0, realActive);
-                				frequency.get(s).add(realActive);
+                				frequency.get(s2).set(0, realActive);
+                				frequency.get(s2).add(realActive);
                 			}
                 			else
                 			{
-                				from=s.substring(0, 12);
-                				to=s.substring(13);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"+to+"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"+from+"') ))", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"+from+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"+to+"')", frequency,s);
-                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s);
-                    			frequency.get(s).add(calcActiveDaysPerPeriod(from, to));
-                    			ArrayList<Integer> temp=frequency.get(s);
+                				from=s2.substring(0, 12);
+                				to=s2.substring(13);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"+to+"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"+from+"') ))", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"+from+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"+to+"')", frequency,s2);
+                    			calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+to+"')", frequency,s2);
+                    			frequency.get(s2).add(calcActiveDaysPerPeriod(from, to));
+                    			ArrayList<Integer> temp=frequency.get(s2);
                     			int active=temp.get(0);
                 				int freezed=temp.get(2);
-                				frequency.get(s).set(0, active-freezed);
+                				frequency.get(s2).set(0, active-freezed);
                 			}
 
 
@@ -464,14 +541,7 @@ public class EchoServer extends AbstractServer {
                 			mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created` ,`Data`)"
                 					+ "VALUES" + "('" + report.getType() +  "','"
                 					+ report.getCreated().toString() + "','" + reportDelayData  + "');");
-
-
-
-
                 	}
-
-
-
                     break;
                 case GenreateReport:
                 	ResultSet reportData= mysql.getQuery(m.getObject().toString());
@@ -486,63 +556,6 @@ public class EchoServer extends AbstractServer {
                 	sendToClient(new Message(OperationType.InsertReport,csvReport), client);
 
                 	break;
-
-                case deleteMember:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.deleteMember, res), client);
-                    break;
-
-                case Extension_submit:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-                case VALID_GetPrevStage:
-                case DECISION_GetPrevStage:
-                case ChangeRequest_getStageObject:
-                    rs = mysql.getQuery(m.getObject().toString());
-                    Stage cStage = null;
-                    while (rs.next()) {
-                        cStage = new Stage(rs.getInt("RequestID"), rs.getString("StageName"),
-                                Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
-                                Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
-                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge")
-                                , rs.getInt("init"), rs.getInt("init_confirmed"), rs.getInt("extension_days"), rs.getString("extension_reason"), rs.getString("extension_decision"), rs.getString("PrevStage"));
-                    }
-
-                    sendToClient(new Message(m.getOperationtype(), cStage), client);
-                    break;
-                case updateSystems:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateSystems, res), client);
-                    break;
-                case DECISION_SendEmailToUser:
-                    try {
-                        rs = mysql.getQuery(m.getObject().toString());
-                        while (rs.next()) {
-                            EmailSender.sendEmail(rs.getString("EMAIL"),"ICM Notification", "Please view your progress");
-                        }
-                        break;
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } finally {
-                        break;
-                    }
-                case VALID_UpdateRepeated:
-                case DECISION_updateRequestStatus:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-                case VALID_GetReport:
-                case EXECUTION_GetFailReport:
-                    rs =mysql.getQuery(m.getObject().toString());
-                    String s = null;
-                    while(rs.next()) {
-                        s = rs.getString("Report");
-                    }
-                    sendToClient(new Message(m.getOperationtype(), s), client);
-                    break;
-
-
                 default:
                     break;
             }
@@ -635,6 +648,62 @@ public class EchoServer extends AbstractServer {
                     suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
                     currResponsible, null);
             ret.add(request);
+        }
+        return ret;
+    }
+
+    public ArrayList<InfoSystem> getSystemData(ResultSet systemData) throws SQLException {
+        ArrayList<InfoSystem> ret = new ArrayList<>();
+        Stage cStage = null;
+
+        while (systemData.next()) {
+            InfoSystem infoSystem;
+            String SystemID = systemData.getString("SystemID");
+            String username = systemData.getString("username");
+            infoSystem = new InfoSystem(SystemID, username);
+            ret.add(infoSystem);
+        }
+        return ret;
+    }
+
+    /**
+     * @throws SQLException
+     */
+    public ArrayList<EmployeeUser> getEmployees(ResultSet EmployeeData) throws SQLException {
+        ArrayList<EmployeeUser> ret = new ArrayList<>();
+        Stage cStage = null;
+
+        while (EmployeeData.next()) {
+            EmployeeUser employee;
+            String workerID = EmployeeData.getString("WorkerID");
+            String username = EmployeeData.getString("username");
+            String password = EmployeeData.getString("password");
+            String name = EmployeeData.getString("Name");
+            String surename = EmployeeData.getString("Surename");
+            String email = EmployeeData.getString("EMAIL");
+            String department = EmployeeData.getString("Department");
+            String type = EmployeeData.getString("Type");
+            String roleInOrg = EmployeeData.getString("RoleInOrg");
+//            String systemID = EmployeeData.getString("SystemID");
+//            String query5 = "SELECT * FROM `Stage` WHERE RequestID = '" + requestID
+//                    + "' AND `StageName` = '"+currentStage+"' LIMIT 1";
+//            ResultSet rs = mysql.getQuery(query5);
+//            while (rs.next()) {
+//                 cStage = new Stage(
+//                        rs.getInt("RequestID"),
+//                        rs.getString("StageName"),
+//                        Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
+//                        Tools.convertDateSQLToZoned(rs.getDate("Deadline")),
+//                        rs.getString("Incharge"),
+//                        rs.getBoolean("Extend"),
+//                        rs.getInt("init"),
+//                        rs.getInt("init_confirmed")
+//                );
+//            }
+            employee = new EmployeeUser(name, surename, email, username, password, workerID, department, type,
+                    roleInOrg);
+            ret.add(employee);
         }
         return ret;
     }
