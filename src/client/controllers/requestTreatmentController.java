@@ -1,5 +1,6 @@
 package client.controllers;
 
+import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -582,8 +583,10 @@ public class requestTreatmentController extends AppController implements Initial
 					fos.flush();
 					bos.close();
 					fos.close();
-					showAlert(AlertType.CONFIRMATION, "Download succeed",
-							"Files downloaded to the directory you picked.", null);
+
+					// open the downloaded file using operation system
+					Desktop desktop = Desktop.getDesktop();
+					desktop.open(newFile);
 
 				} catch (Exception e) {
 					e.printStackTrace();

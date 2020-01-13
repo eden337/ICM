@@ -140,12 +140,11 @@ public class ViewRequestController extends AppController implements Initializabl
 					progressViewLabel.setVisible(false);
 					selectedRequestInstance = row.getItem();
 
-					if(selectedRequestInstance.getCurrentStage().equals("INIT")) {
+					if (selectedRequestInstance.getCurrentStage().equals("INIT")) {
 						progressViewLabel.setText("The Request waiting for initialize");
 						progressViewLabel.setVisible(true);
 						stageHBox.setOpacity(0.5);
-					}
-					else {
+					} else {
 						progressViewLabel.setVisible(false);
 						stageHBox.setOpacity(1);
 					}
@@ -154,9 +153,12 @@ public class ViewRequestController extends AppController implements Initializabl
 							departmentID, dueDateLabel, requestNameLabel, selectedRequestInstance);
 					wantedChangeText.setText(selectedRequestInstance.getSuggestedChange());
 					reasonText.setText(selectedRequestInstance.getReasonForChange());
+
+					resetStageImgStyleClass();
+					Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);
+
 				}
-				resetStageImgStyleClass();
-				Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);
+
 			});
 			return row;
 		});

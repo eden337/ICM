@@ -145,6 +145,8 @@ public class EvaluationReportController extends AppController implements Initial
 
 		OperationType ot1 = OperationType.InsertEvaluation;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
+
+
 		String query2 = "UPDATE Requests SET Treatment_Phase = 'DECISION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot2 = OperationType.Eval_updateRequestStatus;
@@ -190,9 +192,8 @@ public class EvaluationReportController extends AppController implements Initial
 
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-
+		formInit();
 		if (!thisRequest.getCurrentStage().equals("EVALUATION")) {
-			formInit();
 			Pane_Form.setVisible(true);
 			rightPane.setVisible(true);
 
@@ -277,8 +278,15 @@ public class EvaluationReportController extends AppController implements Initial
 	public void setFieldsData_ServerResponse(Object object) {
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
 		if (reports.size() > 0) {
-			if (thisRequest.getCurrentStage().equals("EVALUATION"))
+			if (thisRequest.getCurrentStage().equals("EVALUATION")) {
+				Pane_Form.setDisable(true);
 				titledPane_Text.setVisible(true);
+				titledPane_Text.setText("Evaluation report has been sent. Waiting for supervisor decision.");
+				btnRequestExtension.setVisible(false);
+				btnAnswerStageExtensionRequest.setVisible(false);
+				SbmtEvlBtn.setVisible(false);
+
+			}
 			EvaluationReport individualReport = reports.get(0);
 			reqChngTXT.setText(individualReport.getRequired_change());
 			expResTXT.setText(individualReport.getExpected_result());

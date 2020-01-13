@@ -73,6 +73,7 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private Spinner<Integer> ValidationTime;
 
+    private static int c = 0;
 
     @FXML
     void submitForm(ActionEvent event) {
@@ -83,7 +84,9 @@ public class AllocateController extends AppController implements Initializable {
             txtWarning.setVisible(true);
             return;
         }
-	    if(init) {
+        OperationType ot2 = OperationType.Allocate_UpdateRoles;
+
+        if(init) {
 	        OperationType ot = OperationType.Allocate_SetRoles;
 	        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
 	                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
@@ -92,33 +95,34 @@ public class AllocateController extends AppController implements Initializable {
 	                "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
 	                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
 	        App.client.handleMessageFromClientUI(new Message(ot, query));
+
+	        c = 1;
 	        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
 	                + thisRequest.getRequestID() + "'";
-	        OperationType ot2 = OperationType.Allocate_UpdateRequestStatus;
 	        App.client.handleMessageFromClientUI(new Message(ot2, query2));
 	    }
 	    else{
+	        c = 2;
 	    	query="UPDATE Stage SET Incharge = '"+cbEvaluator.getValue()+"' WHERE StageName = 'EVALUATION' AND RequestID = '"+thisRequest.getRequestID()+"';";
-	    	OperationType ot2 = OperationType.Allocate_UpdateRoles;
 	        App.client.handleMessageFromClientUI(new Message(ot2, query));
 	        query="UPDATE Stage SET Incharge = '"+cbExecuter.getValue()+"' WHERE StageName = 'EXECUTION' AND RequestID = '"+thisRequest.getRequestID()+"';";
 	        App.client.handleMessageFromClientUI(new Message(ot2, query));
-	    	
+
 	    }
 	    loadPage("requestTreatment");
     }
     
-    private static int c = 0;
+
 
 	public void allocQueryResult(Object object) {
-		c++;
+		c--;
 		boolean res = (boolean) object;
-		if (c == 1) {
+		if (c == 0 || !res) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.INFORMATION, "Allocation Approved", "The incharges of the request were assigned", null);
+						showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
 						loadPage("requestTreatment");
 					}
 				});

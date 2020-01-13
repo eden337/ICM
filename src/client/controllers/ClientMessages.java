@@ -53,7 +53,9 @@ public class ClientMessages {
             case InsertEvaluation:
                 EvaluationReportController.instance.insertNewRequestResult(m.getObject());
                 break;
-
+            case Eval_updateRequestStatus:
+                EvaluationReportController.instance.evaluationStageUpdateQueryResult(m.getObject());
+                break;
             case ChangeRequest_File:
                 ChangeRequestController.instance.uploadFileResult(m.getObject());
                 break;
@@ -61,6 +63,8 @@ public class ClientMessages {
                 AllocateController.instance.setComboBoxesData(m.getObject());
                 break;
             case Allocate_UpdateRoles:
+                AllocateController.instance.allocQueryResult(m.getObject());
+                break;
             case Allocate_SetRoles:
                 AllocateController.instance.showResult(m.getObject());
                 break;
