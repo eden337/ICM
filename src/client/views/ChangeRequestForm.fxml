@@ -3,22 +3,21 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ChangeRequestController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ChangeRequestController">
    <children>
       <Text fill="#183934" fontSmoothingType="LCD" layoutX="87.0" layoutY="81.0" strokeWidth="0.0" text="Choose information system:" wrappingWidth="225.72232055664062">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
       <ComboBox fx:id="infoSystemCombo" cache="true" layoutX="74.0" layoutY="97.0" prefHeight="38.0" prefWidth="248.0" />
       <Text fill="#183934" fontSmoothingType="LCD" layoutX="87.0" layoutY="195.0" strokeWidth="0.0" text="Existing condition:" wrappingWidth="159.0556640625">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
       <TextArea fx:id="ExistingConditionText" layoutX="76.0" layoutY="212.0" prefHeight="93.0" prefWidth="372.0" promptText="Existing condition..." wrapText="true">
@@ -28,7 +27,7 @@
       </TextArea>
       <Text fill="#183934" fontSmoothingType="LCD" layoutX="87.0" layoutY="376.0" strokeWidth="0.0" text="Suggested condition:" wrappingWidth="176.38897705078125">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
       <TextArea fx:id="suggestedText" layoutX="71.0" layoutY="392.0" prefHeight="94.0" prefWidth="369.0" promptText="Suggested condition..." wrapText="true">
@@ -36,65 +35,62 @@
             <Font size="20.0" />
          </font>
       </TextArea>
-      <Text fill="#183934" fontSmoothingType="LCD" layoutX="530.0" layoutY="190.0" strokeWidth="0.0" text="Reason:" wrappingWidth="83.05569458007812">
+      <Text fill="#183934" fontSmoothingType="LCD" layoutX="530.0" layoutY="195.0" strokeWidth="0.0" text="Reason:" wrappingWidth="83.05569458007812">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
-      <TextArea fx:id="reasonText" layoutX="517.0" layoutY="204.0" prefHeight="95.0" prefWidth="373.0" promptText="Reason..." wrapText="true">
+      <TextArea fx:id="reasonText" layoutX="517.0" layoutY="212.0" prefHeight="95.0" prefWidth="373.0" promptText="Reason..." wrapText="true">
          <font>
             <Font size="20.0" />
          </font>
       </TextArea>
-      <Text fill="#183934" fontSmoothingType="LCD" layoutX="527.0" layoutY="371.0" strokeWidth="0.0" text="Remarks:" wrappingWidth="75.53320226725191">
+      <Text fill="#183934" fontSmoothingType="LCD" layoutX="527.0" layoutY="376.0" strokeWidth="0.0" text="Remarks:" wrappingWidth="75.53320226725191">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
-      <TextArea fx:id="remarksText" layoutX="524.0" layoutY="386.0" prefHeight="94.0" prefWidth="368.0" promptText="Remarks..." wrapText="true">
+      <TextArea fx:id="remarksText" layoutX="524.0" layoutY="392.0" prefHeight="94.0" prefWidth="368.0" promptText="Remarks..." wrapText="true">
          <font>
             <Font size="20.0" />
          </font>
       </TextArea>
-      <Text fill="#183934" layoutX="377.0" layoutY="548.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attached file:" wrappingWidth="100.7109375">
+      <Text fill="#183934" layoutX="67.0" layoutY="551.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Attached file:" wrappingWidth="100.7109375">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Text>
-      <Button fx:id="submitRequestBtn" layoutX="405.0" layoutY="591.0" mnemonicParsing="false" onAction="#submitBtnAction" prefHeight="41.0" prefWidth="141.0" text="Submit request" textFill="#183934">
+      <Button fx:id="submitRequestBtn" layoutX="765.0" layoutY="594.0" mnemonicParsing="false" onAction="#submitBtnAction" prefHeight="41.0" prefWidth="141.0" styleClass="primary" stylesheets="@css/theme.css" text="Submit request" textFill="#183934">
          <font>
-            <Font name="System Bold Italic" size="16.0" />
+            <Font name="System Bold Italic" size="13.0" />
          </font>
       </Button>
-      <Button fx:id="browsebtn" layoutX="483.0" layoutY="529.0" mnemonicParsing="false" onAction="#browsebtnAction" prefHeight="24.0" prefWidth="77.0" text="Select File" textFill="#183934" underline="true">
+      <Button fx:id="browsebtn" layoutX="160.0" layoutY="532.0" mnemonicParsing="false" onAction="#browsebtnAction" prefHeight="32.0" prefWidth="106.0" styleClass="warning" stylesheets="@css/theme.css" text="Select File" textFill="#183934" underline="true">
          <font>
             <Font name="System Bold Italic" size="11.0" />
          </font>
-         <effect>
-            <ColorAdjust brightness="0.38" contrast="1.0" />
-         </effect>
       </Button>
-      <Text fx:id="ReasonEmptyWarning" fill="#eb0303" layoutX="652.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
+      <Text fx:id="ReasonEmptyWarning" fill="#eb0303" layoutX="765.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
          <font>
-            <Font size="15.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text fx:id="suggestedConditionEmptyWarning" fill="#eb0303" layoutX="272.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
+      <Text fx:id="suggestedConditionEmptyWarning" fill="#eb0303" layoutX="313.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
          <font>
-            <Font size="15.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text fx:id="ExistingconditionEmptyWarning" fill="#eb0303" layoutX="275.0" layoutY="194.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
+      <Text fx:id="ExistingconditionEmptyWarning" fill="#eb0303" layoutX="313.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
          <font>
-            <Font size="15.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text fx:id="infoSystemEmptyWarning" fill="#eb0303" layoutX="314.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
+      <Text fx:id="infoSystemEmptyWarning" fill="#eb0303" layoutX="263.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must fill this field">
          <font>
-            <Font size="15.0" />
+            <Font size="13.0" />
          </font>
       </Text>
-      <Text fill="#eb0505" layoutX="75.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
+      <Text fill="#eb0505" layoutX="73.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
          <font>
             <Font size="25.0" />
          </font>
@@ -104,16 +100,16 @@
             <Font size="25.0" />
          </font>
       </Text>
-      <Text fill="#eb0505" layoutX="72.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
+      <Text fill="#eb0505" layoutX="75.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
          <font>
             <Font size="25.0" />
          </font>
       </Text>
-      <Text fill="#eb0505" layoutX="519.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
+      <Text fill="#eb0505" layoutX="519.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*">
          <font>
             <Font size="25.0" />
          </font>
       </Text>
-      <TextArea fx:id="fileNames" layoutX="574.0" layoutY="532.0" prefHeight="155.0" prefWidth="312.0" />
-   </children>
+      <TextArea fx:id="fileNames" editable="false" layoutX="274.0" layoutY="532.0" prefHeight="124.0" prefWidth="274.0" />
+   </children> 
 </AnchorPane>
