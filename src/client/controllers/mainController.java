@@ -189,7 +189,10 @@ public class mainController extends AppController implements Initializable {
     }
 
     public void initialize_afterUserUpdate(){
-        gotoHome(null);
+        if(!App.appInitialized) {
+            gotoHome(null);
+            App.appInitialized = true;
+        }
 
         p6.setVisible(false);
 

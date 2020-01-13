@@ -25,6 +25,7 @@ public class App extends Application {
 	public static User user;
 	public static String server_ip = "";
 	public static String server_port = "";
+	public static boolean appInitialized = false;
 
 	/**
 	 * main method
