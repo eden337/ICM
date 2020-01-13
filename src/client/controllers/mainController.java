@@ -188,6 +188,9 @@ public class mainController extends AppController implements Initializable {
         p4.setVisible(false);
         p5.setVisible(false);
         p6.setVisible(false);
+
+        loadPage("Homepage");
+
     }
 
     public void initialize_afterUserUpdate(){
@@ -238,7 +241,10 @@ public class mainController extends AppController implements Initializable {
      */
     @FXML
     void logout(MouseEvent event) {
+
+        App.client.handleMessageFromClientUI(new Message(OperationType.Logout, App.user.getUserName()));
         App.user = null;
+        BypassedApp.main(null);
         changeWindow((Stage) ((Node) event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
     }
 

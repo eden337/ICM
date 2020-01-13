@@ -40,6 +40,8 @@ public class EchoServer extends AbstractServer {
     final public static int DEFAULT_PORT = 5555;
     public static int portNumber = 0;
     mysqlConnection mysql = new mysqlConnection();
+    public  static TreeMap<String, ConnectionToClient> connectedUsers = new TreeMap<String, ConnectionToClient>();
+
 
     // Constructors ****************************************************
 
@@ -60,7 +62,7 @@ public class EchoServer extends AbstractServer {
      * @param msg    The message received from the client.
      * @param client The connection from which the message originated.
      */
-    public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+    public synchronized void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message m = (Message) msg;
         //ServerController.instance.startDBService();
         boolean res;
@@ -128,18 +130,53 @@ public class EchoServer extends AbstractServer {
                                     rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
 
                                     rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null);
-
                         }
                         rs.close();
-                        // EmailSender.sendEmail("idanabr@gmail.com",employeeUser.getUserName() + " has
-                        // just logged in. Yoooho","That's really exciting moment.");
-
-                        sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
+                        if (employeeUser != null) {
+                            if (connectedUsers.containsKey(employeeUser.getUserName())) {
+                                sendToClient(new Message(OperationType.LoginResult, null), client);
+                                return;
+                            } else {
+                                connectedUsers.put(employeeUser.getUserName(), client);
+                                sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
+                            }
+                        }
                     } else
                         sendToClient(new Message(OperationType.LoginResult, null), client);
 
                     break;
+                case LoginAsStudent:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    StudentUser studentUser = null;
+                    if (rs != null) {
+                        while (rs.next()) {
+                            studentUser = new StudentUser(
+                                    rs.getString("Name"),
+                                    rs.getString("Surename"),
+                                    rs.getString("EMAIL"),
+                                    rs.getString("username"),
+                                    rs.getString("password"),
+                                    rs.getInt("StudentID"),
+                                    rs.getString("Department")
+                            );
+                        }
+                        rs.close();
+                        if (studentUser != null) {
+                            if (connectedUsers.containsKey(studentUser.getUserName())) {
+                                sendToClient(new Message(OperationType.LoginResult, null), client);
+                                return;
+                            } else {
+                                connectedUsers.put(studentUser.getUserName(), client);
+                                sendToClient(new Message(OperationType.LoginResult, studentUser), client);
+                            }
+                        }
+                    } else
+                        sendToClient(new Message(OperationType.LoginResult, null), client);
 
+                    break;
+                case Logout:
+                    connectedUsers.remove(m.getObject());
+                    break;
                 case ChangeRequest_File:
                     boolean resultFile;
                     System.out.println("Message received: " + ((MyFile) m.getObject()).getFileName() + " from " + client);
