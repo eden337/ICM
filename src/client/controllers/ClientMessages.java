@@ -176,9 +176,13 @@ public class ClientMessages {
     			} catch (FileNotFoundException e) {
     				e.printStackTrace();
     			}
+    			break;
             case GetReports:
             	ViewReportsController.instance.setReportsToList(m.getObject());
-            	
+            	break;
+            case ForceUpdateUsersPermissions:
+                App.user.updatePermissions();
+                break;
             default:
                 break;
                

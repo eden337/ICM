@@ -2,6 +2,8 @@ package client;
 
 import java.io.IOException;
 //
+import common.controllers.Message;
+import common.controllers.OperationType;
 import common.entity.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -75,6 +77,10 @@ public class App extends Application {
 			e.printStackTrace();
 			System.out.println("ERR at App.Start");
 		}
+	}
+
+	public static void ForceAuthorizeAllUsers(){
+		App.client.handleMessageFromClientUI(new Message(OperationType.ForceUpdateUsersPermissions, null));
 	}
 
 }

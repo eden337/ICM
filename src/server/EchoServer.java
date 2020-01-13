@@ -548,6 +548,9 @@ public class EchoServer extends AbstractServer {
                     }
                     sendToClient(new Message(OperationType.GetReports, allReports), client);
                     break;
+                case ForceUpdateUsersPermissions:
+                    sendToAllClients(new Message(OperationType.ForceUpdateUsersPermissions, null));
+                    break;
 
                 default:
                     break;
