@@ -165,12 +165,9 @@ public class ReportGenerateController extends AppController implements Initializ
                 App.client.handleMessageFromClientUI(new Message(OperationType.InsertReport, report));
                 App.client.handleMessageFromClientUI(new Message(OperationType.GenreateReport, "Select * From Reports WHERE ReportType='" + report.getType() + "' And Since ='" + report.getFrom().toString() + "' AND Till ='" + report.getTo().toString() + "'"));
                 buffer.setVisible(true);
+
             } else {
                 showAlert(AlertType.WARNING, "Report already exist", "this file Exist at " + path + report.toString() + ".csv", null);
-				try {
-					Desktop.getDesktop().open(new File(path));
-				}
-                catch(IOException e ){}
 
 			}
         } else {
@@ -182,6 +179,10 @@ public class ReportGenerateController extends AppController implements Initializ
 
         }
 
+        try {
+            Desktop.getDesktop().open(file);
+        }
+        catch(IOException e ){}
 
         //showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
 
