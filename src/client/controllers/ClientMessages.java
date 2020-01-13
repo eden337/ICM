@@ -168,13 +168,8 @@ public class ClientMessages {
             	ExecutionController.instance.getReport_ServerResponse(m.getObject());
             	break;
             case InsertReport:
-			try {
-				ReportGenerateController.instance.openNewReport(m.getObject());
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            	break;
+                ReportGenerateController.instance.openNewReport(m.getObject());
+                break;
             case OpenReport:
     			try {
     				ViewReportsController.instance.createInPC(m.getObject());

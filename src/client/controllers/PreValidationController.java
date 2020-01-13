@@ -114,7 +114,6 @@ public class PreValidationController extends AppController implements Initializa
             });
         } else
             showAlert(Alert.AlertType.ERROR, "Error!", "Could not update.", null);
-
     }
 
     @Override
