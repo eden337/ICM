@@ -302,7 +302,7 @@ public class ValidationController extends AppController implements Initializable
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.CONFIRMATION, "Return to Executer",
+						showAlert(AlertType.INFORMATION, "Return to Executer",
 								"The report was sent to the execution stage", null);
 						loadPage("requestTreatment");
 					}
