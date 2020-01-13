@@ -166,10 +166,7 @@ public class ChangeRequestController extends AppController implements Initializa
 	void browsebtnAction(ActionEvent event) {
 		openFile();
 	}
-/**
- * creating the zip file
- * @param filename
- */
+
 	void createZip(String filename) {
 		if(filelist==null)
 		{
