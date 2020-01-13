@@ -1,12 +1,9 @@
 package client.controllers;
 
-import client.App;
-import common.controllers.Message;
-
 import java.io.FileNotFoundException;
 
-import com.sun.corba.se.spi.orbutil.closure.Closure;
-//
+import client.App;
+import common.controllers.Message;
 
 /**
  * get <Code> Message </code> from server and send it to the relevant
@@ -167,34 +164,33 @@ public class ClientMessages {
 			ValidationController.instance.appendPrevStageObject_ServerResponse(m.getObject());
 			break;
 		case VALID_GetReport:
+			ValidationController.instance.getReport_ServerResponse(m.getObject());
 			break;
 		case EXECUTION_GetFailReport:
 			ExecutionController.instance.getReport_ServerResponse(m.getObject());
 			break;
 		case InsertReport:
-			
-               
-                ReportGenerateController.instance.openNewReport(m.getObject());
-                break;
-            case OpenReport:
-    			try {
-    				ViewReportsController.instance.createInPC(m.getObject());
-    			} catch (FileNotFoundException e) {
-    				e.printStackTrace();
-    			}
-    			break;
-            case GetReports:
-            	ViewReportsController.instance.setReportsToList(m.getObject());
-            	break;
-            case ForceUpdateUsersPermissions:
-                App.user.updatePermissions();
-                break;
-            case Manager_updateRoleInOrg:
-                ManagerViewPage.Instance.appointment_ServerResponse(m.getObject());
-                break;
-            default:
-                break;
-               
+
+			ReportGenerateController.instance.openNewReport(m.getObject());
+			break;
+		case OpenReport:
+			try {
+				ViewReportsController.instance.createInPC(m.getObject());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			break;
+		case GetReports:
+			ViewReportsController.instance.setReportsToList(m.getObject());
+			break;
+		case ForceUpdateUsersPermissions:
+			App.user.updatePermissions();
+			break;
+		case Manager_updateRoleInOrg:
+			ManagerViewPage.Instance.appointment_ServerResponse(m.getObject());
+			break;
+		default:
+			break;
 
 		}
 	}
