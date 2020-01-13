@@ -2,6 +2,8 @@ package client.controllers;
 
 import client.App;
 import client.BypassedApp;
+import common.controllers.Message;
+import common.controllers.OperationType;
 import common.entity.OrganizationRole;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -248,5 +250,5 @@ public class mainController extends AppController implements Initializable {
         return borderPane;
     }
 
-    
+
 }

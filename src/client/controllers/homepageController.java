@@ -2,6 +2,9 @@ package client.controllers;
 
 
 import client.App;
+import common.controllers.Message;
+import common.controllers.OperationType;
+import common.entity.OrganizationRole;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
@@ -64,6 +67,7 @@ public class homepageController extends AppController implements Initializable {
         instance = this;
         paneForIT.setVisible(false);
         setGreeting();
+        initData_Request();
 
         if(App.user.isEngineer())
             paneForIT.setVisible(true);
@@ -94,4 +98,60 @@ public class homepageController extends AppController implements Initializable {
         greeting.setText(greetingText + ", " + App.user.getFirstName());
     }
 
+
+    private void initData_Request(){
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
+                "SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests,
+                "SELECT COUNT(*) FROM Requests WHERE Status = 'ACTIVE' AND USERNAME = '" + App.user.getUserName() + "';"));
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment, setTableByUser()));
+    }
+
+    // Main_getMyTotalRequests
+    public void Main_getMyTotalRequests_Response(Object res){
+        if(res == null) return;
+        userTotalRequest.setText(res.toString());
+    }
+    public void Main_getMyActiveRequests_Response(Object res){
+        if(res == null) return;
+        userRequestsInTreatment.setText(res.toString());
+    }
+    public void Main_getMyRequestTreatment_Response(Object res){
+        if(res == null) return;
+        UserNeedToTreat.setText(res.toString());
+    }
+
+
+    /**
+     * Get Request Treatment query by permission
+     * @return
+     */
+    private String setTableByUser() {
+        String query = "Select COUNT(*) FROM Requests ";
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+            return query;
+        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+            query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
+            return query;
+        }
+        query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
+                + " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
+                + " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
+                + "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
+                " AND `incharge` = '" + App.user.getUserName() + "'";
+
+        if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
+                || App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
+                || App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+            // add option to see active decision stages in addition to other permission of
+            // these user
+            query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
+
+            if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
+                query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
+
+        }
+        // general:
+        return query;
+    }
 }

@@ -7,17 +7,17 @@
 }
 
 .bg_menu_color{
-	-fx-background-color :  #264653;
+	-fx-background-color :  #274f5c;
 }
 .bg_menu_item{
-	-fx-background-color :  #264653;
+	-fx-background-color :  #274f5c;
 }
 .bg_menu_item:hover{
-	-fx-background-color :  #24434f;
+	-fx-background-color : #254955;
 }
 
 .bg_color1{
-	-fx-background-color :  #264653;
+	-fx-background-color : #274f5c;
 }
 .bg_color2{
 	-fx-background-color :  #455054;
