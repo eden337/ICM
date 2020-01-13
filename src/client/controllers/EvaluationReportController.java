@@ -146,7 +146,7 @@ public class EvaluationReportController extends AppController implements Initial
 		OperationType ot1 = OperationType.InsertEvaluation;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 
-		String query2 = "UPDATE Requests SET Treatment_Phase = 'DECISION' WHERE RequestID = '"
+		String query2 = "UPDATE Requests SET Treatment_Phase = 'DECISION', Due_Date = '"+estimatedTime+"' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot2 = OperationType.Eval_updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot2, query2));
