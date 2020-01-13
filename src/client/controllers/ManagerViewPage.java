@@ -257,9 +257,12 @@ public class ManagerViewPage extends AppController implements Initializable {
 		query1 = "UPDATE Employees SET RoleInOrg = '" + roleInOrg + "' WHERE WorkerID = '"
 				+ selectedEmployeeInstance.getWorkerID() + "';";
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
-		selectedEmployeeInstance.setOrgRoleServerResponse(roleInOrg);
+		App.ForceAuthorizeAllUsers();
+		//selectedEmployeeInstance.setOrgRoleServerResponse(roleInOrg);
 		PositionTf.setText(roleInOrg);
 		table.refresh();
+
+
 	}
 
 	@FXML

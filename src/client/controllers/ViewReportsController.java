@@ -87,15 +87,12 @@ public class ViewReportsController extends AppController implements Initializabl
 
     @FXML
     void showActivity(ActionEvent event) {
-    	
     	reportList.setItems(reportsActivty);
     }
 
     @FXML
     void showAllReports(ActionEvent event) {
     	reportList.setItems(allReports);
-    	
-
     }
 
     @FXML

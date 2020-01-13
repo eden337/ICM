@@ -40,7 +40,6 @@ public class ClientMessages {
 		// break;
 		case DECISION_DeclineUpdate:
 			decisionController.instance.decisionDeclineQueryResult(m.getObject());
-			break;
 		case LoginResult:
 			LoginController.instance.getLoginResult(m.getObject());
 			break;

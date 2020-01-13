@@ -16,15 +16,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import client.App;
+import java.util.*;
 
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com
@@ -646,7 +638,6 @@ public class EchoServer extends AbstractServer {
 
 			parts = parts[1].split(".zip");
 			String requestID = parts[0]; // #.zip
-
 			String qry = "UPDATE `Requests` SET `FILE`= '" + fileName + "' WHERE RequestID = " + requestID;
 			boolean res = mysql.insertOrUpdate(qry);
 			if (!res) {
@@ -899,10 +890,10 @@ public class EchoServer extends AbstractServer {
 				hm.replace(temp, hm.get(temp) - res);
 			}
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 		try {
 			current.close();
@@ -978,12 +969,12 @@ public class EchoServer extends AbstractServer {
 					d2 = to;
 				freezeStages += (Duration.between(d1, d2).toDays());
 
-			}
+            }
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 		try {
 			current.close();
@@ -1109,7 +1100,7 @@ public class EchoServer extends AbstractServer {
 			 * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
 			 * Auto-generated catch block e.printStackTrace(); }
 			 */
-			i++;
+            i++;
 
 			ret.append("\r\n");
 		}

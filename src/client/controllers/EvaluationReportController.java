@@ -146,7 +146,6 @@ public class EvaluationReportController extends AppController implements Initial
 		OperationType ot1 = OperationType.InsertEvaluation;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 
-
 		String query2 = "UPDATE Requests SET Treatment_Phase = 'DECISION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		OperationType ot2 = OperationType.Eval_updateRequestStatus;
@@ -279,12 +278,13 @@ public class EvaluationReportController extends AppController implements Initial
 		ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
 		if (reports.size() > 0) {
 			if (thisRequest.getCurrentStage().equals("EVALUATION")) {
-				Pane_Form.setDisable(true);
-				titledPane_Text.setVisible(true);
-				titledPane_Text.setText("Evaluation report has been sent. Waiting for supervisor decision.");
-				btnRequestExtension.setVisible(false);
-				btnAnswerStageExtensionRequest.setVisible(false);
-				SbmtEvlBtn.setVisible(false);
+//				Pane_Form.setDisable(true);
+//				titledPane_Text.setVisible(true);
+//
+//				titledPane_Text.setText("Evaluation report has been sent. Waiting for supervisor decision.");
+//				btnRequestExtension.setVisible(false);
+//				btnAnswerStageExtensionRequest.setVisible(false);
+//				SbmtEvlBtn.setVisible(false);
 
 			}
 			EvaluationReport individualReport = reports.get(0);

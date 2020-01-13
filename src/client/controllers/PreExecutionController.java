@@ -112,8 +112,10 @@ public class PreExecutionController extends AppController implements Initializab
         boolean flag = false;
         try {
             days = Integer.parseInt(tfDays.getText());
-            if (!(days > 0 && days < 20))
-                showAlert(Alert.AlertType.WARNING, "Error", "Number must be greater then zero.", null);
+            if ( days<=0 || days > 20) {
+                showAlert(Alert.AlertType.WARNING, "Error", "Days number must be greater then zero and not greater than 20.", null);
+                return;
+            }
             flag = true;
         } catch (Exception e) {
             showAlert(Alert.AlertType.WARNING, "Error", "Data must be a number", null);
