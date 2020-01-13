@@ -10,17 +10,21 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -104,20 +108,51 @@ public class ViewRequestController extends AppController implements Initializabl
 
 	@FXML
 	private TextField searchBoxTF;
+
+	@FXML
+	private TextArea wantedChangeText;
+
+	@FXML
+	private TextArea reasonText;
 	
-
-    @FXML
-    private TextArea wantedChangeText;
-
-    @FXML
-    private TextArea reasonText;
-
+	
+	@FXML
+	private Button confirmRequest;
 
 	ObservableList<ChangeRequest> o;
 
 	protected ChangeRequest getCurrentRequest() {
 		return selectedRequestInstance;
 	}
+
+	
+	@FXML
+	void confirmRequestClicked(ActionEvent event) {
+		c=0;
+		String query = "UPDATE Requests SET Request_Confirmed = 1 WHERE RequestID ='"+selectedRequestInstance.getRequestID()+"'";
+		App.client.handleMessageFromClientUI(new Message(OperationType.VIEWRequest_confirmRequest,query));
+	}
+	
+	private static int c = 0;
+
+	public void queryResult(Object object) {
+		c++;
+		boolean res = (boolean) object;
+		if (c == 1) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Request #"+selectedRequestInstance.getRequestID()+" Confirmed", "Request Moved to the supervisor", null);
+						confirmRequest.setDisable(true);
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Could not Confirm the request", null);
+		}
+	}
+	
+	
 
 	// needs to add specific details about the user
 	private void getDatafromServer() {
@@ -127,6 +162,7 @@ public class ViewRequestController extends AppController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
 		Instance = this;
 		// request data from server
 		getDatafromServer();
@@ -136,6 +172,7 @@ public class ViewRequestController extends AppController implements Initializabl
 			TableRow<ChangeRequest> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty()) {
+					confirmRequest.setDisable(true);
 					stageHBox.setVisible(true);
 					progressViewLabel.setVisible(false);
 					selectedRequestInstance = row.getItem();
@@ -156,7 +193,10 @@ public class ViewRequestController extends AppController implements Initializabl
 
 					resetStageImgStyleClass();
 					Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);
-
+					if(selectedRequestInstance.getCurrentStage().equals("CLOSURE")) {
+						//possible bug
+						confirmRequest.setDisable(false);
+					}
 				}
 
 			});
@@ -234,7 +274,7 @@ public class ViewRequestController extends AppController implements Initializabl
 		// 5. Add sorted (and filtered) data to the table.
 		table.setItems(sortedData);
 
-		//table.setItems(o);
+		// table.setItems(o);
 	}
 
 	public void alertMsg(Object object) {

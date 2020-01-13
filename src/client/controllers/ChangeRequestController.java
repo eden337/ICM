@@ -153,7 +153,7 @@ public class ChangeRequestController extends AppController implements Initializa
 			App.client.handleMessageFromClientUI(new Message(ot, query));
 
 		} catch (Exception e) {
-			showAlert(AlertType.WARNING, " Insert data dont success", "try again", null);
+			showAlert(AlertType.WARNING, "Insert data Failed", "try again", null);
 		}
 	}
 
@@ -168,8 +168,7 @@ public class ChangeRequestController extends AppController implements Initializa
 	}
 
 	void createZip(String filename) {
-		if(filelist==null)
-		{
+		if (filelist == null) {
 			return;
 		}
 		File myZip = new File(filename);
@@ -183,20 +182,21 @@ public class ChangeRequestController extends AppController implements Initializa
 				showAlert(AlertType.ERROR, "Error!", "Files Compressions Error.", null);
 			}
 		}
-		
+
 	}
+
 	/**
 	 * create the open browser.
 	 */
-	private void openFile() {		
-			FileChooser fileChooser = new FileChooser();
-			filelist = fileChooser.showOpenMultipleDialog(stage);
-			if(filelist==null) {
-					return;
-			}
-			fileChooser.setTitle("Open Resource File");
-			fileNames.setVisible(true);
-			fileNames.setText(printNameFiles(filelist));
+	private void openFile() {
+		FileChooser fileChooser = new FileChooser();
+		filelist = fileChooser.showOpenMultipleDialog(stage);
+		if (filelist == null) {
+			return;
+		}
+		fileChooser.setTitle("Open Resource File");
+		fileNames.setVisible(true);
+		fileNames.setText(printNameFiles(filelist));
 	}
 
 	private boolean UploadRequestFilesToServer(File file) {
@@ -265,18 +265,20 @@ public class ChangeRequestController extends AppController implements Initializa
 	 */
 	public void queryResult(Object object) {
 		int rid = (int) object;
-		if (rid>0) {
+		if (rid > 0) {
 			if (filelist != null) {
 				createZip("Request_" + rid + ".zip");
 			} else {
-				showAlert(AlertType.INFORMATION, "Request sent successfuly",
-						"\t\the will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThanks! ",
+				showAlert(AlertType.INFORMATION, "Request #" + rid + " was sent successfuly",
+						"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ",
 						null);
+				//loadPage("Homepage");
 			}
 		} else
 			showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
 
 	}
+
 	/**
 	 * Check the return from the server of the file.
 	 *
@@ -285,12 +287,13 @@ public class ChangeRequestController extends AppController implements Initializa
 	public void uploadFileResult(Object object) {
 		boolean fileRes = (boolean) object;
 		if (fileRes) {
-			showAlert(AlertType.INFORMATION, "Request sent successfuly",
-					"\t\the mail will receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThanks! ", null);
-		}
-		else
+			showAlert(AlertType.INFORMATION, "Request was sent successfuly",
+					"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
+			//loadPage("Homepage");
+		} else
 			showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);
 	}
+
 	/**
 	 * Check the return from the server of the file.
 	 * 
@@ -298,9 +301,11 @@ public class ChangeRequestController extends AppController implements Initializa
 	 */
 	public void uploadFileAndqueryResult(Object object) {
 		boolean fileRes = (boolean) object;
-		if (fileRes)
-			showAlert(AlertType.INFORMATION, "Request sent successfuly",
-					"\t\the will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThanks! ", null);
+		if (fileRes) {
+			showAlert(AlertType.INFORMATION, "Request was sent successfuly",
+					"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
+			//loadPage("Homepage");
+		}
 		else
 			showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);
 	}
