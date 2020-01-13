@@ -114,8 +114,9 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@FXML
 	private Button btnAnswerStageExtensionRequest;
-	
+
 	private String reportResult;
+
 
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
@@ -125,14 +126,15 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		//initialized = false;
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		thisStage = thisRequest.getCurrentStageObject();
-		
+
 		btnRequestExtension.setVisible(false);
 		btnAnswerStageExtensionRequest.setVisible(false);
-		if(thisStage.getExtension_reason()!=null)
+		if (thisStage.getExtension_reason() != null)
 			btnAnswerStageExtensionRequest.setVisible(true);
 
 		pane_msg.setVisible(false);
@@ -180,13 +182,11 @@ public class ExecutionController extends AppController implements Initializable 
 		// dueDateLabel.setVisible(true);
 		// rightPane.setVisible(false);
 		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
-
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 		// checkPreConditions();
-		try {
-			estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline()).toDays();
-			estimatedTime += 1;
-		}catch (Exception e){ }
+		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+				.toDays();
+		estimatedTime+=1;
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
 		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
