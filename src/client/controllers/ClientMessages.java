@@ -40,6 +40,7 @@ public class ClientMessages {
 		// break;
 		case DECISION_DeclineUpdate:
 			decisionController.instance.decisionDeclineQueryResult(m.getObject());
+			break;
 		case LoginResult:
 			LoginController.instance.getLoginResult(m.getObject());
 			break;
@@ -171,25 +172,26 @@ public class ClientMessages {
 			ExecutionController.instance.getReport_ServerResponse(m.getObject());
 			break;
 		case InsertReport:
-			try {
-				ReportGenerateController.instance.openNewReport(m.getObject());
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		case OpenReport:
-			try {
-				ViewReportsController.instance.createInPC(m.getObject());
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		case GetReports:
-			ViewReportsController.instance.setReportsToList(m.getObject());
-
-		default:
-			break;
+			
+               
+                ReportGenerateController.instance.openNewReport(m.getObject());
+                break;
+            case OpenReport:
+    			try {
+    				ViewReportsController.instance.createInPC(m.getObject());
+    			} catch (FileNotFoundException e) {
+    				e.printStackTrace();
+    			}
+    			break;
+            case GetReports:
+            	ViewReportsController.instance.setReportsToList(m.getObject());
+            	break;
+            case ForceUpdateUsersPermissions:
+                App.user.updatePermissions();
+                break;
+            default:
+                break;
+               
 
 		}
 	}
