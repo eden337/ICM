@@ -151,6 +151,5 @@ public class PreValidationController extends AppController implements Initializa
                 cbValidator.setItems(oblist);            }
         });
 
-        new AutoCompleteBox<String>(cbValidator);
     }
 }

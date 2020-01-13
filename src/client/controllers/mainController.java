@@ -199,11 +199,12 @@ public class mainController extends AppController implements Initializable {
             p2.setVisible(true);
             p3.setVisible(true);
             p4.setVisible(true);
-            p5.setVisible(true);
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+            p5.setVisible(true);
             p6.setVisible(true);
+        }
     }
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
