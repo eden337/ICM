@@ -122,7 +122,9 @@ public class ManagerViewPage extends AppController implements Initializable {
 	@FXML
 	private Button deleteMember;
 	
-
+/**
+ * querys that bring the data from DB
+ */
 	private void getDatafromServer() {
 		App.client.handleMessageFromClientUI(
 				new Message(OperationType.getEmployeeData, "SELECT * FROM Employees WHERE Department = 'IT';"));
@@ -207,6 +209,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 				informationStationCheckbox.setSelected(selectedEmployeeInstance.getUserName().equals(infoSystem.getUserName()));
 		}	
 	}
+	/**
+	 * alert type if passed or fail.
+	 * @param object
+	 */
 	public void alertMsg(Object object) {
 		Boolean queryResult = (Boolean) object;
 		FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
@@ -219,7 +225,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 		ft.play();
 		getDatafromServer();
 	}
-
+/**
+ * refresh button.
+ * @param event
+ */
 	@FXML
 	void refrshBtn(MouseEvent event) {
 		getDatafromServer();
@@ -281,7 +290,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 	void commitee2BtnClicked(ActionEvent event) {
 		appointment("COMMITEE_MEMBER2");
 	}
-
+/**
+ * set the data from the server on the table.
+ * @param object
+ */
 	@SuppressWarnings("unchecked")
 	public void setDataTable(Object object) {
 		// System.out.println("--> setDataTable");
@@ -370,6 +382,8 @@ public class ManagerViewPage extends AppController implements Initializable {
 //		else
 //			showAlert(AlertType.ERROR, "selected Fail", "Eror in the DB check again", null);
 	}
+	
+	
 	/**
 	 * setting of the entities ArrayList from the server.
 	 * @param object
