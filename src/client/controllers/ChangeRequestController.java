@@ -272,7 +272,7 @@ public class ChangeRequestController extends AppController implements Initializa
 				showAlert(AlertType.INFORMATION, "Request #" + rid + " was sent successfuly",
 						"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ",
 						null);
-				loadPage("Homepage");
+				//loadPage("Homepage");
 			}
 		} else
 			showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
@@ -289,7 +289,7 @@ public class ChangeRequestController extends AppController implements Initializa
 		if (fileRes) {
 			showAlert(AlertType.INFORMATION, "Request was sent successfuly",
 					"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
-			loadPage("Homepage");
+			//loadPage("Homepage");
 		} else
 			showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);
 	}
@@ -304,7 +304,7 @@ public class ChangeRequestController extends AppController implements Initializa
 		if (fileRes) {
 			showAlert(AlertType.INFORMATION, "Request was sent successfuly",
 					"We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
-			loadPage("Homepage");
+			//loadPage("Homepage");
 		}
 		else
 			showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);

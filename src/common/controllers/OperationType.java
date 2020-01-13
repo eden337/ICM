@@ -42,6 +42,10 @@ public enum OperationType {
 
 	//Report
 	GenreateReport, InsertReport, DECISION_DeclineUpdate, Allocate_UpdateRequestStatus, Clousre_UpdateRequestStatus, Eval_updateRequestStatus, OpenReport, GetReports,
-	ForceUpdateUsersPermissions,Manager_updateRoleInOrg, VIEWRequest_confirmRequest, Closure_Init;
+
+	ForceUpdateUsersPermissions,Manager_updateRoleInOrg, VIEWRequest_confirmRequest, Closure_Init,
+
+	Main_getMyTotalRequests, Main_getMyActiveRequests,Main_getMyRequestTreatment,;
+
 
 }

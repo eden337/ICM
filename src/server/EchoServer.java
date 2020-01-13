@@ -566,7 +566,16 @@ public class EchoServer extends AbstractServer {
                 case ForceUpdateUsersPermissions:
                     sendToAllClients(new Message(OperationType.ForceUpdateUsersPermissions, null));
                     break;
-
+                case Main_getMyRequestTreatment:
+                case Main_getMyActiveRequests:
+                case Main_getMyTotalRequests:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    int res5 = 0;
+                    while (rs.next()) {
+                        res5 = rs.getInt(1);
+                    }
+                    sendToClient(new Message(m.getOperationtype(), res5), client);
+                    break;
                 default:
                     break;
             }

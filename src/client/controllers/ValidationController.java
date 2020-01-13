@@ -373,7 +373,7 @@ public class ValidationController extends AppController implements Initializable
 					@Override
 					public void run() {
 						showAlert(AlertType.INFORMATION, "Validation Complete",
-								"The request moved to"+thisRequest.getInitiator()+"for closure.", null);
+								"The request moved to "+thisRequest.getInitiator()+" for closure.", null);
 						loadPage("requestTreatment");
 					}
 				});
