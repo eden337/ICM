@@ -383,7 +383,7 @@ public class decisionController extends AppController implements Initializable {
 	public void queryResult2(Object object) {
 		c2++;
 		boolean res = (boolean) object;
-		if (c2 == 5) {
+		if (c2 == 4 ) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override

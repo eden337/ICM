@@ -890,10 +890,10 @@ public class EchoServer extends AbstractServer {
 				hm.replace(temp, hm.get(temp) - res);
 			}
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		try {
 			current.close();
@@ -969,12 +969,12 @@ public class EchoServer extends AbstractServer {
 					d2 = to;
 				freezeStages += (Duration.between(d1, d2).toDays());
 
-            }
+			}
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		try {
 			current.close();
@@ -1100,7 +1100,7 @@ public class EchoServer extends AbstractServer {
 			 * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
 			 * Auto-generated catch block e.printStackTrace(); }
 			 */
-            i++;
+			i++;
 
 			ret.append("\r\n");
 		}
