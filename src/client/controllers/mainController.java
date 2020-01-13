@@ -208,6 +208,8 @@ public class mainController extends AppController implements Initializable {
             p5.setVisible(true);
             p6.setVisible(true);
         }
+        text_hello.setText("Hello, " + App.user.getFirstName() + " ( "+App.user.getOrgRole()+" ) ");
+
     }
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
@@ -221,7 +223,7 @@ public class mainController extends AppController implements Initializable {
         App.user.updatePermissions();
 
         if (App.user != null)
-            text_hello.setText("Hello, " + App.user.getFirstName().toString());
+            text_hello.setText("Hello, " + App.user.getFirstName());
         else
             text_hello.setText("Hello, ");
     }

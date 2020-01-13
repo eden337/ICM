@@ -71,7 +71,9 @@ public class User implements Serializable {
 //            mainController.instance.showAlertAtMainController(Alert.AlertType.ERROR,"User Update", "User Update Failed", null);
 //    }
 
-
+    public String getOrgRole(){
+        return "";
+    }
     /**
      * @return the firstName
      */

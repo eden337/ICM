@@ -83,9 +83,10 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.getEmployeeData, EmployeeData), client);
                     rs.close();
                     break;
+                case Manager_updateRoleInOrg:
                 case updateRoleInOrg:
                     res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateRoleInOrg, res), client);
+                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case getSystemData:
                     rs = mysql.getQuery(m.getObject().toString());

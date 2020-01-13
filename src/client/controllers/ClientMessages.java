@@ -183,6 +183,9 @@ public class ClientMessages {
             case ForceUpdateUsersPermissions:
                 App.user.updatePermissions();
                 break;
+            case Manager_updateRoleInOrg:
+                ManagerViewPage.Instance.appointment_ServerResponse(m.getObject());
+                break;
             default:
                 break;
                

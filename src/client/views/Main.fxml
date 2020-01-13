@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -13,14 +14,26 @@
    <left>
       <VBox prefHeight="800.0" prefWidth="280.0" styleClass="bg_menu_color" BorderPane.alignment="CENTER">
          <children>
-            <Pane prefHeight="95.0" prefWidth="280.0">
+            <Pane prefHeight="118.0" prefWidth="280.0">
                <children>
-                  <Text fx:id="text_hello" layoutX="100.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #B2DBBF;" text="Hello, name">
+                  <Text fx:id="text_hello" layoutX="9.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #B2DBBF;" text="Hello, name" textAlignment="CENTER" wrappingWidth="260.26953125">
                      <font>
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
                   </Text>
                </children>
+            </Pane>
+            <Pane onMouseClicked="#logout" prefHeight="113.0" prefWidth="280.0" style="-fx-background-color: #455054;">
+               <children>
+                  <Text fill="WHITE" layoutX="56.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Disconnect">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets left="50.0" right="50.0" />
+               </VBox.margin>
             </Pane>
             <Pane fx:id="pHome" onMouseClicked="#gotoHome" prefHeight="200.0" prefWidth="200.0" styleClass="bg_menu_item">
                <children>
@@ -100,15 +113,6 @@
                   <Text fill="WHITE" layoutX="75.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Management">
                      <font>
                         <Font name="System Bold" size="15.0" />
-                     </font>
-                  </Text>
-               </children>
-            </Pane>
-            <Pane onMouseClicked="#logout" prefHeight="109.0" prefWidth="280.0" style="-fx-background-color: #455054;">
-               <children>
-                  <Text fill="WHITE" layoutX="106.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Disconnect">
-                     <font>
-                        <Font size="14.0" />
                      </font>
                   </Text>
                </children>
