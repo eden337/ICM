@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ReportGenerateController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ReportGenerateController">
    <children>
       <HBox prefHeight="521.0" prefWidth="1000.0">
          <children>
@@ -64,6 +64,11 @@
                         <Image url="@img/reports/report_step2.png" />
                      </image>
                   </ImageView>
+                  <ImageView fx:id="buffer" fitHeight="200.0" fitWidth="294.0" layoutX="36.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@img/reports/processing_2.gif" />
+                     </image>
+                  </ImageView>
                </children>
                <HBox.margin>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -92,7 +97,7 @@
       </HBox>
       <AnchorPane prefHeight="121.0" prefWidth="1000.0" style="-fx-background-color: #ffffff;">
          <children>
-            <Button fx:id="btnViewReports" layoutX="477.0" layoutY="50.0" mnemonicParsing="false" onAction="#viewReports" styleClass="primary" text="View Previous Reports" />
+            <Button fx:id="btnViewReports" layoutX="477.0" layoutY="49.0" mnemonicParsing="false" onAction="#viewReports" styleClass="primary" text="View Previous Reports" />
             <ImageView fx:id="imgArrow" fitHeight="63.0" fitWidth="425.0" layoutX="285.0" layoutY="-287.0" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
                   <Image url="@img/reports/report_arrow.png" />

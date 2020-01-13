@@ -41,7 +41,7 @@ public enum OperationType {
 	VALID_UpdateRepeated,
 
 	//Report
-	GenreateReport, InsertReport, DECISION_DeclineUpdate, Allocate_UpdateRequestStatus, Clousre_UpdateRequestStatus, Eval_updateRequestStatus,
+	GenreateReport, InsertReport, DECISION_DeclineUpdate, Allocate_UpdateRequestStatus, Clousre_UpdateRequestStatus, Eval_updateRequestStatus, OpenReport, GetReports,
 	;
 
 }

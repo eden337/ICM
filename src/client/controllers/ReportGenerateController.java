@@ -26,6 +26,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -40,6 +41,9 @@ public class ReportGenerateController extends AppController implements Initializ
 
 	private static File file;
 	
+
+    @FXML
+    private ImageView buffer;
     @FXML
     private AnchorPane reportTypePane;
     
@@ -89,7 +93,9 @@ public class ReportGenerateController extends AppController implements Initializ
     @FXML
     private Button btnViewReports;
     
-    
+
+    @FXML
+    private ImageView imgArrow;
     private Stage stage;
     
     /*
@@ -119,13 +125,19 @@ public class ReportGenerateController extends AppController implements Initializ
 
     @FXML
     void changeDates(ActionEvent event) {
-    	currentStep(2);
+    	if(isReportType())
+    		currentStep(2);
+    	else
+    		currentStep(1);
+    	imgArrow.setVisible(false);
+
 
     }
 
     @FXML
     void changeType(ActionEvent event) {
     	currentStep(1);
+    	imgArrow.setVisible(false);
     }
 
     @FXML
@@ -133,26 +145,38 @@ public class ReportGenerateController extends AppController implements Initializ
 
     	if(isReportType())
     		currentStep(2);
+    	else
+    	{
+    		currentStep(3);
+    		//imgArrow.setVisible(true);
+    		reportInfo.setText("report type "+reportName);
+    		reportInfo.setDisable(true);
+    		//btnChangeDates.setDisable(false);
+    		//btnSubmit.setDisable(false);
+    		
+    	}
     }
     
 
     @FXML
     void submit(ActionEvent event) {
-    	Report report=new Report(reportName, Date.valueOf(LocalDate.now()),Date.valueOf(from), Date.valueOf(to));
-   	 	periodReport = report.getType()+" "+report.getFrom().toString()+" "+report.getTo().toString();
-   	 	regularReport=report.getType()+report.getCreated().toString();
+    	Report report=new Report(reportName, Date.valueOf(LocalDate.now()));
+    
+
    	 	
     	if(report.isPeriodReport())
     	{
-    		
+    		report.setFrom(Date.valueOf(from));
+    		report.setTo(Date.valueOf(to));
     		if(!(file=new File(path+report.toString()+".csv")).exists())
     		{
     		App.client.handleMessageFromClientUI(new Message(OperationType.InsertReport, report));
         	App.client.handleMessageFromClientUI(new Message(OperationType.GenreateReport, "Select * From Reports WHERE ReportType='"+report.getType()+"' And Since ='"+report.getFrom().toString()+"' AND Till ='"+report.getTo().toString() +"'"));
+        	buffer.setVisible(true);
     		}
     		else
     		{
-    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path+periodReport, null);
+    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path+report.toString()+".csv", null);
     		}
     	}
     	else
@@ -161,9 +185,10 @@ public class ReportGenerateController extends AppController implements Initializ
     		file=new File(path+report.toString()+".csv");
     		App.client.handleMessageFromClientUI(new Message(OperationType.InsertReport, report));
         	App.client.handleMessageFromClientUI(new Message(OperationType.GenreateReport, "Select * From Reports WHERE ReportType='"+report.getType()+"' And Created ='"+report.getCreated().toString()+"'"));
-    		
+    		buffer.setVisible(true);
 
     	}
+    	
     	
     	
     	
@@ -180,10 +205,12 @@ public class ReportGenerateController extends AppController implements Initializ
     			 * here we supposed to save report type
     			 */
     			reportName=identifyReportType(rb);
-    			System.out.println("you chose " + reportName);
+    			if(reportName.equals("Activity"))
+    				return true;
+    			//System.out.println("you chose " + reportName);
     			
     			
-    			return true;
+    			return false;
     			
     		}
     	showAlert(AlertType.ERROR, "Type input failure","didn't choose a type of report " , null);
@@ -243,80 +270,10 @@ public class ReportGenerateController extends AppController implements Initializ
 		 csvFile=new PrintWriter(file);
          csvFile.write(report.getData());
          csvFile.close();
-         showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
+         buffer.setVisible(false);
+         showAlert(AlertType.INFORMATION, "Success", "new file at "+path+report.toString()+".csv","Report Generated" );
          
-    	/*if(reportStyle(report))
-    	{
-			 csvFile=new PrintWriter(file);
-	         csvFile.write(report.getData());
-	         csvFile.close();
-	         showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
-    		
-    		/*if(!(file=new File(path+periodReport+".csv")).exists())
-    		{
-    			System.out.println(file.getPath());
-    			 csvFile=new PrintWriter(file);
-    	         csvFile.write(report.getData());
-    	         csvFile.close();
-    	     	showAlert(AlertType.INFORMATION, "Success", "new file at "+path+periodReport,"Report Generated" );
 
-    	         
-    		}
-    		else
-    		{
-    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path+periodReport, null);
-    			
-    		}
-    	}
-    	else
-    	{
-    		if(!(file=new File(path+regularReport+".csv")).exists())
-    		{
-    			 csvFile=new PrintWriter(file);
-    	         csvFile.write(report.getData());
-    	         csvFile.close();
-    	     	showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
-
-    		}
-    		else
-    		{
-    			showAlert(AlertType.WARNING, "Report allready exist", "this file Exist at "+path, null);
-    			
-    		}
-    		
-    	}*/
-    	
-    	/*File temp=new File(report.getType()+"_"+report.getFrom().toString()+"_"+report.getTo().toString()+".csv");
-    	if(!temp.exists())
-			try {
-				temp.createNewFile();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}*/
-    /*	FileChooser fc=new FileChooser();
-    	fc.setTitle("SaveDialog");
-    	fc.setInitialFileName(report.getType()+"_"+report.getCreated()+"_"+".csv");
-    	fc.getExtensionFilters().add(new ExtensionFilter("CSV File", "*.csv"));
-    	*/
-    
-
-        
-   
-         /*
-		try {
-			File file= fc.showSaveDialog(stage);
-			fc.setInitialDirectory(file.getParentFile());
-			
-			csvFile = new PrintWriter(file);
-			csvFile.write(report.getData());
-		
-			csvFile.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 		
     
    
@@ -342,6 +299,7 @@ public class ReportGenerateController extends AppController implements Initializ
 
     @FXML
     void viewReports(ActionEvent event) {
+    	loadPage("ViewReports");
 
     }
 
@@ -364,7 +322,7 @@ public class ReportGenerateController extends AppController implements Initializ
 		case 2:
 			disablePane(reportTypePane, 0.8);
 			openPane(datesPane);
-			disablePane(reportTypePane, 0.7);
+			disablePane(submitPane, 0.7);
 			break;
 		case 3:
 			disablePane(reportTypePane, 0.6);
