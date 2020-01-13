@@ -174,12 +174,15 @@ public class ClientMessages {
     			try {
     				ViewReportsController.instance.createInPC(m.getObject());
     			} catch (FileNotFoundException e) {
-    				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
+    			break;
             case GetReports:
             	ViewReportsController.instance.setReportsToList(m.getObject());
-            	
+            	break;
+            case ForceUpdateUsersPermissions:
+                App.user.updatePermissions();
+                break;
             default:
                 break;
                

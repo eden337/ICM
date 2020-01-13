@@ -101,6 +101,9 @@ public class PreValidationController extends AppController implements Initializa
                 " , `init_confirmed` = 1" +
                 " where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
         App.client.handleMessageFromClientUI(new Message(ot, query1));
+        App.ForceAuthorizeAllUsers();
+
+
     }
 
     public void queryResult(Object object) {
@@ -151,6 +154,5 @@ public class PreValidationController extends AppController implements Initializa
                 cbValidator.setItems(oblist);            }
         });
 
-        new AutoCompleteBox<String>(cbValidator);
     }
 }
