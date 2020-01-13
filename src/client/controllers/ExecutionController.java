@@ -114,8 +114,10 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@FXML
 	private Button btnAnswerStageExtensionRequest;
-	
+
 	private String reportResult;
+
+	private boolean initialized;
 
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
@@ -125,14 +127,15 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		//initialized = false;
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		thisStage = thisRequest.getCurrentStageObject();
-		
+
 		btnRequestExtension.setVisible(false);
 		btnAnswerStageExtensionRequest.setVisible(false);
-		if(thisStage.getExtension_reason()!=null)
+		if (thisStage.getExtension_reason() != null)
 			btnAnswerStageExtensionRequest.setVisible(true);
 
 		pane_msg.setVisible(false);
@@ -141,7 +144,6 @@ public class ExecutionController extends AppController implements Initializable 
 		titledPane.setText("Waiting for your action");
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-		checkPreConditions();
 		reportNoteUpdater();
 		setExtensionVisability();
 		if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
@@ -157,57 +159,57 @@ public class ExecutionController extends AppController implements Initializable 
 			pane_msg.setVisible(true);
 			return;
 		}
+		checkPreConditions();
 
-		
+		//if (initialized) {
+			// the supervisor should present the stage in progress after he approved the
+			// time
+			if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+				textInMsgPane.setFill(Color.BLUE);
+				textInMsgPane.setText("Stage in progress");
+				pane_msg.setVisible(true);
+				return;
+			}
 
-		// the supervisor should present the stage in progress after he approved the
-		// time
-		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-			textInMsgPane.setFill(Color.BLUE);
-			textInMsgPane.setText("Stage in progress");
-			pane_msg.setVisible(true);
-			return;
-		}
+			// Otherwise: this is the Executer in his stage
+			if (thisRequest.isReturned()) {
+				returnedNoteAP.setVisible(true);
+				returnedNotes.setText(thisRequest.getReturnedNote());
+			}
+			pane_form.setVisible(true);
+			// titledPane_Text.setVisible(true);
+			// titledPane.setVisible(false);
+			// dueDateLabel.setVisible(true);
+			// rightPane.setVisible(false);
+			// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
+			inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
+			// checkPreConditions();
+			estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+					.toDays();
+			estimatedTime += 1;
+			Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
-		// Otherwise: this is the Executer in his stage
-		if (thisRequest.isReturned()) {
-			returnedNoteAP.setVisible(true);
-			returnedNotes.setText(thisRequest.getReturnedNote());
-		}
-		pane_form.setVisible(true);
-		// titledPane_Text.setVisible(true);
-		// titledPane.setVisible(false);
-		// dueDateLabel.setVisible(true);
-		// rightPane.setVisible(false);
-		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
-		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-		// checkPreConditions();
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime+=1;
-		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-
-		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
-
+			// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+		//}
 	}
-	
+
 	private void reportNoteUpdater() {
 		OperationType ot = OperationType.EXECUTION_GetFailReport;
-		String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID()+" LIMIT 1";
+		String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID()
+				+ " LIMIT 1";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
-	
+
 	public void getReport_ServerResponse(Object object) {
 		this.reportResult = (String) object;
 		if (reportResult == null) {
-			//showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
+			// showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
 			returnedNoteAP.setVisible(false);
-		} else { // if the returned result was back 
+		} else { // if the returned result was back
 			returnedNoteAP.setVisible(true);
 			returnedNotes.setText(reportResult);
 		}
 	}
-	
 
 	// first click on this button to send to supervisor
 	private void checkPreConditions() {
@@ -223,6 +225,7 @@ public class ExecutionController extends AppController implements Initializable 
 		boolean init_confirmed = init_res.get(1);
 
 		if (init_confirmed && init) {
+			//initialized=true;
 			init();
 			rightPane.setVisible(true);
 			return;
@@ -319,6 +322,7 @@ public class ExecutionController extends AppController implements Initializable 
 				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
 		}
 	}
+
 	// Extensions:
 	private void setExtensionVisability() {
 		btnRequestExtension.setVisible(false);

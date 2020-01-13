@@ -4,6 +4,8 @@ import client.App;
 import common.controllers.Message;
 
 import java.io.FileNotFoundException;
+
+import com.sun.corba.se.spi.orbutil.closure.Closure;
 //
 
 /**
@@ -84,10 +86,15 @@ public class ClientMessages {
             case DECISION_GetAllReportsByRID:
                 decisionController.instance.setFieldsData_ServerResponse(m.getObject());
                 break;
-
+            case DECI_UpdateDB:
+            	decisionController.instance.queryResult(m.getObject());
+            	break;
             case VALID_updateRequestStatus:
             	ValidationController.instance.setValidationTable_ServerResponse(m.getObject());
             	break;
+            	
+            case Clousre_UpdateRequestStatus:
+            	ClosureController.instance.closureQueryResult(m.getObject());
 
             case VAL_GetAllReportsByRID:
                 ValidationController.instance.queryResult(m.getObject());

@@ -229,7 +229,7 @@ public class decisionController extends AppController implements Initializable {
 	public void queryResult(Object object) {
 		c++;
 		boolean res = (boolean) object;
-		if (c == 2 && res) {
+		if (c == 2) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
