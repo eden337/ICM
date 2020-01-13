@@ -156,6 +156,7 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
                     break;
+                case VIEWRequest_confirmRequest:
                 case Clousre_UpdateRequestStatus:
                 case Eval_updateRequestStatus:
                 case PreValidation_SetRole:
@@ -247,6 +248,18 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case Closure_Init:
+                	 List<Boolean> closure_init = new ArrayList<Boolean>();
+                     rs = mysql.getQuery(m.getObject().toString());
+                     if (rs != null) {
+                         while (rs.next()) {
+                        	 closure_init.add(rs.getBoolean("Request_Confirmed"));
+                         }
+                     }
+                     closure_init.add(false);
+                     sendToClient(new Message(m.getOperationtype(), closure_init), client);
+                     rs.close();
+                     break;
                 case VAL_GetInitData:
                 case EXE_GetInitData:
                 case EVAL_GetInitData:

@@ -94,7 +94,9 @@ public class ClientMessages {
 		case Clousre_UpdateRequestStatus:
 			ClosureController.instance.closureQueryResult(m.getObject());
 			break;
-
+		case VIEWRequest_confirmRequest:
+			ViewRequestController.Instance.queryResult(m.getObject());
+			break;
 		case VAL_GetAllReportsByRID:
 			ValidationController.instance.queryResult(m.getObject());
 			break;
@@ -113,6 +115,9 @@ public class ClientMessages {
 			break;
 		case EXE_GetInitData:
 			ExecutionController.instance.checkPreConditions_ServerResponse(m.getObject());
+			break;
+		case Closure_Init:
+			ClosureController.instance.checkPreConditions_ServerResponse(m.getObject());
 			break;
 		case VAL_GetInitData:
 			ValidationController.instance.checkPreConditions_ServerResponse(m.getObject());
