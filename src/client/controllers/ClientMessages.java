@@ -165,13 +165,12 @@ public class ClientMessages {
                 ValidationController.instance.appendPrevStageObject_ServerResponse(m.getObject());
                 break;
             case VALID_GetReport:
+                ValidationController.instance.getReport_ServerResponse(m.getObject());
                 break;
             case EXECUTION_GetFailReport:
                 ExecutionController.instance.getReport_ServerResponse(m.getObject());
                 break;
             case InsertReport:
-
-
                 ReportGenerateController.instance.openNewReport(m.getObject());
                 break;
             case OpenReport:
@@ -189,15 +188,6 @@ public class ClientMessages {
                 break;
             case Manager_updateRoleInOrg:
                 ManagerViewPage.Instance.appointment_ServerResponse(m.getObject());
-                break;
-            case Main_getMyTotalRequests:
-                homepageController.instance.Main_getMyTotalRequests_Response(m.getObject());
-                break;
-			case Main_getMyRequestTreatment:
-                homepageController.instance.Main_getMyActiveRequests_Response(m.getObject());
-                break;
-			case Main_getMyActiveRequests:
-                homepageController.instance.Main_getMyRequestTreatment_Response(m.getObject());
                 break;
             default:
                 break;

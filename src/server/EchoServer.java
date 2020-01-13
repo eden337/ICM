@@ -156,6 +156,7 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
                     break;
+                case Clousre_UpdateRequestStatus:
                 case Eval_updateRequestStatus:
                 case PreValidation_SetRole:
                 case Allocate_SetRoles:

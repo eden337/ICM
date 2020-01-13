@@ -1,5 +1,17 @@
 package client.controllers;
 
+import java.io.IOException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ResourceBundle;
+
 import client.App;
 import common.Tools;
 import common.controllers.Message;
@@ -15,24 +27,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.ResourceBundle;
 
 public class EvaluationReportController extends AppController implements Initializable {
 
@@ -182,7 +186,7 @@ public class EvaluationReportController extends AppController implements Initial
 		rightPane.setVisible(false);
 		Pane_Form.setVisible(false);
 		Pane_locked.setVisible(false);
-		// titledPane_Text.setVisible(false);
+		dueDateLabel.setDisable(true);
 		dueDateLabel.setVisible(false);
 		titledPane.setCollapsible(false);
 		titledPane.setText("Welcome");
@@ -254,6 +258,7 @@ public class EvaluationReportController extends AppController implements Initial
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
+					dueDateLabel.setDisable(false);
 					titledPane.getStyleClass().remove("danger");
 					titledPane.getStyleClass().add("info");
 
