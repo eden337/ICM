@@ -180,11 +180,13 @@ public class ExecutionController extends AppController implements Initializable 
 		// dueDateLabel.setVisible(true);
 		// rightPane.setVisible(false);
 		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
+
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 		// checkPreConditions();
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime+=1;
+		try {
+			estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline()).toDays();
+			estimatedTime += 1;
+		}catch (Exception e){ }
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
 		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");

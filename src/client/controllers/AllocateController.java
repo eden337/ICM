@@ -153,18 +153,17 @@ public class AllocateController extends AppController implements Initializable {
         List<String> listOfUsers = (List<String>) object;
         ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
         int size = oblist.size();
-        Random r = new Random(size);
+        Random r = new Random();
 
         cbEvaluator.setItems(oblist);
         cbExecuter.setItems(oblist);
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
-        int rand = r.nextInt(size);
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(rand);
+                cbEvaluator.getSelectionModel().select(r.nextInt(size));
             }
         });
     }
