@@ -65,12 +65,12 @@
             </Pane>
             <Pane fx:id="p3" onMouseClicked="#goToViewRequest" prefHeight="200.0" prefWidth="200.0" styleClass="bg_menu_item">
                <children>
-                  <ImageView fitHeight="84.0" fitWidth="104.0" layoutX="90.0" layoutY="8.0" onMouseClicked="#goToViewRequest">
+                  <ImageView fitHeight="84.0" fitWidth="104.0" layoutX="90.0" layoutY="3.0" onMouseClicked="#goToViewRequest">
                      <image>
                         <Image url="@img/icons/icon_myRequest.png" />
                      </image>
                   </ImageView>
-                  <Text fill="WHITE" layoutX="98.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Request">
+                  <Text fill="WHITE" layoutX="98.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Request">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

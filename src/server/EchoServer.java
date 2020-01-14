@@ -39,8 +39,8 @@ public class EchoServer extends AbstractServer {
      */
     final public static int DEFAULT_PORT = 5555;
     public static int portNumber = 0;
-    mysqlConnection mysql = new mysqlConnection();
-    public  static TreeMap<String, ConnectionToClient> connectedUsers = new TreeMap<String, ConnectionToClient>();
+    private static mysqlConnection mysql = new mysqlConnection();
+    public static TreeMap<String, ConnectionToClient> connectedUsers = new TreeMap<String, ConnectionToClient>();
 
 
     // Constructors ****************************************************
@@ -286,17 +286,17 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case Closure_Init:
-                	 List<Boolean> closure_init = new ArrayList<Boolean>();
-                     rs = mysql.getQuery(m.getObject().toString());
-                     if (rs != null) {
-                         while (rs.next()) {
-                        	 closure_init.add(rs.getBoolean("Request_Confirmed"));
-                         }
-                     }
-                     closure_init.add(false);
-                     sendToClient(new Message(m.getOperationtype(), closure_init), client);
-                     rs.close();
-                     break;
+                    List<Boolean> closure_init = new ArrayList<Boolean>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    if (rs != null) {
+                        while (rs.next()) {
+                            closure_init.add(rs.getBoolean("Request_Confirmed"));
+                        }
+                    }
+                    closure_init.add(false);
+                    sendToClient(new Message(m.getOperationtype(), closure_init), client);
+                    rs.close();
+                    break;
                 case VAL_GetInitData:
                 case EXE_GetInitData:
                 case EVAL_GetInitData:
@@ -1186,6 +1186,49 @@ public class EchoServer extends AbstractServer {
         return ret.toString();
     }
 
+    public static void getDelaydStages() {
+        String res = "", row = "";
+        String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
+        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) < CURDATE() AND s.`RequestID` = r.`RequestID` AND r.`STATUS` = 'ACTIVE';";
+        try {
+            ResultSet rs = mysql.getQuery(query);
+            if (rs != null) {
+                res = row0;
+                while (rs.next()) {
+                    row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
+                    res += row;
+                    EmailSender.sendEmail(rs.getString(4), "ICM - Exceptions in request treatment +"+rs.getInt(1), row0+row);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception in: getDelaydStages[1]");
+        }
+
+        String supervisorEmail = "", DirectorEmail = "";
+        if (!res.equals("")) {
+            String query2 = "SELECT `EMAIL` FROM `Employees` WHERE `RoleInOrg` = 'SUPERVISOR'";
+            String query3 = "SELECT `EMAIL` FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'";
+            try {
+                ResultSet rs = mysql.getQuery(query2);
+                while (rs.next()) {
+                    supervisorEmail = rs.getString(1);
+                }
+                rs = mysql.getQuery(query3);
+                while (rs.next()) {
+                    DirectorEmail = rs.getString(1);
+                }
+            } catch (SQLException e) {
+                System.out.println("SQL Exception in: getDelaydStages[2]");
+            }
+
+            if(!supervisorEmail.equals(""))
+                EmailSender.sendEmail(supervisorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>"+res);
+            if(!DirectorEmail.equals(""))
+                EmailSender.sendEmail(DirectorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>"+res);
+
+
+        }
+    }
 }
 
 
