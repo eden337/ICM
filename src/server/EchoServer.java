@@ -1186,7 +1186,7 @@ public class EchoServer extends AbstractServer {
         return ret.toString();
     }
 
-    public static void getDelaydStages() {
+    public static void NotifyDelaydStages() {
         String res = "", row = "";
         String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
         String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) < CURDATE() AND s.`RequestID` = r.`RequestID` AND r.`STATUS` = 'ACTIVE';";
@@ -1197,7 +1197,7 @@ public class EchoServer extends AbstractServer {
                 while (rs.next()) {
                     row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
                     res += row;
-                    EmailSender.sendEmail(rs.getString(4), "ICM - Exceptions in request treatment +"+rs.getInt(1), row0+row);
+                    EmailSender.sendEmail(rs.getString(4), "ICM - Exceptions in request treatment +" + rs.getInt(1), row0 + row);
                 }
             }
         } catch (SQLException e) {
@@ -1221,12 +1221,31 @@ public class EchoServer extends AbstractServer {
                 System.out.println("SQL Exception in: getDelaydStages[2]");
             }
 
-            if(!supervisorEmail.equals(""))
-                EmailSender.sendEmail(supervisorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>"+res);
-            if(!DirectorEmail.equals(""))
-                EmailSender.sendEmail(DirectorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>"+res);
+            if (!supervisorEmail.equals(""))
+                EmailSender.sendEmail(supervisorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>" + res);
+            if (!DirectorEmail.equals(""))
+                EmailSender.sendEmail(DirectorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>" + res);
 
 
+        }
+    }
+
+    public static void NotifyUncompletedStagesDayBeforeDeadline() {
+        String res = "", row = "";
+        String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
+        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) = (CURDATE()+1) AND s.`RequestID` = r.`RequestID` AND r.`STATUS` = 'ACTIVE';";
+        try {
+            ResultSet rs = mysql.getQuery(query);
+            if (rs != null) {
+                res = row0;
+                while (rs.next()) {
+                    row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
+                    res += row;
+                    EmailSender.sendEmail(rs.getString(4), "ICM - Reminder : You have to treat request +" + rs.getInt(1), row0 + row);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception in: getDelaydStages[1]");
         }
     }
 }

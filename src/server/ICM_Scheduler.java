@@ -27,7 +27,8 @@ public class ICM_Scheduler {
                                        @Override
                                        public void run() {
                                            Platform.runLater(() -> {
-                                               EchoServer.getDelaydStages();
+                                               EchoServer.NotifyDelaydStages();
+                                               EchoServer.NotifyUncompletedStagesDayBeforeDeadline();
                                            });
                                        }
                                    }
