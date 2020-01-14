@@ -9,6 +9,7 @@ import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.ChangeRequest;
+import common.entity.Stage;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -114,10 +115,12 @@ public class ViewRequestController extends AppController implements Initializabl
 
 	@FXML
 	private TextArea reasonText;
-	
-	
+
 	@FXML
 	private Button confirmRequest;
+
+	@FXML
+	private Text finishedStatus;
 
 	ObservableList<ChangeRequest> o;
 
@@ -125,14 +128,14 @@ public class ViewRequestController extends AppController implements Initializabl
 		return selectedRequestInstance;
 	}
 
-	
 	@FXML
 	void confirmRequestClicked(ActionEvent event) {
-		c=0;
-		String query = "UPDATE Requests SET Request_Confirmed = 1 WHERE RequestID ='"+selectedRequestInstance.getRequestID()+"'";
-		App.client.handleMessageFromClientUI(new Message(OperationType.VIEWRequest_confirmRequest,query));
+		c = 0;
+		String query = "UPDATE Requests SET Status = 'WAITING', Request_Confirmed = 1 WHERE RequestID ='"
+				+ selectedRequestInstance.getRequestID() + "'";
+		App.client.handleMessageFromClientUI(new Message(OperationType.VIEWRequest_confirmRequest, query));
 	}
-	
+
 	private static int c = 0;
 
 	public void queryResult(Object object) {
@@ -143,7 +146,10 @@ public class ViewRequestController extends AppController implements Initializabl
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.INFORMATION, "Request #"+selectedRequestInstance.getRequestID()+" Confirmed", "Request Moved to the supervisor", null);
+						showAlert(AlertType.INFORMATION,
+								"Request #" + selectedRequestInstance.getRequestID() + " Confirmed",
+								"Request Moved to the supervisor", null);
+						getDatafromServer();
 						confirmRequest.setDisable(true);
 					}
 				});
@@ -151,8 +157,6 @@ public class ViewRequestController extends AppController implements Initializabl
 				showAlert(AlertType.ERROR, "Error!", "Could not Confirm the request", null);
 		}
 	}
-	
-	
 
 	// needs to add specific details about the user
 	private void getDatafromServer() {
@@ -164,6 +168,7 @@ public class ViewRequestController extends AppController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		Instance = this;
+		finishedStatus.setVisible(false);
 		// request data from server
 		getDatafromServer();
 		searchBoxTF.setVisible(true);
@@ -176,7 +181,7 @@ public class ViewRequestController extends AppController implements Initializabl
 					stageHBox.setVisible(true);
 					progressViewLabel.setVisible(false);
 					selectedRequestInstance = row.getItem();
-
+					finishedStatus.setVisible(false);
 					if (selectedRequestInstance.getCurrentStage().equals("INIT")) {
 						progressViewLabel.setText("The Request waiting for initialize");
 						progressViewLabel.setVisible(true);
@@ -190,18 +195,47 @@ public class ViewRequestController extends AppController implements Initializabl
 							departmentID, dueDateLabel, requestNameLabel, selectedRequestInstance);
 					wantedChangeText.setText(selectedRequestInstance.getSuggestedChange());
 					reasonText.setText(selectedRequestInstance.getReasonForChange());
-
+					
 					resetStageImgStyleClass();
 					Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);
-					if(selectedRequestInstance.getCurrentStage().equals("CLOSURE")) {
-						//possible bug
+					if (selectedRequestInstance.getCurrentStage().equals("CLOSURE")) {
+						// possible bug
+						finishedStatus.setVisible(true);
 						confirmRequest.setDisable(false);
+						getPrevStage();
 					}
 				}
 
 			});
 			return row;
 		});
+	}
+
+	public void getPrevStage() {
+		String q = "SELECT * FROM Stage WHERE RequestID='" + selectedRequestInstance.getRequestID()
+				+ "' AND StageName='CLOSURE'";
+		App.client.handleMessageFromClientUI(new Message(OperationType.getViewPrevStage, q));
+	}
+
+	public void getPrevStage_ServerResponse(Object object) {
+		Stage thisStage = (common.entity.Stage) object;
+		
+		if (thisStage != null) {
+			if (thisStage.getPreStage().equals("DECISION")) {
+				finishedStatus.setFill(Color.DARKRED);
+				finishedStatus.setText("FAILED");
+			} else if (thisStage.getPreStage().equals("VALIDATION"))// else if prevStage == Validation{
+				{
+				
+				finishedStatus.setFill(Color.FORESTGREEN);
+				finishedStatus.setText("Request Processed Correctly");
+				}else
+				{
+					finishedStatus.setVisible(false);
+				}
+		} else
+			showAlert(AlertType.INFORMATION, "Error!", "Can't find a prev stage", null);
+
 	}
 
 	private void resetStageImgStyleClass() {

@@ -74,7 +74,7 @@ public class ServerController implements Initializable {
     public ListView<String> usersList;
 
 
-    private DBDetails MySQLWorkbench = new DBDetails("localhost", "icm?serverTimezone=IST", "root", "Aa123456", "5555");
+    private DBDetails MySQLWorkbench = new DBDetails("localhost", "yRBHdnFuc9?serverTimezone=IST", "root", "Aa123456", "5555");
     private DBDetails RemoteSQL = new DBDetails("remotemysql.com", "yRBHdnFuc9", "yRBHdnFuc9", "QOMMWb8Jo6", "5555");
 
     private DBDetails currentDB;

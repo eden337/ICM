@@ -123,11 +123,11 @@ public class ExecutionController extends AppController implements Initializable 
 	static LocalDate saveAfterResponse;
 
 	private common.entity.Stage thisStage;
-
+	long estimatedTime = 0;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
-		long estimatedTime = 0;
+		
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		thisStage = thisRequest.getCurrentStageObject();
 
@@ -177,10 +177,6 @@ public class ExecutionController extends AppController implements Initializable 
 		}
 		pane_form.setVisible(true);
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime+=1;
-		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 
 	}
 	
@@ -244,7 +240,10 @@ public class ExecutionController extends AppController implements Initializable 
 				titledPane_Text.setFill(Color.FORESTGREEN);
 				titledPane_Text.setVisible(true);
 				workDone.setVisible(false);
-
+				estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+						.toDays();
+				estimatedTime+=1;
+				Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
 				if (!thisRequest.getCurrentStage().equals("EXECUTION")) { // Watching only
 					titledPane.getStyleClass().remove("danger");
 					titledPane.getStyleClass().add("success");

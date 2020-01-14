@@ -204,7 +204,7 @@ public class Tools {
 
     /**
      * 
-     * @param deadLineTime - gets the old deadline of each stage
+     * @param oldDeadLineTime - gets the old deadline of each stage
      * @param freezeTime - gets the suspension time from the DB via the request treatment controller
      * @return new extended deadline
      */

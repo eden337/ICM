@@ -25,6 +25,15 @@ public class ClientMessages {
 		// System.out.println("m = " + m);
 
 		switch (m.getOperationtype()) {
+		case getViewPrevStage:
+			ViewRequestController.Instance.getPrevStage_ServerResponse(m.getObject());
+			break;
+		  case getTimeFromFrozen:
+          	requestTreatmentController.Instance.unFreezeSelectFrozenResponse(m.getObject());
+          	break;
+          case updateUnfrozenStage:
+          	requestTreatmentController.Instance.unFreezeUpdateResponse(m.getObject());
+          	break;
 		case getRequirementData:
 			requestTreatmentController.Instance.setDataTable(m.getObject());
 			break;
@@ -46,6 +55,9 @@ public class ClientMessages {
 			break;
 		case getSystemData:
 			ManagerViewPage.Instance.setSystemData(m.getObject());
+			break;
+		case insertFreezedRequest:
+			requestTreatmentController.Instance.freezeUpdateResponse(m.getObject());
 			break;
 		case InsertRequirement:
 			ChangeRequestController.instance.queryResult(m.getObject());

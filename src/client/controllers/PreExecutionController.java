@@ -154,6 +154,7 @@ public class PreExecutionController extends AppController implements Initializab
 
 
     public void getCurrentReqestedDays_ServerResponse(Object object) {
+    	String query;
         List<Integer> res = (List<Integer>) object;
         tfDays.setText(res.get(0) + ""); // requestedDays
         // GUI Init by Permission
@@ -161,6 +162,8 @@ public class PreExecutionController extends AppController implements Initializab
             btnAccept.setVisible(true);
             btnDeny.setVisible(true);
             tfDays.setEditable(false);
+            query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+			App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             return;
         }
 
@@ -175,8 +178,12 @@ public class PreExecutionController extends AppController implements Initializab
             tfDays.setEditable(false);
         }
         else{
-            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER))
+            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
                 btnSubmit.setVisible(true);
+                tfDays.setEditable(true);
+				query = "UPDATE Requests SET Status = 'WAITING' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+				App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+            }
         }
 
 

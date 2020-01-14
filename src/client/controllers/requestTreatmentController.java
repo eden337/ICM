@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -58,6 +59,8 @@ public class requestTreatmentController extends AppController implements Initial
 	private TextArea supervisorRemarks;
 	// @FXML
 	// private Pane Footer_defualt;
+
+	private static long days;
 
 	@FXML
 	private Button btnIncharges;
@@ -268,9 +271,7 @@ public class requestTreatmentController extends AppController implements Initial
 						}
 
 					} else { // ACTIVE request
-						if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
-								&& (selectedRequested.getStatus() != "DONE"
-										&& selectedRequested.getStatus() != "CANCELED")) {
+						if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))) {
 
 							wantedChangeText.setEditable(true);
 							reasonText.setEditable(true);
@@ -279,7 +280,14 @@ public class requestTreatmentController extends AppController implements Initial
 							dueDateLabel.setDisable(false);
 							updateRemarksBtn.setDisable(false);
 							freezeBtn.setVisible(true);
+							freezeBtn.setDisable(false);
+							if (selectedRequested.getStatus().equals("DONE")
+									|| selectedRequested.getStatus().equals("CANCELED")) {
+								freezeBtn.setDisable(true);
+								updateRemarksBtn.setDisable(true);
+							}
 						}
+
 						rightPane_requestTreatment.setVisible(true);
 						Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
 								departmentID, null, requestNameLabel, selectedRequested);
@@ -287,7 +295,10 @@ public class requestTreatmentController extends AppController implements Initial
 						reasonText.setText(selectedRequested.getReasonForChange());
 						dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
 
-						if (selectedRequested.getStatus().equals("SUSPENDED")) {
+						if (selectedRequested.getStatus().equals("SUSPENDED")
+								&& !(selectedRequested.getStatus().equals("DONE")
+										|| selectedRequested.getStatus().equals("CANCELED"))) {
+
 							rightPane_Freezed.setVisible(true);
 							btnDownloadFiles.setDisable(true);
 							rightPane_requestTreatment.setDisable(true);
@@ -458,7 +469,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void freezeButtonClick(ActionEvent event) {
-		c=0;
+		c = 0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'SUSPENDED' WHERE RequestID = '"
@@ -468,22 +479,57 @@ public class requestTreatmentController extends AppController implements Initial
 				+ dateFormat.format(today) + "'); ";
 		System.out.println(query);
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
-		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
-		showAlert(AlertType.INFORMATION, "Request Suspended!", "Please notify your director", null);
+		App.client.handleMessageFromClientUI(new Message(OperationType.insertFreezedRequest, query2));
+
 	}
 
 	@FXML
 	void unfreeze(ActionEvent event) {
-		c=0;
+		c = 0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + getCurrentRequest().getRequestID()
 				+ "'";
 		String query2 = "UPDATE Frozen SET UnFreezeTime = '" + dateFormat.format(today) + "' WHERE RequestID = '"
 				+ getCurrentRequest().getRequestID() + "'";
+
+		String query3 = "SELECT FreezeTime,UnFreezeTime FROM Frozen  WHERE RequestID = '"
+				+ getCurrentRequest().getRequestID() + "'";
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
 		App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
-		showAlert(AlertType.INFORMATION, "Request Resumed", "Please notify your Supervisor", null);
+		App.client.handleMessageFromClientUI(new Message(OperationType.getTimeFromFrozen, query3));
+
+	}
+
+	public void unFreezeSelectFrozenResponse(Object object) {
+		ArrayList<ZonedDateTime> frozenTimes = (ArrayList<ZonedDateTime>) object;
+		System.out.println(frozenTimes);
+		days = Period.between(frozenTimes.get(0).toLocalDate(), ZonedDateTime.now().toLocalDate()).getDays();
+		selectedRequested.setDueDate(selectedRequested.getDueDate().plusDays(days));
+		System.out.println(days);
+		String query = "UPDATE Stage SET Deadline =DATE_ADD(Deadline,INTERVAL " + days + " DAY) WHERE RequestID = '"
+				+ selectedRequested.getRequestID() + "' AND StageName ='" + selectedRequested.getCurrentStage() + "'";
+		App.client.handleMessageFromClientUI(new Message(OperationType.updateUnfrozenStage, query));
+	}
+
+	public void freezeUpdateResponse(Object object) {
+		boolean res = (boolean) object;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date today = new Date(System.currentTimeMillis());
+		if (!res) {
+			String query2 = "UPDATE Frozen SET FreezeTime = '" + dateFormat.format(today)
+					+ "', UnFreezeTime = NULL WHERE RequestID = '" + getCurrentRequest().getRequestID() + "'";
+			App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query2));
+		}
+		showAlert(AlertType.INFORMATION, "Request Suspended!", "Please notify your director", null);
+	}
+
+	public void unFreezeUpdateResponse(Object object) {
+		boolean res = (boolean) object;
+		if (!res) {
+			showAlert(AlertType.ERROR, "Error trying to unfreeze", "Failed to unfreeze : query failed at DB", null);
+		} else
+			showAlert(AlertType.INFORMATION, "Request Resumed", "Please notify your Supervisor", null);
 	}
 
 	public void freezeServerResponse(Object object) {
@@ -494,7 +540,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 	@FXML
 	void submitBtnClicked(ActionEvent event) {
-		c=0;
+		c = 0;
 		updateRemarksBtn.setVisible(true);
 		updateRemarksBtn.setDisable(false);
 		submitBtn.setVisible(false);
@@ -511,7 +557,7 @@ public class requestTreatmentController extends AppController implements Initial
 		OperationType ot2 = OperationType.SUPERVISOR_REMARKS;
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 		App.client.handleMessageFromClientUI(new Message(ot2, query2));
-		
+
 		stageProgressHBox.setVisible(true);
 	}
 

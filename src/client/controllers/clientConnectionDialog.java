@@ -44,7 +44,7 @@ public class clientConnectionDialog {
     	App.server_port = port.getText();
 
     	boolean res = App.startClient();
-		changeWindow((Stage)((Node)event.getSource()).getScene().getWindow(), "/client/views/prototype.fxml");
+		changeWindow((Stage)((Node)event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
 
     }
 

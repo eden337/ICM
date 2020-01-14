@@ -21,7 +21,7 @@
          <children>
             <VBox prefHeight="711.0" prefWidth="420.0">
                <children>
-                  <TextField fx:id="searchBoxTF" prefHeight="35.0" prefWidth="420.0" promptText="Search..." />
+                  <TextField fx:id="searchBoxTF" prefHeight="30.0" prefWidth="307.0" promptText="Search..." />
                   <TableView fx:id="table" prefHeight="686.0" prefWidth="250.0">
                     <columns>
                       <TableColumn fx:id="colId" prefWidth="108.0" text="ID" />
@@ -140,6 +140,11 @@
                   <Text fx:id="msg" fill="#0e2eff" layoutX="38.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
                      <font>
                         <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="finishedStatus" layoutX="229.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="267.13671875">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
                      </font>
                   </Text>
                </children>

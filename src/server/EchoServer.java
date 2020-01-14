@@ -120,7 +120,6 @@ public class EchoServer extends AbstractServer {
                     boolean resEvaluation = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.InsertEvaluation, resEvaluation), client);
                     break;
-
                 case LoginAsEmployee:
                     rs = mysql.getQuery(m.getObject().toString());
                     EmployeeUser employeeUser = null;
@@ -145,6 +144,7 @@ public class EchoServer extends AbstractServer {
                         sendToClient(new Message(OperationType.LoginResult, null), client);
 
                     break;
+                    
                 case LoginAsStudent:
                     rs = mysql.getQuery(m.getObject().toString());
                     StudentUser studentUser = null;
@@ -193,6 +193,7 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
                     break;
+                case DECISION_DeclineUpdate:
                 case VIEWRequest_confirmRequest:
                 case Clousre_UpdateRequestStatus:
                 case Eval_updateRequestStatus:
@@ -286,17 +287,17 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case Closure_Init:
-                    List<Boolean> closure_init = new ArrayList<Boolean>();
-                    rs = mysql.getQuery(m.getObject().toString());
-                    if (rs != null) {
-                        while (rs.next()) {
-                            closure_init.add(rs.getBoolean("Request_Confirmed"));
-                        }
-                    }
-                    closure_init.add(false);
-                    sendToClient(new Message(m.getOperationtype(), closure_init), client);
-                    rs.close();
-                    break;
+                	 List<Boolean> closure_init = new ArrayList<Boolean>();
+                     rs = mysql.getQuery(m.getObject().toString());
+                     if (rs != null) {
+                         while (rs.next()) {
+                        	 closure_init.add(rs.getBoolean("Request_Confirmed"));
+                         }
+                     }
+                     closure_init.add(false);
+                     sendToClient(new Message(m.getOperationtype(), closure_init), client);
+                     rs.close();
+                     break;
                 case VAL_GetInitData:
                 case EXE_GetInitData:
                 case EVAL_GetInitData:
@@ -372,6 +373,7 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
+                case getViewPrevStage:
                 case VALID_GetPrevStage:
                 case DECISION_GetPrevStage:
                 case ChangeRequest_getStageObject:
@@ -403,6 +405,7 @@ public class EchoServer extends AbstractServer {
                     } finally {
                         break;
                     }
+                case insertFreezedRequest:
                 case VALID_UpdateRepeated:
                 case DECISION_updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
@@ -613,6 +616,24 @@ public class EchoServer extends AbstractServer {
                     }
                     sendToClient(new Message(m.getOperationtype(), res5), client);
                     break;
+                case getTimeFromFrozen:
+                    rs = mysql.getQuery(m.getObject().toString());
+                    ZonedDateTime t1 = null,t2 = null;
+                    while(rs.next()) {
+	                    Date d1=rs.getDate("FreezeTime");
+	                    Date d2=rs.getDate("UnFreezeTime");
+	                    t1=Tools.convertDateSQLToZoned(d1);
+	                    t2=Tools.convertDateSQLToZoned(d2);
+                    }
+                    ArrayList<ZonedDateTime> zonedTimeFrozen=new ArrayList<ZonedDateTime>();
+                    zonedTimeFrozen.add(t1);
+                    zonedTimeFrozen.add(t2);
+                    sendToClient(new Message(OperationType.getTimeFromFrozen, zonedTimeFrozen), client);
+                    break;
+                case updateUnfrozenStage:
+                	res = mysql.insertOrUpdate(m.getObject().toString());
+                	sendToClient(new Message(OperationType.updateUnfrozenStage, res), client);
+                	break;
                 default:
                     break;
             }
