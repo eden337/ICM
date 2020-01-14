@@ -69,7 +69,7 @@ public class homepageController extends AppController implements Initializable {
         setGreeting();
         initData_Request();
 
-        if(App.user.isEngineer())
+        if (App.user.isEngineer())
             paneForIT.setVisible(true);
 
     }
@@ -83,7 +83,7 @@ public class homepageController extends AppController implements Initializable {
 //        int month = time.get(Calendar.MONTH) + 1;
 //        int year = time.get(Calendar.YEAR);
 
-        if(hour < 4 )
+        if (hour < 4)
             greetingText = "Good Night";
         else if (hour < 12)
             greetingText = "Good Morning";
@@ -99,7 +99,7 @@ public class homepageController extends AppController implements Initializable {
     }
 
 
-    private void initData_Request(){
+    private void initData_Request() {
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
                 "SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests,
@@ -108,22 +108,25 @@ public class homepageController extends AppController implements Initializable {
     }
 
     // Main_getMyTotalRequests
-    public void Main_getMyTotalRequests_Response(Object res){
-        if(res == null) return;
+    public void Main_getMyTotalRequests_Response(Object res) {
+        if (res == null) return;
         userTotalRequest.setText(res.toString());
     }
-    public void Main_getMyActiveRequests_Response(Object res){
-        if(res == null) return;
+
+    public void Main_getMyActiveRequests_Response(Object res) {
+        if (res == null) return;
         userRequestsInTreatment.setText(res.toString());
     }
-    public void Main_getMyRequestTreatment_Response(Object res){
-        if(res == null) return;
+
+    public void Main_getMyRequestTreatment_Response(Object res) {
+        if (res == null) return;
         UserNeedToTreat.setText(res.toString());
     }
 
 
     /**
      * Get Request Treatment query by permission
+     *
      * @return
      */
     private String setTableByUser() {

@@ -42,7 +42,6 @@ public class EchoServer extends AbstractServer {
     private static mysqlConnection mysql = new mysqlConnection();
     public static TreeMap<String, ConnectionToClient> connectedUsers = new TreeMap<String, ConnectionToClient>();
 
-
     // Constructors ****************************************************
 
     /**
@@ -64,7 +63,7 @@ public class EchoServer extends AbstractServer {
      */
     public synchronized void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message m = (Message) msg;
-        //ServerController.instance.startDBService();
+        // ServerController.instance.startDBService();
         boolean res;
         ResultSet rs;
         String query;
@@ -87,6 +86,20 @@ public class EchoServer extends AbstractServer {
                     break;
                 case Manager_updateRoleInOrg:
                 case updateRoleInOrg:
+                    // need for considerations...
+                case VALID_updateRequestStatus:
+                case DECI_UpdateDB:
+                case EVAL_UpdateDB:
+                case VALID_UpdateDB:
+                case EXE_UpdateDB:
+
+                case Allocate_UpdateRoles:
+                case DECISION_DeclineUpdate:
+                case VIEWRequest_confirmRequest:
+                case Clousre_UpdateRequestStatus:
+                case Eval_updateRequestStatus:
+                case PreValidation_SetRole:
+                case Allocate_SetRoles:
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
@@ -120,9 +133,11 @@ public class EchoServer extends AbstractServer {
                     boolean resEvaluation = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.InsertEvaluation, resEvaluation), client);
                     break;
+
                 case LoginAsEmployee:
                     rs = mysql.getQuery(m.getObject().toString());
                     EmployeeUser employeeUser = null;
+
                     if (rs != null) {
                         while (rs.next()) {
                             employeeUser = new EmployeeUser(rs.getString("Name"), rs.getString("Surename"),
@@ -130,7 +145,7 @@ public class EchoServer extends AbstractServer {
 
                                     rs.getString("WorkerID"), rs.getString("Department"), rs.getString("Type"), null);
                         }
-                        rs.close();
+
                         if (employeeUser != null) {
                             if (connectedUsers.containsKey(employeeUser.getUserName())) {
                                 sendToClient(new Message(OperationType.LoginResult, null), client);
@@ -140,27 +155,23 @@ public class EchoServer extends AbstractServer {
                                 sendToClient(new Message(OperationType.LoginResult, employeeUser), client);
                             }
                         }
-                    } else
-                        sendToClient(new Message(OperationType.LoginResult, null), client);
-
+                    }
+                    if (!rs.next() && employeeUser == null) {
+                        sendToClient(new Message(OperationType.LoginResult, new User("fail", null, null, null, null, null)),
+                                client);
+                    }
+                    rs.close();
                     break;
-                    
                 case LoginAsStudent:
                     rs = mysql.getQuery(m.getObject().toString());
                     StudentUser studentUser = null;
                     if (rs != null) {
                         while (rs.next()) {
-                            studentUser = new StudentUser(
-                                    rs.getString("Name"),
-                                    rs.getString("Surename"),
-                                    rs.getString("EMAIL"),
-                                    rs.getString("username"),
-                                    rs.getString("password"),
-                                    rs.getInt("StudentID"),
-                                    rs.getString("Department")
-                            );
+                            studentUser = new StudentUser(rs.getString("Name"), rs.getString("Surename"),
+                                    rs.getString("EMAIL"), rs.getString("username"), rs.getString("password"),
+                                    rs.getInt("StudentID"), rs.getString("Department"));
                         }
-                        rs.close();
+
                         if (studentUser != null) {
                             if (connectedUsers.containsKey(studentUser.getUserName())) {
                                 sendToClient(new Message(OperationType.LoginResult, null), client);
@@ -170,9 +181,12 @@ public class EchoServer extends AbstractServer {
                                 sendToClient(new Message(OperationType.LoginResult, studentUser), client);
                             }
                         }
-                    } else
-                        sendToClient(new Message(OperationType.LoginResult, null), client);
-
+                    }
+                    if (!rs.next() && studentUser == null) {
+                        sendToClient(new Message(OperationType.LoginResult, new User("fail", null, null, null, null, null)),
+                                client);
+                    }
+                    rs.close();
                     break;
                 case Logout:
                     connectedUsers.remove(m.getObject());
@@ -192,20 +206,6 @@ public class EchoServer extends AbstractServer {
                     }
                     sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
-                    break;
-                case DECISION_DeclineUpdate:
-                case VIEWRequest_confirmRequest:
-                case Clousre_UpdateRequestStatus:
-                case Eval_updateRequestStatus:
-                case PreValidation_SetRole:
-                case Allocate_SetRoles:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
-
-                case Allocate_UpdateRoles:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
@@ -277,27 +277,18 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), reportsToReturn), client);
                     rs.close();
                     break;
-                // need for considerations...
-                case VALID_updateRequestStatus:
-                case DECI_UpdateDB:
-                case EVAL_UpdateDB:
-                case VALID_UpdateDB:
-                case EXE_UpdateDB:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
                 case Closure_Init:
-                	 List<Boolean> closure_init = new ArrayList<Boolean>();
-                     rs = mysql.getQuery(m.getObject().toString());
-                     if (rs != null) {
-                         while (rs.next()) {
-                        	 closure_init.add(rs.getBoolean("Request_Confirmed"));
-                         }
-                     }
-                     closure_init.add(false);
-                     sendToClient(new Message(m.getOperationtype(), closure_init), client);
-                     rs.close();
-                     break;
+                    List<Boolean> closure_init = new ArrayList<Boolean>();
+                    rs = mysql.getQuery(m.getObject().toString());
+                    if (rs != null) {
+                        while (rs.next()) {
+                            closure_init.add(rs.getBoolean("Request_Confirmed"));
+                        }
+                    }
+                    closure_init.add(false);
+                    sendToClient(new Message(m.getOperationtype(), closure_init), client);
+                    rs.close();
+                    break;
                 case VAL_GetInitData:
                 case EXE_GetInitData:
                 case EVAL_GetInitData:
@@ -383,8 +374,10 @@ public class EchoServer extends AbstractServer {
                         cStage = new Stage(rs.getInt("RequestID"), rs.getString("StageName"),
                                 Tools.convertDateSQLToZoned(rs.getDate("StartTime")),
                                 Tools.convertDateSQLToZoned(rs.getDate("EndTime")),
-                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge")
-                                , rs.getInt("init"), rs.getInt("init_confirmed"), rs.getInt("extension_days"), rs.getString("extension_reason"), rs.getString("extension_decision"), rs.getString("PrevStage"));
+                                Tools.convertDateSQLToZoned(rs.getDate("Deadline")), rs.getString("Incharge"),
+                                rs.getInt("init"), rs.getInt("init_confirmed"), rs.getInt("extension_days"),
+                                rs.getString("extension_reason"), rs.getString("extension_decision"),
+                                rs.getString("PrevStage"));
                     }
 
                     sendToClient(new Message(m.getOperationtype(), cStage), client);
@@ -426,10 +419,13 @@ public class EchoServer extends AbstractServer {
 
                     StringBuilder fileData = new StringBuilder();
                     if (report.getType().equals("Activity")) {
-                        ResultSet data = mysql.getQuery("SELECT * FROM `Reports` WHERE (ReportType IN('" + report.getType() + "') AND Since IN ('" + report.getFrom().toString() + "') AND Till IN ('" + report.getTo().toString() + "') )");
+                        ResultSet data = mysql.getQuery("SELECT * FROM `Reports` WHERE (ReportType IN('" + report.getType()
+                                + "') AND Since IN ('" + report.getFrom().toString() + "') AND Till IN ('"
+                                + report.getTo().toString() + "') )");
                         if (data.next())
                             break;
-                        boolean period = Duration.between(Tools.convertDateSQLToZoned(report.getFrom()), Tools.convertDateSQLToZoned(report.getTo())).toDays() < 12 ? true : false;
+                        boolean period = Duration.between(Tools.convertDateSQLToZoned(report.getFrom()),
+                                Tools.convertDateSQLToZoned(report.getTo())).toDays() < 12 ? true : false;
                         TreeMap<String, ArrayList<Integer>> frequency = Tools.frequncyDistrbution(report);
                         Set<String> keys = frequency.keySet();
                         for (String s2 : keys) {
@@ -439,10 +435,24 @@ public class EchoServer extends AbstractServer {
                             if (period) {
                                 from = s2;
                                 to = s2;
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'" + to + "'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='" + from + "') ))", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '" + to + "')", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='" + from + "' AND (UnFreezeTime IS NULL OR UnFreezeTime>'" + to + "')", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '" + to + "')", frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"
+                                                + to
+                                                + "'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"
+                                                + from + "') ))",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                                                + to + "')",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='" + from
+                                                + "' AND (UnFreezeTime IS NULL OR UnFreezeTime>'" + to + "')",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                                                + to + "')",
+                                        frequency, s2);
                                 ArrayList<Integer> temp = frequency.get(s2);
                                 int active = temp.get(0);
                                 int freezed = temp.get(2);
@@ -452,17 +462,30 @@ public class EchoServer extends AbstractServer {
                             } else {
                                 from = s2.substring(0, 12);
                                 to = s2.substring(13);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'" + to + "'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='" + from + "') ))", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '" + to + "')", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='" + from + "' AND (UnFreezeTime IS NULL OR UnFreezeTime>'" + to + "')", frequency, s2);
-                                calcPeriodQuery("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '" + to + "')", frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime>'"
+                                                + to
+                                                + "'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime <='"
+                                                + from + "') ))",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                                                + to + "')",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='" + from
+                                                + "' AND (UnFreezeTime IS NULL OR UnFreezeTime>'" + to + "')",
+                                        frequency, s2);
+                                calcPeriodQuery(
+                                        "SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                                                + to + "')",
+                                        frequency, s2);
                                 frequency.get(s2).add(calcActiveDaysPerPeriod(from, to));
                                 ArrayList<Integer> temp = frequency.get(s2);
                                 int active = temp.get(0);
                                 int freezed = temp.get(2);
                                 frequency.get(s2).set(0, active - freezed);
                             }
-
 
                         }
 
@@ -473,30 +496,39 @@ public class EchoServer extends AbstractServer {
                         columnsActivity.add("Done");
                         columnsActivity.add("WorkDays");
 
-
-                        //ArrayList<String> totalsActivty=new ArrayList<String>();
-                		/*totalsActivty.add("SELECT COUNT(*) 	FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime<'"+report.getTo().toString()+"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime<='"+report.getFrom().toString()+"') ))");
-                		totalsActivty.add("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+report.getTo().toString()+"')");
-                		totalsActivty.add("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"+report.getFrom().toString()+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"+report.getTo().toString()+"')");
-                		totalsActivty.add("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"+report.getTo().toString()+"')");*/
-                        //String activtyReportData=reportBuilder(frequency, columnsActivity, totalsActivty);
+                        // ArrayList<String> totalsActivty=new ArrayList<String>();
+                        /*
+                         * totalsActivty.
+                         * add("SELECT COUNT(*) 	FROM  `Stage` as s1, `Stage` as s2	WHERE(((s1.StageName ='CLOSURE' AND (s1.EndTime IS NULL OR s1.EndTime<'"
+                         * +report.getTo().toString()
+                         * +"'))AND (s1.RequestID=s2.RequestID)AND (s2.StageName='EVALUATION' AND s2.StartTime<='"
+                         * +report.getFrom().toString()+"') ))"); totalsActivty.
+                         * add("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='CANCELED') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                         * +report.getTo().toString()+"')");
+                         * totalsActivty.add("SELECT COUNT(*) FROM  `Frozen`  WHERE FreezeTime<='"
+                         * +report.getFrom().toString()+"' AND (UnFreezeTime IS NULL OR UnFreezeTime>'"
+                         * +report.getTo().toString()+"')"); totalsActivty.
+                         * add("SELECT COUNT(*) FROM  `Requests` as r, `Stage`  as s WHERE (r.RequestID=s.RequestID) AND (r.Status='DONE') AND (s.StageName ='CLOSURE' AND s.EndTime<= '"
+                         * +report.getTo().toString()+"')");
+                         */
+                        // String activtyReportData=reportBuilder(frequency, columnsActivity,
+                        // totalsActivty);
                         String activtyReportData = reportBuilder(frequency, columnsActivity);
 
-
                         mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created`,`Since` ,`Till`,`Data`)"
-                                + "VALUES" + "('" + report.getType() + "','"
-                                + report.getCreated().toString() + "','" + report.getFrom().toString() + "','" + report.getTo().toString() + "','" + activtyReportData + "');");
-
+                                + "VALUES" + "('" + report.getType() + "','" + report.getCreated().toString() + "','"
+                                + report.getFrom().toString() + "','" + report.getTo().toString() + "','"
+                                + activtyReportData + "');");
 
                     }
                     if (report.getType().equals("Performences")) {
 
                         /**
-                         * if there is a row we need to update so insertOrUpdeate=true
-                         * else we need to insert so insertOrUpdeate= false
+                         * if there is a row we need to update so insertOrUpdeate=true else we need to
+                         * insert so insertOrUpdeate= false
                          */
-                        boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('" + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
-
+                        boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('"
+                                + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
 
                         HashMap<String, ArrayList<Integer>> frequency = new HashMap<String, ArrayList<Integer>>();
 
@@ -508,12 +540,13 @@ public class EchoServer extends AbstractServer {
                         frequency.put("Class Computers", new ArrayList<Integer>());
                         frequency.put("Library", new ArrayList<Integer>());
 
-
                         for (String system : frequency.keySet()) {
 
-                            //logic missing: check if an extnasion was given in repeated stage
+                            // logic missing: check if an extnasion was given in repeated stage
                             ArrayList<Integer> values = frequency.get(system);
-                            ResultSet performData = mysql.getQuery("SELECT SUM(`extension_days`) FROM `Requests` as r ,`Stage` as s WHERE r.RequestID=s.RequestID AND r.SystemID='" + system + "'");
+                            ResultSet performData = mysql.getQuery(
+                                    "SELECT SUM(`extension_days`) FROM `Requests` as r ,`Stage` as s WHERE r.RequestID=s.RequestID AND r.SystemID='"
+                                            + system + "'");
                             performData.next();
                             Integer val = performData.getInt(1);
                             if (val != null)
@@ -521,42 +554,43 @@ public class EchoServer extends AbstractServer {
                             else
                                 values.add(0);
 
-                            performData = mysql.getQuery("SELECT rep.`StartTime`, rep.`EndTime` FROM `Repeted` as rep, `Requests` as r WHERE rep.RequestID=r.RequestID AND r.SystemID='" + system + "'");
+                            performData = mysql.getQuery(
+                                    "SELECT rep.`StartTime`, rep.`EndTime` FROM `Repeted` as rep, `Requests` as r WHERE rep.RequestID=r.RequestID AND r.SystemID='"
+                                            + system + "'");
                             int repeated = 0;
                             while (performData.next())
-                                repeated = (int) Duration.between(Tools.convertDateSQLToZoned(performData.getDate(1)), Tools.convertDateSQLToZoned(performData.getDate(2))).toDays();
+                                repeated = (int) Duration.between(Tools.convertDateSQLToZoned(performData.getDate(1)),
+                                        Tools.convertDateSQLToZoned(performData.getDate(2))).toDays();
                             values.add(repeated);
                             frequency.put(system, values);
                         }
-
 
                         ArrayList<String> columnsPerformence = new ArrayList<String>();
                         columnsPerformence.add("Extensions");
                         columnsPerformence.add("Repeated Days");
                         String reportPerformancesData = reportBuilder(frequency, columnsPerformence);
                         if (insertOrUpdeate)
-                            mysql.insertOrUpdate("UPDATE `Reports` SET `Data`='" + reportPerformancesData + "'WHERE `ReportType`='" + report.getType() + "' AND `Created`='" + report.getCreated() + "'  ");
+                            mysql.insertOrUpdate(
+                                    "UPDATE `Reports` SET `Data`='" + reportPerformancesData + "'WHERE `ReportType`='"
+                                            + report.getType() + "' AND `Created`='" + report.getCreated() + "'  ");
                         else
-                            mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created` ,`Data`)"
-                                    + "VALUES" + "('" + report.getType() + "','"
-                                    + report.getCreated().toString() + "','" + reportPerformancesData + "');");
+                            mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created` ,`Data`)" + "VALUES" + "('"
+                                    + report.getType() + "','" + report.getCreated().toString() + "','"
+                                    + reportPerformancesData + "');");
 
                         /*
-                         * here i need to check amount of time spent
-                         * calculate median
-                         * calculate SD
+                         * here i need to check amount of time spent calculate median calculate SD
                          * Calaulate Frequency distribution
                          */
-
 
                     }
                     if (report.getType().equals("Delays")) {
                         /**
-                         * if there is a row we need to update so insertOrUpdeate=true
-                         * else we need to insert so insertOrUpdeate= false
+                         * if there is a row we need to update so insertOrUpdeate=true else we need to
+                         * insert so insertOrUpdeate= false
                          */
-                        boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('" + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
-
+                        boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('"
+                                + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
 
                         HashMap<String, Integer> frequency = new HashMap<String, Integer>();
 
@@ -570,11 +604,12 @@ public class EchoServer extends AbstractServer {
                         calcDelayedDaysPer(frequency);
                         String reportDelayData = reportBuilderOnePram(frequency, "Delayed Days");
                         if (insertOrUpdeate)
-                            mysql.insertOrUpdate("UPDATE `Reports` SET `Data`='" + reportDelayData + "'WHERE `ReportType`='" + report.getType() + "' AND `Created`='" + report.getCreated() + "'  ");
+                            mysql.insertOrUpdate("UPDATE `Reports` SET `Data`='" + reportDelayData + "'WHERE `ReportType`='"
+                                    + report.getType() + "' AND `Created`='" + report.getCreated() + "'  ");
                         else
-                            mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created` ,`Data`)"
-                                    + "VALUES" + "('" + report.getType() + "','"
-                                    + report.getCreated().toString() + "','" + reportDelayData + "');");
+                            mysql.insertOrUpdate("INSERT INTO `Reports`(`ReportType`, `Created` ,`Data`)" + "VALUES" + "('"
+                                    + report.getType() + "','" + report.getCreated().toString() + "','" + reportDelayData
+                                    + "');");
                     }
                     break;
                 case GenreateReport:
@@ -592,14 +627,14 @@ public class EchoServer extends AbstractServer {
                     else
                         sendToClient(new Message(OperationType.InsertReport, csvReport), client);
 
-
                     break;
                 case GetReports:
 
                     ArrayList<Report> allReports = new ArrayList<Report>();
                     ResultSet repoData = mysql.getQuery(m.getObject().toString());
                     while (repoData.next()) {
-                        allReports.add(new Report(repoData.getString("ReportType"), repoData.getDate("Created"), repoData.getDate("Since"), repoData.getDate("Till")));
+                        allReports.add(new Report(repoData.getString("ReportType"), repoData.getDate("Created"),
+                                repoData.getDate("Since"), repoData.getDate("Till")));
                     }
                     sendToClient(new Message(OperationType.GetReports, allReports), client);
                     break;
@@ -618,27 +653,41 @@ public class EchoServer extends AbstractServer {
                     break;
                 case getTimeFromFrozen:
                     rs = mysql.getQuery(m.getObject().toString());
-                    ZonedDateTime t1 = null,t2 = null;
-                    while(rs.next()) {
-	                    Date d1=rs.getDate("FreezeTime");
-	                    Date d2=rs.getDate("UnFreezeTime");
-	                    t1=Tools.convertDateSQLToZoned(d1);
-	                    t2=Tools.convertDateSQLToZoned(d2);
+                    ZonedDateTime t1 = null, t2 = null;
+                    while (rs.next()) {
+                        Date d1 = rs.getDate("FreezeTime");
+                        Date d2 = rs.getDate("UnFreezeTime");
+                        t1 = Tools.convertDateSQLToZoned(d1);
+                        t2 = Tools.convertDateSQLToZoned(d2);
                     }
-                    ArrayList<ZonedDateTime> zonedTimeFrozen=new ArrayList<ZonedDateTime>();
+                    ArrayList<ZonedDateTime> zonedTimeFrozen = new ArrayList<ZonedDateTime>();
                     zonedTimeFrozen.add(t1);
                     zonedTimeFrozen.add(t2);
                     sendToClient(new Message(OperationType.getTimeFromFrozen, zonedTimeFrozen), client);
                     break;
                 case updateUnfrozenStage:
-                	res = mysql.insertOrUpdate(m.getObject().toString());
-                	sendToClient(new Message(OperationType.updateUnfrozenStage, res), client);
-                	break;
+                    res = mysql.insertOrUpdate(m.getObject().toString());
+                    sendToClient(new Message(OperationType.updateUnfrozenStage, res), client);
+                    break;
+                case ClousreEmail:
+                    try {
+                        rs = mysql.getQuery(m.getObject().toString());
+                        while (rs.next()) {
+                            String mail = rs.getString("Email");
+                            if (mail != null)
+                                EmailSender.sendEmail(mail, "ICM Notification", "Your request has been closed! :)");
+                        }
+                        break;
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
                 default:
                     break;
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -655,7 +704,6 @@ public class EchoServer extends AbstractServer {
         }
         return res;
     }
-
 
     /**
      * The object MyFile get from the client to the server and need to be read
@@ -847,17 +895,24 @@ public class EchoServer extends AbstractServer {
     }
 
     public HashMap<Integer, Long> calcActiveDaysPerRequest(Report report) {
-        ResultSet requestId = mysql.getQuery("SELECT `RequestID` FROM `Stage` WHERE ( `EndTime` >'" + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
-        ResultSet current = mysql.getQuery("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'" + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
-        System.out.println("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'" + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
-        ResultSet frozen = mysql.getQuery("SELECT * FROM Frozen WHERE ( UnFreezeTime >'" + report.getFrom().toString() + "'AND FreezeTime < '" + report.getTo().toString() + "')");
-        ResultSet repeated = mysql.getQuery("SELECT RequestID,StageName,StartTime,EndTime FROM Repeted WHERE ( EndTime >'" + report.getFrom().toString() + "'AND StartTime < '" + report.getTo().toString() + "')");
+        ResultSet requestId = mysql.getQuery("SELECT `RequestID` FROM `Stage` WHERE ( `EndTime` >'"
+                + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
+        ResultSet current = mysql
+                .getQuery("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'"
+                        + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
+        System.out.println("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'"
+                + report.getFrom().toString() + "'AND `StartTime` < '" + report.getTo().toString() + "')");
+        ResultSet frozen = mysql.getQuery("SELECT * FROM Frozen WHERE ( UnFreezeTime >'" + report.getFrom().toString()
+                + "'AND FreezeTime < '" + report.getTo().toString() + "')");
+        ResultSet repeated = mysql
+                .getQuery("SELECT RequestID,StageName,StartTime,EndTime FROM Repeted WHERE ( EndTime >'"
+                        + report.getFrom().toString() + "'AND StartTime < '" + report.getTo().toString() + "')");
         HashMap<Integer, Long> hm = new HashMap<Integer, Long>();
         long res = 0;
         ZonedDateTime d1, d2;
         ZonedDateTime from = Tools.convertDateSQLToZoned(report.getFrom());
         ZonedDateTime to = Tools.convertDateSQLToZoned(report.getTo());
-        //List<Integer> list=Arrays.asList(avner.getArray("RequestID"));
+        // List<Integer> list=Arrays.asList(avner.getArray("RequestID"));
         /**
          * zero out map
          */
@@ -870,7 +925,7 @@ public class EchoServer extends AbstractServer {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                //System.out.println(id);
+                // System.out.println(id);
                 hm.put(id, (long) 0);
             }
         } catch (SQLException e2) {
@@ -881,11 +936,10 @@ public class EchoServer extends AbstractServer {
         /**
          * calculate all days spent on a request
          *
-         * for each request Variables:
-         * current=time spent on request in current stages (in period)
-         * repeated= time spent on request in repeated stages (in period)
-         * frozen = time in period when request was frozen
-         * formula:(current +repeated)-frozen
+         * for each request Variables: current=time spent on request in current stages
+         * (in period) repeated= time spent on request in repeated stages (in period)
+         * frozen = time in period when request was frozen formula:(current
+         * +repeated)-frozen
          */
         try {
 
@@ -932,7 +986,6 @@ public class EchoServer extends AbstractServer {
             e.printStackTrace();
         }
 
-
         try {
             current.close();
             frozen.close();
@@ -946,28 +999,35 @@ public class EchoServer extends AbstractServer {
 
     public int calcActiveDaysPerPeriod(String since, String till) {
 
-        ResultSet current = mysql.getQuery("SELECT `StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'" + since + "'AND `StartTime` < '" + till + "')");
-        //System.out.println("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'"+since +"'AND `StartTime` < '"+till+ "')");
-        ResultSet frozen = mysql.getQuery("SELECT * FROM Frozen WHERE ( UnFreezeTime >'" + since + "'AND FreezeTime < '" + till + "')");
-        ResultSet repeated = mysql.getQuery("SELECT RequestID,StageName,StartTime,EndTime FROM Repeted WHERE ( EndTime >'" + since + "'AND StartTime < '" + till + "')");
+        ResultSet current = mysql.getQuery("SELECT `StageName`,`StartTime`,`EndTime` FROM `Stage` WHERE ( `EndTime` >'"
+                + since + "'AND `StartTime` < '" + till + "')");
+        // System.out.println("SELECT `RequestID`,`StageName`,`StartTime`,`EndTime` FROM
+        // `Stage` WHERE ( `EndTime` >'"+since +"'AND `StartTime` < '"+till+ "')");
+        ResultSet frozen = mysql
+                .getQuery("SELECT * FROM Frozen WHERE ( UnFreezeTime >'" + since + "'AND FreezeTime < '" + till + "')");
+        ResultSet repeated = mysql
+                .getQuery("SELECT RequestID,StageName,StartTime,EndTime FROM Repeted WHERE ( EndTime >'" + since
+                        + "'AND StartTime < '" + till + "')");
         long res = 0;
         ZonedDateTime d1, d2;
-        ZonedDateTime from = ZonedDateTime.of(Integer.parseInt(since.substring(0, 4)), Integer.parseInt(since.substring(6, 8)), Integer.parseInt(since.substring(10, 12)), 0, 0, 0, 0, ZoneId.systemDefault());
-        ZonedDateTime to = ZonedDateTime.of(Integer.parseInt(till.substring(0, 4)), Integer.parseInt(till.substring(6, 8)), Integer.parseInt(till.substring(10, 12)), 0, 0, 0, 0, ZoneId.systemDefault());
-        //List<Integer> list=Arrays.asList(avner.getArray("RequestID"));
+        ZonedDateTime from = ZonedDateTime.of(Integer.parseInt(since.substring(0, 4)),
+                Integer.parseInt(since.substring(6, 8)), Integer.parseInt(since.substring(10, 12)), 0, 0, 0, 0,
+                ZoneId.systemDefault());
+        ZonedDateTime to = ZonedDateTime.of(Integer.parseInt(till.substring(0, 4)),
+                Integer.parseInt(till.substring(6, 8)), Integer.parseInt(till.substring(10, 12)), 0, 0, 0, 0,
+                ZoneId.systemDefault());
+        // List<Integer> list=Arrays.asList(avner.getArray("RequestID"));
         long mainStages = 0;
         long repeatedStages = 0;
         long freezeStages = 0;
 
-
         /**
          * calculate all days spent on a request
          *
-         * for each request Variables:
-         * current=time spent on request in current stages (in period)
-         * repeated= time spent on request in repeated stages (in period)
-         * frozen = time in period when request was frozen
-         * formula:(current +repeated)-frozen
+         * for each request Variables: current=time spent on request in current stages
+         * (in period) repeated= time spent on request in repeated stages (in period)
+         * frozen = time in period when request was frozen formula:(current
+         * +repeated)-frozen
          */
         try {
 
@@ -979,7 +1039,6 @@ public class EchoServer extends AbstractServer {
                 if (d2.isAfter(to))
                     d2 = to;
                 mainStages += (Duration.between(d1, d2).toDays());
-
 
             }
             while (repeated.next()) {
@@ -1008,7 +1067,6 @@ public class EchoServer extends AbstractServer {
             e.printStackTrace();
         }
 
-
         try {
             current.close();
             frozen.close();
@@ -1022,43 +1080,32 @@ public class EchoServer extends AbstractServer {
     }
 
     /*
-    public HashMap<String, Long> calcDelayedDaysPerRequest(HashMap<String, Long> mapDelays)
-    {
-    	ResultSet delayData=mysql.getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
-    	ZonedDateTime deadline;
-    	ZonedDateTime compareTo;
-    	try {
-			while(delayData.next())
-			{
-				deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline"));
-				Date temp=delayData.getDate("Endtime");
-				compareTo= temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now();
-				long res=Duration.between(deadline, compareTo).toDays();
-				res=res>0?res:0;
-				String system=delayData.getString("SystemID");
-				mapDelays.replace(system, mapDelays.get(system)+res);
-			}
-			delayData=mysql.getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
-			while(delayData.next())
-			{
-				deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline"));
-				Date temp=delayData.getDate("Endtime");
-				compareTo= temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now();
-				long res=Duration.between(deadline, compareTo).toDays();
-				res=res>0?res:0;
-				String system=delayData.getString("SystemID");
-				mapDelays.replace(system, mapDelays.get(system)+res);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return mapDelays;
-
-    }
-    */
+     * public HashMap<String, Long> calcDelayedDaysPerRequest(HashMap<String, Long>
+     * mapDelays) { ResultSet delayData=mysql.
+     * getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL"
+     * ); ZonedDateTime deadline; ZonedDateTime compareTo; try {
+     * while(delayData.next()) {
+     * deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline")); Date
+     * temp=delayData.getDate("Endtime"); compareTo=
+     * temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now(); long
+     * res=Duration.between(deadline, compareTo).toDays(); res=res>0?res:0; String
+     * system=delayData.getString("SystemID"); mapDelays.replace(system,
+     * mapDelays.get(system)+res); } delayData=mysql.
+     * getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL"
+     * ); while(delayData.next()) {
+     * deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline")); Date
+     * temp=delayData.getDate("Endtime"); compareTo=
+     * temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now(); long
+     * res=Duration.between(deadline, compareTo).toDays(); res=res>0?res:0; String
+     * system=delayData.getString("SystemID"); mapDelays.replace(system,
+     * mapDelays.get(system)+res); } } catch (SQLException e) { // TODO
+     * Auto-generated catch block e.printStackTrace(); } return mapDelays;
+     *
+     * }
+     */
     public void calcDelayedDaysPer(HashMap<String, Integer> mapDelays) {
-        ResultSet delayData = mysql.getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
+        ResultSet delayData = mysql.getQuery(
+                "SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
         ZonedDateTime deadline;
         ZonedDateTime compareTo;
         try {
@@ -1071,7 +1118,8 @@ public class EchoServer extends AbstractServer {
                 String system = delayData.getString("SystemID");
                 mapDelays.replace(system, mapDelays.get(system) + res);
             }
-            delayData = mysql.getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
+            delayData = mysql.getQuery(
+                    "SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
             while (delayData.next()) {
                 deadline = Tools.convertDateSQLToZoned(delayData.getDate("Deadline"));
                 Date temp = delayData.getDate("Endtime");
@@ -1085,7 +1133,6 @@ public class EchoServer extends AbstractServer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
 
     }
 
@@ -1101,8 +1148,9 @@ public class EchoServer extends AbstractServer {
         }
     }
 
-    //old signature with Totals
-    // public String reportBuilder (TreeMap<String, ArrayList<Integer>> frequency,ArrayList<String> columns,ArrayList<String> totals)
+    // old signature with Totals
+    // public String reportBuilder (TreeMap<String, ArrayList<Integer>>
+    // frequency,ArrayList<String> columns,ArrayList<String> totals)
 
     public String reportBuilder(Map<String, ArrayList<Integer>> frequency, ArrayList<String> columns) {
         StringBuilder ret = new StringBuilder();
@@ -1118,7 +1166,7 @@ public class EchoServer extends AbstractServer {
         ret.append(',');
         ret.append("Standard Deviation");
         ret.append(',');
-        //ret.append("Total");
+        // ret.append("Total");
         ret.append("\r\n");
         int i = 0;
         for (String s : columns) {
@@ -1132,24 +1180,18 @@ public class EchoServer extends AbstractServer {
                 ret.append(val);
                 ret.append(',');
 
-
             }
             int median = Tools.calcMedian(values);
             ret.append(median);
             ret.append(',');
             ret.append(Tools.calculateSD(values));
-            //extra to calculate total not that important
-			/*ret.append(',');
-			try {
-				ResultSet total=mysql.getQuery(totals.get(i));
-				total.next();
-				ret.append(total.getInt(1));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+            // extra to calculate total not that important
+            /*
+             * ret.append(','); try { ResultSet total=mysql.getQuery(totals.get(i));
+             * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
+             * Auto-generated catch block e.printStackTrace(); }
+             */
             i++;
-
 
             ret.append("\r\n");
         }
@@ -1173,7 +1215,6 @@ public class EchoServer extends AbstractServer {
         ret.append("Total");
         ret.append("\r\n");
 
-
         ret.append(column);
         ret.append(',');
 
@@ -1184,23 +1225,17 @@ public class EchoServer extends AbstractServer {
             ret.append(val);
             ret.append(',');
 
-
         }
         int median = Tools.calcMedian(values);
         ret.append(median);
         ret.append(',');
         ret.append(Tools.calculateSD(values));
-        //extra to calculate total not that important
-			/*ret.append(',');
-			try {
-				ResultSet total=mysql.getQuery(totals.get(i));
-				total.next();
-				ret.append(total.getInt(1));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-
+        // extra to calculate total not that important
+        /*
+         * ret.append(','); try { ResultSet total=mysql.getQuery(totals.get(i));
+         * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
+         * Auto-generated catch block e.printStackTrace(); }
+         */
 
         ret.append("\r\n");
 

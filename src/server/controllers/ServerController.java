@@ -21,7 +21,7 @@ import java.util.ResourceBundle;
 
 public class ServerController implements Initializable {
 
-	public static ServerController instance;
+    public static ServerController instance;
     @FXML
     private ResourceBundle resources;
 
@@ -81,7 +81,7 @@ public class ServerController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	instance = this;
+        instance = this;
         OutputStream out = new OutputStream() {
             @Override
             public void write(int b) throws IOException {
@@ -90,7 +90,6 @@ public class ServerController implements Initializable {
         };
         System.setOut(new PrintStream(out, true));
         printFormFields(RemoteSQL);
-
 
 
     }
@@ -132,11 +131,12 @@ public class ServerController implements Initializable {
         dbDetails.setDB_USERNAME(username_field.getText());
     }
 
-    public void startDBService(){
-		if (currentDB != null)
-			mysqlConnection.openConnection(currentDB);
+    public void startDBService() {
+        if (currentDB != null)
+            mysqlConnection.openConnection(currentDB);
 
-	}
+    }
+
     @FXML
     void startServer() {
         // EchoServer.mainServer(args);
@@ -158,7 +158,7 @@ public class ServerController implements Initializable {
         else if (radio_mysqlWorkbench.isSelected())
             currentDB = MySQLWorkbench;
 
-		startDBService();
+        startDBService();
 
         if (!AppServer.echoserver.isListening()) {
             try {

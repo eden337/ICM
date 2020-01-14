@@ -24,14 +24,14 @@ import javafx.scene.text.Text;
 
 public class ViewReportsController extends AppController implements Initializable {
 
-	private static File file;
-	public static Report selectedReport;
-	public static ViewReportsController instance;
-	ObservableList<Report> allReports;
-	ObservableList<Report> reportsActivty;
-	ObservableList<Report> reportsPerformences;
-	ObservableList<Report> reportsDelays;
-	private String path = System.getProperty("user.dir") + "\\ReportsFiles\\";
+    private static File file;
+    public static Report selectedReport;
+    public static ViewReportsController instance;
+    ObservableList<Report> allReports;
+    ObservableList<Report> reportsActivty;
+    ObservableList<Report> reportsPerformences;
+    ObservableList<Report> reportsDelays;
+    private String path = System.getProperty("user.dir") + "\\ReportsFiles\\";
     @FXML
     private Button showAllBtn;
 
@@ -70,105 +70,101 @@ public class ViewReportsController extends AppController implements Initializabl
 
     @FXML
     void openAsFile(ActionEvent event) {
-    	selectedReport= reportList.getSelectionModel().getSelectedItem();
-    	file=new File(path+selectedReport.toString()+".csv");
-    	if(selectedReport.isPeriodReport())
-    		App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport, "Select * From Reports WHERE ReportType='"+selectedReport.getType()+"' And Since ='"+selectedReport.getFrom().toString()+"' AND Till ='"+selectedReport.getTo().toString() +"'"));
-    	else
-        	App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport, "Select * From Reports WHERE ReportType='"+selectedReport.getType()+"' And Created ='"+selectedReport.getCreated().toString()+"'"));
+        selectedReport = reportList.getSelectionModel().getSelectedItem();
+        file = new File(path + selectedReport.toString() + ".csv");
+        if (selectedReport.isPeriodReport())
+            App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport, "Select * From Reports WHERE ReportType='" + selectedReport.getType() + "' And Since ='" + selectedReport.getFrom().toString() + "' AND Till ='" + selectedReport.getTo().toString() + "'"));
+        else
+            App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport, "Select * From Reports WHERE ReportType='" + selectedReport.getType() + "' And Created ='" + selectedReport.getCreated().toString() + "'"));
 
 
     }
 
     @FXML
     void screenGenerateReport(ActionEvent event) {
-    	loadPage("Reports");
+        loadPage("Reports");
     }
 
     @FXML
     void showActivity(ActionEvent event) {
-    	reportList.setItems(reportsActivty);
+        reportList.setItems(reportsActivty);
     }
 
     @FXML
     void showAllReports(ActionEvent event) {
-    	reportList.setItems(allReports);
+        reportList.setItems(allReports);
     }
 
     @FXML
     void showDelays(ActionEvent event) {
-    	reportList.setItems(reportsDelays);
+        reportList.setItems(reportsDelays);
     }
 
     @FXML
     void showPerformences(ActionEvent event) {
-    	reportList.setItems(reportsPerformences);
+        reportList.setItems(reportsPerformences);
     }
 
     @FXML
     void showReport(ActionEvent event) {
-    	selectedReport= reportList.getSelectionModel().getSelectedItem();
-    	
-    	
+        selectedReport = reportList.getSelectionModel().getSelectedItem();
+
+
     }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		instance=this;
-		sdtxt.setVisible(false);
-		medianTxt.setVisible(false);
-		reporttxt1.setVisible(false);
-		frequencyChart.setVisible(false);
-		getReports();
-	
-		//getData
-	}
-	
-	public void getReports()
-	{
-		App.client.handleMessageFromClientUI(new Message(OperationType.GetReports,"Select * From Reports"));
-		
-	}
-	
-	
-	public void setReportsToList(Object obj)
-	{
-		ArrayList<Report> info =(ArrayList<Report>) obj;
-		allReports=FXCollections.observableArrayList();
-		reportsActivty=FXCollections.observableArrayList();
-		reportsPerformences=FXCollections.observableArrayList();
-		reportsDelays=FXCollections.observableArrayList();
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
+        sdtxt.setVisible(false);
+        medianTxt.setVisible(false);
+        reporttxt1.setVisible(false);
+        frequencyChart.setVisible(false);
+        getReports();
 
-		for(Report repo: info)
-		{
-			allReports.add(repo);
-			if(repo.getType().equals("Activity"))
-				reportsActivty.add(repo);
-			if(repo.getType().equals("Performences"))
-				reportsPerformences.add(repo);
-			if(repo.getType().equals("Delays"))
-				reportsDelays.add(repo);
-		}
+        //getData
+    }
 
-		reportList.setItems(allReports);
-		
-	}
-	
-	public void createInPC(Object obj) throws FileNotFoundException
-	{
+    public void getReports() {
+        App.client.handleMessageFromClientUI(new Message(OperationType.GetReports, "Select * From Reports"));
 
-		PrintWriter csvFile;
-    	Report report=(Report)obj;
-   	 
+    }
 
-   	 	new File(path).mkdirs();   
-   	 	
-		 csvFile=new PrintWriter(file);
-         csvFile.write(report.getData());
-         csvFile.close();
-		
-		
-	}
-	
+
+    public void setReportsToList(Object obj) {
+        ArrayList<Report> info = (ArrayList<Report>) obj;
+        allReports = FXCollections.observableArrayList();
+        reportsActivty = FXCollections.observableArrayList();
+        reportsPerformences = FXCollections.observableArrayList();
+        reportsDelays = FXCollections.observableArrayList();
+
+        for (Report repo : info) {
+            allReports.add(repo);
+            if (repo.getType().equals("Activity"))
+                reportsActivty.add(repo);
+            if (repo.getType().equals("Performences"))
+                reportsPerformences.add(repo);
+            if (repo.getType().equals("Delays"))
+                reportsDelays.add(repo);
+        }
+
+        reportList.setItems(allReports);
+
+    }
+
+    public void createInPC(Object obj) throws FileNotFoundException {
+
+        PrintWriter csvFile;
+        Report report = (Report) obj;
+
+
+        new File(path).mkdirs();
+
+        csvFile = new PrintWriter(file);
+        csvFile.write(report.getData());
+        csvFile.close();
+
+
+    }
+
 
 }

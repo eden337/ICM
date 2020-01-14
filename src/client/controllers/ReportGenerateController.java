@@ -169,7 +169,7 @@ public class ReportGenerateController extends AppController implements Initializ
             } else {
                 showAlert(AlertType.WARNING, "Report already exist", "this file Exist at " + path + report.toString() + ".csv", null);
 
-			}
+            }
         } else {
             //if(!(file=new File(path+regularReport+".csv")).exists())
             file = new File(path + report.toString() + ".csv");
@@ -181,8 +181,8 @@ public class ReportGenerateController extends AppController implements Initializ
 
         try {
             Desktop.getDesktop().open(file);
+        } catch (IOException e) {
         }
-        catch(IOException e ){}
 
         //showAlert(AlertType.INFORMATION, "Success", "Report Type:"+reportName+"\nFrom:"+from.toString()+"\nTo:"+to.toString(),"Report Generated" );
 
@@ -243,19 +243,19 @@ public class ReportGenerateController extends AppController implements Initializ
 
         File f = new File(path);
         f.mkdirs();
-		try {
-        csvFile = new PrintWriter(file);
-        csvFile.write(report.getData());
-        csvFile.close();
-        buffer.setVisible(false);
-        showAlert(AlertType.INFORMATION, "Success", "new file at " + path + report.toString() + ".csv", "Report Generated");
+        try {
+            csvFile = new PrintWriter(file);
+            csvFile.write(report.getData());
+            csvFile.close();
+            buffer.setVisible(false);
+            showAlert(AlertType.INFORMATION, "Success", "new file at " + path + report.toString() + ".csv", "Report Generated");
 
-		// open the downloaded file using operation system
-		Desktop desktop = Desktop.getDesktop();
+            // open the downloaded file using operation system
+            Desktop desktop = Desktop.getDesktop();
 
-			desktop.open(f);
-		}
-		catch (IOException e){}
+            desktop.open(f);
+        } catch (IOException e) {
+        }
     }
     
     

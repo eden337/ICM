@@ -35,11 +35,12 @@ public class User implements Serializable {
         this.type = type;
     }
 
-    public boolean isEngineer(){
-        if(type.equals("Engineer"))
+    public boolean isEngineer() {
+        if (type.equals("Engineer"))
             return true;
         return false;
     }
+
     public boolean isOrganizationRole(OrganizationRole role) {
         return false;
     }
@@ -48,12 +49,20 @@ public class User implements Serializable {
         return false;
     }
 
-    public void setStageRole(int requestID, StageRole role){}
+    public void setStageRole(int requestID, StageRole role) {
+    }
 
-    public void setStageRoleServerResponse(Object object) {}
-    public void updatePermissions() { }
-    public void updatePermissionsServerResponse(Object object) {}
-    public void setOrgRoleServerResponse(Object object) {}
+    public void setStageRoleServerResponse(Object object) {
+    }
+
+    public void updatePermissions() {
+    }
+
+    public void updatePermissionsServerResponse(Object object) {
+    }
+
+    public void setOrgRoleServerResponse(Object object) {
+    }
 
 
 //    public void updateUserFromDB(){
@@ -71,9 +80,10 @@ public class User implements Serializable {
 //            mainController.instance.showAlertAtMainController(Alert.AlertType.ERROR,"User Update", "User Update Failed", null);
 //    }
 
-    public String getOrgRole(){
+    public String getOrgRole() {
         return "";
     }
+
     /**
      * @return the firstName
      */

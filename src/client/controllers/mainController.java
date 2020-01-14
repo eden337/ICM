@@ -99,30 +99,32 @@ public class mainController extends AppController implements Initializable {
         markPage(p2);
         loadPage("ChangeRequestForm", "Change Request");
     }
-    
+
     @FXML
     void goToViewRequest(MouseEvent event) {
-    	markPage(p3);
-    	loadPage("watchRequest","My Requests");
+        markPage(p3);
+        loadPage("watchRequest", "My Requests");
     }
 
 
     @FXML
     void gotoRequestTreatment(MouseEvent event) {
-    	markPage(p4);
-    	loadPage("requestTreatment","Request Treatment and Management");
+        markPage(p4);
+        loadPage("requestTreatment", "Request Treatment and Management");
     }
 
     @FXML
     void goToStats(MouseEvent event) {
         markPage(p5);
-        loadPage("Reports","Reports Generator");
+        loadPage("Reports", "Reports Generator");
     }
+
     @FXML
     void goToManager(MouseEvent event) {
         markPage(p6);
-        loadPage("ManagerPage","Manager view");
+        loadPage("ManagerPage", "Manager view");
     }
+
     /**
      * select a pain to be colored as current page
      *
@@ -193,8 +195,8 @@ public class mainController extends AppController implements Initializable {
 
     }
 
-    public void initialize_afterUserUpdate(){
-        if(!App.appInitialized) {
+    public void initialize_afterUserUpdate() {
+        if (!App.appInitialized) {
             gotoHome(null);
             App.appInitialized = true;
         }
@@ -202,20 +204,21 @@ public class mainController extends AppController implements Initializable {
         p6.setVisible(false);
 
         // Menu Permissions:
-        if(App.user.isEngineer()){
+        if (App.user.isEngineer()) {
             pHome.setVisible(true);
             p2.setVisible(true);
             p3.setVisible(true);
             p4.setVisible(true);
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
             p5.setVisible(true);
             p6.setVisible(true);
         }
-        text_hello.setText("Hello, " + App.user.getFirstName() + " ( "+App.user.getOrgRole()+" ) ");
+        text_hello.setText("Hello, " + App.user.getFirstName() + " ( " + App.user.getOrgRole() + " ) ");
 
     }
+
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
     }
