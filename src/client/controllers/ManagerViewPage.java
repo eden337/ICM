@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
+//
 import client.App;
 import common.Tools;
 import common.controllers.Message;
@@ -13,6 +13,7 @@ import common.controllers.OperationType;
 import common.entity.EmployeeUser;
 import common.entity.InfoSystem;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +34,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 //
 /**
@@ -66,8 +68,6 @@ public class ManagerViewPage extends AppController implements Initializable {
 	@FXML
 	private TableColumn<EmployeeUser, String> colSystemID;
 
-	@FXML
-	private AnchorPane rightPane_requestTreatment;
 
 	@FXML
 	private TextField EmailTf;
@@ -121,7 +121,10 @@ public class ManagerViewPage extends AppController implements Initializable {
 
 	@FXML
 	private Button deleteMember;
-	
+
+	@FXML
+	private AnchorPane rightPane;
+
 
 	private void getDatafromServer() {
 		App.client.handleMessageFromClientUI(
@@ -138,12 +141,15 @@ public class ManagerViewPage extends AppController implements Initializable {
 		// request data from server
 		getDatafromServer();
 		getSystemsTable();
+		rightPane.setVisible(false);
 		searchBoxTF.setVisible(true);
 		// event when user click on a row
 		table.setRowFactory(tv -> {
 			TableRow<EmployeeUser> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty()) {
+					rightPane.setVisible(true);
+
 //					stageHBox.setVisible(true);
 //					progressViewLabel.setVisible(false);
 					selectedEmployeeInstance = row.getItem();
@@ -247,20 +253,40 @@ public class ManagerViewPage extends AppController implements Initializable {
 		}
 
 		String query1 = "UPDATE Employees SET RoleInOrg = '' WHERE RoleInOrg = '" + roleInOrg + "';";
-		OperationType ot1 = OperationType.updateRoleInOrg;
+		OperationType ot1 = OperationType.Manager_updateRoleInOrg;
 		for (EmployeeUser e : o) {
 			if (e.getRoleInOrg().equals(roleInOrg))
 				e.setOrgRoleServerResponse("");
 		}
+		
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
 		query1 = "UPDATE Employees SET RoleInOrg = '" + roleInOrg + "' WHERE WorkerID = '"
 				+ selectedEmployeeInstance.getWorkerID() + "';";
 		App.client.handleMessageFromClientUI(new Message(ot1, query1));
-		selectedEmployeeInstance.setOrgRoleServerResponse(roleInOrg);
-		PositionTf.setText(roleInOrg);
-		table.refresh();
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+		}
+
 	}
 
+	public void appointment_ServerResponse(Object object)
+	{
+		boolean res = (boolean)object;
+		if(res){
+			App.ForceAuthorizeAllUsers();
+			//PositionTf.setText(roleInOrg);
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					refrshBtn(null);
+					rightPane.setVisible(false);
+				}
+			});
+		}else
+			showAlert(AlertType.ERROR,"Error","Role update failed", null);
+
+	}
 	@FXML
 	void SupervisorBtnClicked(ActionEvent event) {
 		appointment("SUPERVISOR");
@@ -357,7 +383,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 		for (InfoSystem infoSystem : is) {
 			if(infoSystem.getSystemID().equals(((CheckBox)event.getTarget()).getText())) {
 				infoSystem.setUserName(selectedEmployeeInstance.getUserName());
-				
+				showAlert(AlertType.INFORMATION, "Select", selectedEmployeeInstance.getUserName()+" is now incharge of "+((CheckBox)event.getTarget()).getText(), null);
 			}
 		}
 	}

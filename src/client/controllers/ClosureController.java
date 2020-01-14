@@ -6,7 +6,10 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import com.sun.corba.se.spi.orb.Operation;
 
 import client.App;
 import common.Tools;
@@ -106,7 +109,7 @@ public class ClosureController extends AppController implements Initializable {
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-
+		closureInit();
 		if (!thisRequest.getCurrentStage().equals("CLOSURE")) {
 			pane_msg.setVisible(true);
 			return;
@@ -122,8 +125,9 @@ public class ClosureController extends AppController implements Initializable {
 		}
 
 		// Otherwise: this is the Supervisor in his stage
-
-		pane_form.setVisible(true);
+		pane_msg.setVisible(true);
+		textInMsgPane.setText("The request waiting for "+thisRequest.getInitiator()+" Action");
+		//pane_form.setVisible(true);
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
 		estimatedTime += 1;
@@ -142,6 +146,31 @@ public class ClosureController extends AppController implements Initializable {
 
 	}
 
+	void closureInit() {
+		String query = "SELECT Request_Confirmed FROM Requests WHERE RequestID = '"+thisRequest.getRequestID()+"' LIMIT 1";
+		OperationType ot = OperationType.Closure_Init;
+		App.client.handleMessageFromClientUI(new Message(ot, query));
+	}
+	
+	public void checkPreConditions_ServerResponse(Object object) {
+		List<Boolean> init_res = (List<Boolean>) object;
+		boolean closure_init = init_res.get(0);
+
+		if (closure_init) {
+			pane_msg.setVisible(false);
+			pane_form.setVisible(true);;
+			return;
+		}
+		/*// else
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				
+			}
+		});*/
+	}
+	
 	/**
 	 * @apiNote need to check if the process succeed or not and send an appropriate
 	 *          message: use finishedStatusTF
@@ -150,6 +179,7 @@ public class ClosureController extends AppController implements Initializable {
 
 	@FXML
 	void closeProcessBtnClicked(ActionEvent event) {
+		c=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		String query;
@@ -167,29 +197,30 @@ public class ClosureController extends AppController implements Initializable {
 		// send email
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot = OperationType.Clousre_UpdateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
-		showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
-				+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
-		loadPage("requestTreatment");
+		
+		//
 	}
 
 	private static int c = 0;
 
-	public void queryResult(Object object) {
+	public void closureQueryResult(Object object) {
 		c++;
 		boolean res = (boolean) object;
-		if (c == 1) { // TODO : Add EMAIL REQUEST.
+		if (c == 2) { // TODO : Add EMAIL REQUEST.
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+						showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
+						+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
 						loadPage("requestTreatment");
 					}
 				});
 			} else
-				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+				showAlert(AlertType.ERROR, "Error!", "Could not close the request", null);
 		}
 	}
 }

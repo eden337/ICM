@@ -10,6 +10,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import server.AppServer;
 import server.EchoServer;
+import server.ICM_Scheduler;
 import server.mysqlConnection;
 
 import java.io.IOException;
@@ -69,8 +70,11 @@ public class ServerController implements Initializable {
     @FXML
     private TextField server_port_field;
 
+    @FXML
+    public ListView<String> usersList;
 
-    private DBDetails MySQLWorkbench = new DBDetails("localhost", "requirement", "root", "Aa123456", "");
+
+    private DBDetails MySQLWorkbench = new DBDetails("localhost", "icm?serverTimezone=IST", "root", "Aa123456", "5555");
     private DBDetails RemoteSQL = new DBDetails("remotemysql.com", "yRBHdnFuc9", "yRBHdnFuc9", "QOMMWb8Jo6", "5555");
 
     private DBDetails currentDB;
@@ -86,6 +90,8 @@ public class ServerController implements Initializable {
         };
         System.setOut(new PrintStream(out, true));
         printFormFields(RemoteSQL);
+
+
 
     }
 
@@ -183,6 +189,8 @@ public class ServerController implements Initializable {
             db_light.setFill(Paint.valueOf("#1ffb1b"));
         else
             db_light.setFill(Paint.valueOf("#ff1717"));
+
+        ICM_Scheduler.scheduler();
 
     }
 

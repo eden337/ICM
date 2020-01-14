@@ -30,7 +30,7 @@
                   </TableView>
                </children>
             </VBox>
-            <AnchorPane fx:id="rightPane_requestTreatment" prefHeight="711.0" prefWidth="560.0">
+            <AnchorPane fx:id="rightPane" prefHeight="711.0" prefWidth="560.0">
                <children>
                   <Text layoutX="31.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Worker ID" wrappingWidth="82.99999731127173" />
                   <Text layoutX="33.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email :" wrappingWidth="73.63037107139826" />
@@ -79,6 +79,11 @@
                      </children>
                   </VBox>
                   <Button fx:id="deleteMember" disable="true" layoutX="155.0" layoutY="627.0" mnemonicParsing="false" onAction="#deleteMembr" prefWidth="240.0" styleClass="warning" text="Remove Role" />
+                  <Text fx:id="msg" layoutX="12.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" visible="false">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
          </children>

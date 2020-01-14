@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme2.css" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.controllers.ServerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.controllers.ServerController">
    <children>
       <VBox prefHeight="771.0" prefWidth="1097.0">
          <children>
@@ -51,8 +52,8 @@
                               <ToggleGroup fx:id="radio_group" />
                            </toggleGroup></RadioButton>
                         <RadioButton fx:id="radio_remoteSQL" layoutX="37.0" layoutY="69.0" mnemonicParsing="false" onAction="#setFormFields" selected="true" text="RemoteSQL" toggleGroup="$radio_group" />
-                        <Button fx:id="onBtn" layoutX="143.0" layoutY="166.0" mnemonicParsing="false" onAction="#startServer" prefHeight="25.0" prefWidth="141.0" text="Connect" />
-                        <Button fx:id="offBtn" layoutX="143.0" layoutY="201.0" mnemonicParsing="false" onAction="#stopServer" prefHeight="25.0" prefWidth="141.0" text="Disconnect" />
+                        <Button fx:id="onBtn" layoutX="143.0" layoutY="166.0" mnemonicParsing="false" onAction="#startServer" prefHeight="25.0" prefWidth="141.0" styleClass="success" text="Connect" />
+                        <Button fx:id="offBtn" layoutX="143.0" layoutY="201.0" mnemonicParsing="false" onAction="#stopServer" prefHeight="25.0" prefWidth="141.0" styleClass="danger" text="Disconnect" />
                         <Text layoutX="37.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a database and press connect:">
                            <font>
                               <Font name="System Bold" size="12.0" />
@@ -66,7 +67,7 @@
                         <Text layoutX="370.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
                         <Text layoutX="371.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
                         <Text layoutX="371.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scheme" />
-                        <TextField fx:id="port_field" layoutX="533.0" layoutY="160.0" prefHeight="25.0" prefWidth="49.0" />
+                        <TextField fx:id="port_field" layoutX="539.0" layoutY="160.0" prefHeight="33.0" prefWidth="80.0" />
                         <Text layoutX="508.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
                         <Text fill="#003790" layoutX="350.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Database Connection:">
                            <font>
@@ -78,7 +79,7 @@
                               <Font name="System Bold Italic" size="12.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="server_port_field" layoutX="533.0" layoutY="226.0" prefHeight="25.0" prefWidth="49.0" text="5454" />
+                        <TextField fx:id="server_port_field" layoutX="553.0" layoutY="230.0" prefHeight="33.0" prefWidth="62.0" text="5454" />
                         <Text layoutX="508.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
                      </children></AnchorPane>
                   <AnchorPane prefHeight="625.0" prefWidth="420.0">
@@ -87,6 +88,8 @@
                         <Text layoutX="137.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server" />
                         <Text layoutX="137.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DateBase" />
                         <Circle fx:id="db_light" fill="#a1a1a1" layoutX="214.0" layoutY="140.0" radius="17.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                        <ListView fx:id="usersList" layoutX="100.0" layoutY="312.0" prefHeight="295.0" prefWidth="221.0" />
+                        <Text layoutX="100.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Clients connected: (update every 30 sec)" />
                      </children></AnchorPane>
                </children>
             </HBox>

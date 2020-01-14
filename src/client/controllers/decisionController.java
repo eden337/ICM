@@ -222,8 +222,6 @@ public class decisionController extends AppController implements Initializable {
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		thisRequest.setReturned(false);
-		showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase...", null);
-		loadPage("requestTreatment");
 	}
 
 	private static int c = 0;
@@ -231,11 +229,12 @@ public class decisionController extends AppController implements Initializable {
 	public void queryResult(Object object) {
 		c++;
 		boolean res = (boolean) object;
-		if (c == 2 && res) {
+		if (c == 2) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+						showAlert(AlertType.INFORMATION, "Evaluation Approved", "Request moved to execution phase", null);
 						loadPage("requestTreatment");
 					}
 				});
@@ -246,6 +245,7 @@ public class decisionController extends AppController implements Initializable {
 
 	@FXML
 	void declineBtnClick(ActionEvent event) {
+		c3=0;
 		thisRequest.setPrevStage("DECISION");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
@@ -261,17 +261,39 @@ public class decisionController extends AppController implements Initializable {
 				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query5 = " UPDATE `Stage` SET  `PrevStage` = 'DECISION' where  `StageName` = 'CLOSURE' AND `RequestID` = '"
 				+ thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.updateRequestStatus;
+		OperationType ot = OperationType.DECISION_DeclineUpdate;
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 		App.client.handleMessageFromClientUI(new Message(ot, query4));
 		App.client.handleMessageFromClientUI(new Message(ot, query5));
-		showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
-		reEvaluateBtn.setDisable(true);
-		approveBtn.setDisable(true);
-		declineBtn.setDisable(true);
-		loadPage("requestTreatment");
+		//showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
+		//reEvaluateBtn.setDisable(true);
+		//approveBtn.setDisable(true);
+		//declineBtn.setDisable(true);
+		//loadPage("requestTreatment");
+	}
+	
+	private static int c3 = 0;
+
+	public void decisionDeclineQueryResult(Object object) {
+		c3++;
+		boolean res = (boolean) object;
+		if (c3 == 5) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
+						reEvaluateBtn.setDisable(true);
+						approveBtn.setDisable(true);
+						declineBtn.setDisable(true);
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Cannot approve the declinement", null);
+		}
 	}
 
 	@FXML
@@ -327,6 +349,7 @@ public class decisionController extends AppController implements Initializable {
 	}
 
 	void setStageTable() {
+		c2=0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
@@ -334,7 +357,7 @@ public class decisionController extends AppController implements Initializable {
 
 		String query1 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
-		String query2 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+		String query2 = "UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		String query3 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
 				+ thisRequest.getRequestID();
@@ -360,12 +383,13 @@ public class decisionController extends AppController implements Initializable {
 	public void queryResult2(Object object) {
 		c2++;
 		boolean res = (boolean) object;
-		if (c2 == 4 && res) {
+		if (c2 == 4 ) {
 			if (res) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.CONFIRMATION,"Return to evaluator","A email message was sent to the evaluator",null);
+						showAlert(AlertType.INFORMATION,"Return to evaluator","A email message was sent to the evaluator",null);
+						
 						loadPage("requestTreatment");
 					}
 				});

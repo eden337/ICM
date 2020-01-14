@@ -124,7 +124,15 @@ public class EmployeeUser extends User {
 	}
 
 	@Override
+	public String getOrgRole(){
+		if(roleInOrg != null)
+			return roleInOrg.toString();
+		return "";
+	}
+
+	@Override
 	public void updatePermissions() {
+
 		OperationType ot = OperationType.User_getStageRoleObject;
 		App.client.handleMessageFromClientUI(new Message(ot, this));
 		OperationType ot2 = OperationType.User_getOrgRole;

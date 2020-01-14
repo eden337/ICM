@@ -78,18 +78,32 @@ public class LoginController extends AppController implements Initializable{
 			ot = OperationType.LoginAsStudent;
 		else
 			ot = OperationType.LoginAsEmployee;
-
 		String query = "SELECT * FROM "+ tablename +" WHERE username = '"+username.getText()+"' AND password = '"+password.getText()+"';";
 		Message msg = new Message(ot, query);
 		App.client.handleMessageFromClientUI(msg);
 	}
-
+/**
+ * String tablename  = type_Student.isSelected()? "Students" : "Employees";
+ * 		OperationType ot;
+ *
+ * 		if(tablename.equals("Students"))
+ * 			ot = OperationType.LoginAsStudent;
+ * 		else
+ * 			ot = OperationType.LoginAsEmployee;
+ *
+ * 		ArrayList<String> msgContent= new ArrayList<>();
+ * 		String query = "SELECT * FROM "+ tablename +" WHERE username = '"+username.getText()+"' AND password = '"+password.getText()+"';";
+ * 		msgContent.add(query);
+ * 		msgContent.add(username.getText());
+ * 		Message msg = new Message(ot, query);
+ * 		App.client.handleMessageFromClientUI(msg);
+ */
 	/**
 	 * Server returns to this function with a login result.
 	 * @param res
 	 */
 	public void getLoginResult(Object res){
-		user = (EmployeeUser)res;
+		user = (User)res;
 		// change window:
 		if(user == null) // print error
 			showAlert(AlertType.ERROR, "Login Failed", "Login Failed\nCheck your Username or Password", null);

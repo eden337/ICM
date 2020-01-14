@@ -114,8 +114,9 @@ public class ExecutionController extends AppController implements Initializable 
 
 	@FXML
 	private Button btnAnswerStageExtensionRequest;
-	
+
 	private String reportResult;
+
 
 	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
@@ -129,10 +130,10 @@ public class ExecutionController extends AppController implements Initializable 
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
 		thisStage = thisRequest.getCurrentStageObject();
-		
+
 		btnRequestExtension.setVisible(false);
 		btnAnswerStageExtensionRequest.setVisible(false);
-		if(thisStage.getExtension_reason()!=null)
+		if (thisStage.getExtension_reason() != null)
 			btnAnswerStageExtensionRequest.setVisible(true);
 
 		pane_msg.setVisible(false);
@@ -175,19 +176,11 @@ public class ExecutionController extends AppController implements Initializable 
 			returnedNotes.setText(thisRequest.getReturnedNote());
 		}
 		pane_form.setVisible(true);
-		// titledPane_Text.setVisible(true);
-		// titledPane.setVisible(false);
-		// dueDateLabel.setVisible(true);
-		// rightPane.setVisible(false);
-		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-		// checkPreConditions();
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
 		estimatedTime+=1;
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-
-		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
 
 	}
 	
@@ -263,19 +256,6 @@ public class ExecutionController extends AppController implements Initializable 
 					workDone.setVisible(false);
 				}
 			}
-			/*
-			 * if(App.user.isStageRole(thisRequest.getRequestID(),StageRole.EXECUTER)) {
-			 * if(responseSupervisor) { daysTxt.setVisible(true); daysTxt.setDisable(true);
-			 * DeadlinetimeExec.setVisible(true); DeadlinetimeExec.setDisable(true);
-			 * workDone.setVisible(true); workDone.setDisable(false);
-			 * SbmtExecBtn.setDisable(true); DeadlinetimeExec.setValue(addDays(save)); }else
-			 * { SbmtExecBtn.setVisible(true); SbmtExecBtn.setDisable(false);
-			 * workDone.setVisible(true); workDone.setDisable(true);
-			 * daysTxt.setVisible(true); daysTxt.setDisable(false);
-			 * DeadlinetimeExec.setVisible(true); DeadlinetimeExec.setDisable(true); }
-			 *
-			 * }
-			 */
 		}
 	}
 

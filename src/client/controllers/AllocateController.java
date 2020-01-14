@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -72,16 +73,20 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private Spinner<Integer> ValidationTime;
 
+    private static int c = 0;
 
     @FXML
     void submitForm(ActionEvent event) {
+    	c=0;
     	boolean init=thisRequest.getCurrentStage().equals("INIT");
     	String query;
     	if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
             txtWarning.setVisible(true);
             return;
         }
-	    if(init) {
+        OperationType ot2 = OperationType.Allocate_UpdateRoles;
+
+        if(init) {
 	        OperationType ot = OperationType.Allocate_SetRoles;
 	        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
 	                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
@@ -90,21 +95,42 @@ public class AllocateController extends AppController implements Initializable {
 	                "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
 	                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
 	        App.client.handleMessageFromClientUI(new Message(ot, query));
+
+	        c = 1;
 	        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
 	                + thisRequest.getRequestID() + "'";
-	        OperationType ot2 = OperationType.updateRequestStatus;
 	        App.client.handleMessageFromClientUI(new Message(ot2, query2));
+            App.ForceAuthorizeAllUsers();
 	    }
 	    else{
+	        c = 2;
 	    	query="UPDATE Stage SET Incharge = '"+cbEvaluator.getValue()+"' WHERE StageName = 'EVALUATION' AND RequestID = '"+thisRequest.getRequestID()+"';";
-	    	OperationType ot2 = OperationType.Allocate_UpdateRoles;
 	        App.client.handleMessageFromClientUI(new Message(ot2, query));
 	        query="UPDATE Stage SET Incharge = '"+cbExecuter.getValue()+"' WHERE StageName = 'EXECUTION' AND RequestID = '"+thisRequest.getRequestID()+"';";
 	        App.client.handleMessageFromClientUI(new Message(ot2, query));
-	    	
+
 	    }
-	        loadPage("requestTreatment");
+	    loadPage("requestTreatment");
     }
+    
+
+
+	public void allocQueryResult(Object object) {
+		c--;
+		boolean res = (boolean) object;
+		if (c == 0 || !res) {
+			if (res) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
+						loadPage("requestTreatment");
+					}
+				});
+			} else
+				showAlert(AlertType.ERROR, "Error!", "Could not assign employees", null);
+		}
+	}
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -128,18 +154,17 @@ public class AllocateController extends AppController implements Initializable {
         List<String> listOfUsers = (List<String>) object;
         ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
         int size = oblist.size();
-        Random r = new Random(size);
+        Random r = new Random();
 
         cbEvaluator.setItems(oblist);
         cbExecuter.setItems(oblist);
         new AutoCompleteBox<String>(cbEvaluator);
         new AutoCompleteBox<String>(cbExecuter);
-        int rand = r.nextInt(size);
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(rand);
+                cbEvaluator.getSelectionModel().select(r.nextInt(size));
             }
         });
     }

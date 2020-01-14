@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import client.App;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import common.Tools;
 import common.controllers.Message;
 import common.controllers.OperationType;
@@ -123,6 +122,7 @@ public class ValidationController extends AppController implements Initializable
 	private Button btnAnswerStageExtensionRequest;
 	private String reportResult;
 	private Stage prevStage;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		reportResult = null;
@@ -131,15 +131,15 @@ public class ValidationController extends AppController implements Initializable
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		
+
 		btnAnswerStageExtensionRequest.setVisible(false);
 		thisStage = thisRequest.getCurrentStageObject();
 
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
-		
+
 		checkPreConditions();
-		
+
 		if (!thisRequest.getCurrentStage().equals("VALIDATION")) {
 			pane_msg.setVisible(true);
 			return;
@@ -159,18 +159,14 @@ public class ValidationController extends AppController implements Initializable
 		pane_form.setVisible(true);
 		setExtensionVisability();
 
-		// titledPane.setVisible(false);
-		// dueDateLabel.setVisible(true);
-		// rightPane.setVisible(false);
-		// TRY TO PLAY WITH THE ESTIMATED TIME IN TITLEPANE
 		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
 				.toDays();
 		estimatedTime += 1;
 		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-		
+
 		checkReport();
 		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-		
+
 		titledPane.setCollapsible(false);
 		titledPane.setText("Waiting for your action");
 		failReportLabel.setVisible(false);
@@ -209,7 +205,6 @@ public class ValidationController extends AppController implements Initializable
 	private void init() {
 
 		if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
-			// workDone.setVisible(true);// Change to false once you deal with permissions
 
 			if (responseChairman) {
 				titledPane.getStyleClass().remove("danger");
@@ -219,7 +214,6 @@ public class ValidationController extends AppController implements Initializable
 				titledPane_Text.setText("You have only a viewing permission.");
 				titledPane_Text.setFill(Color.FORESTGREEN);
 				titledPane_Text.setVisible(true);
-				// workDone.setVisible(false);
 
 				if (!thisRequest.getCurrentStage().equals("VALIDATION")) { // Watching only
 					titledPane.getStyleClass().remove("danger");
@@ -229,26 +223,11 @@ public class ValidationController extends AppController implements Initializable
 					titledPane_Text.setText("You have only a viewing permission.");
 					titledPane_Text.setFill(Color.FORESTGREEN);
 					titledPane_Text.setVisible(true);
-					// workDone.setVisible(false);
 				}
 			}
-			/*
-			 * if(App.user.isStageRole(thisRequest.getRequestID(),StageRole.EXECUTER)) {
-			 * if(responseSupervisor) { daysTxt.setVisible(true); daysTxt.setDisable(true);
-			 * DeadlinetimeExec.setVisible(true); DeadlinetimeExec.setDisable(true);
-			 * workDone.setVisible(true); workDone.setDisable(false);
-			 * SbmtExecBtn.setDisable(true); DeadlinetimeExec.setValue(addDays(save)); }else
-			 * { SbmtExecBtn.setVisible(true); SbmtExecBtn.setDisable(false);
-			 * workDone.setVisible(true); workDone.setDisable(true);
-			 * daysTxt.setVisible(true); daysTxt.setDisable(false);
-			 * DeadlinetimeExec.setVisible(true); DeadlinetimeExec.setDisable(true); }
-			 *
-			 * }
-			 */
 		}
 	}
 
-	// in this case we need to color validation back to red because it is incomplete
 	@FXML
 	void failureReportBtnClicked(ActionEvent event) {
 		OperationType ot = OperationType.VALID_GetPrevStage;
@@ -257,8 +236,9 @@ public class ValidationController extends AppController implements Initializable
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 		setValidationTable();
 	}
-	
+
 	void setStageTable() {
+		c2 = 0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		Calendar c = Calendar.getInstance();
@@ -279,7 +259,7 @@ public class ValidationController extends AppController implements Initializable
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 	}
-	
+
 	public void appendPrevStageObject_ServerResponse(Object object) {
 		this.prevStage = (common.entity.Stage) object;
 		if (prevStage == null) {
@@ -288,9 +268,7 @@ public class ValidationController extends AppController implements Initializable
 			setStageTable();
 		}
 	}
-	
-	
-	
+
 	private static int c2 = 0;
 
 	public void queryResult2(Object object) {
@@ -301,7 +279,7 @@ public class ValidationController extends AppController implements Initializable
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.CONFIRMATION, "Return to Executer",
+						showAlert(AlertType.INFORMATION, "Return to Executer",
 								"The report was sent to the execution stage", null);
 						loadPage("requestTreatment");
 					}
@@ -311,14 +289,11 @@ public class ValidationController extends AppController implements Initializable
 		}
 	}
 
-
-
 	void checkReport() {
 		OperationType ot = OperationType.VALID_GetReport;
-		String query = "SELECT * FROM `Execution Failure Report` WHERE RequestID = "+thisRequest.getRequestID() ;
+		String query = "SELECT * FROM `Execution Failure Report` WHERE RequestID = " + thisRequest.getRequestID();
 		App.client.handleMessageFromClientUI(new Message(ot, query));
 	}
-
 
 	public void setValidationTable() {
 		String query3 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUES ( '"
@@ -326,14 +301,14 @@ public class ValidationController extends AppController implements Initializable
 		OperationType ot = OperationType.VALID_updateRequestStatus;
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
 	}
+
 	public void setValidationTable_ServerResponse(Object object) {
 		boolean res = (boolean) object;
 		if (res) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					showAlert(AlertType.CONFIRMATION, "",
-							"", null);
+					showAlert(AlertType.INFORMATION, "", "", null);
 					loadPage("requestTreatment");
 				}
 			});
@@ -343,12 +318,12 @@ public class ValidationController extends AppController implements Initializable
 	public void getReport_ServerResponse(Object object) {
 		this.reportResult = (String) object;
 		System.out.println(reportResult);
-		if (reportResult != null)   { // if the returned result was back
-			showAlert(AlertType.INFORMATION, "Report already exists", "The report already been sent to the executer", null);
+		if (reportResult != null) { // if the returned result was back
+			showAlert(AlertType.INFORMATION, "Report already exists", "The report already been sent to the executer",
+					null);
 			noBtn.setVisible(false);
 		}
 	}
-
 
 	@FXML
 	void noBtnClick(ActionEvent event) {
@@ -362,6 +337,7 @@ public class ValidationController extends AppController implements Initializable
 
 	@FXML
 	void validateBtnClicked(ActionEvent event) {
+		c = 0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date today = new Date(System.currentTimeMillis());
 		ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
@@ -396,13 +372,13 @@ public class ValidationController extends AppController implements Initializable
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						showAlert(AlertType.INFORMATION, "Return to evaluator",
-								"A email message was sent to the evaluator", null);
+						showAlert(AlertType.INFORMATION, "Validation Complete",
+								"The request moved to "+thisRequest.getInitiator()+" for closure.", null);
 						loadPage("requestTreatment");
 					}
 				});
 			} else
-				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+				showAlert(AlertType.ERROR, "Error!", "Could not update the closure update", null);
 		}
 	}
 
@@ -437,5 +413,4 @@ public class ValidationController extends AppController implements Initializable
 		}
 	}
 
-	
 }

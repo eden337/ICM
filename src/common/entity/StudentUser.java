@@ -9,7 +9,7 @@ package common.entity;
  */
 public class StudentUser extends User {
 
-	private String userID;
+	private int userID;
 	private String faculty;
 	
 	/**
@@ -19,7 +19,7 @@ public class StudentUser extends User {
 	 * @param userName
 	 * @param password
 	 */
-	public StudentUser(String firstName, String lastName, String email, String userName, String password,String userID, String faculty) {
+	public StudentUser(String firstName, String lastName, String email, String userName, String password,int userID, String faculty) {
 		super(firstName, lastName, email, userName, password,"Student");
 		this.faculty=faculty;
 		this.userID=userID;
@@ -27,13 +27,13 @@ public class StudentUser extends User {
 	/**
 	 * @return the userID
 	 */
-	public String getUserID() {
+	public int getUserID() {
 		return userID;
 	}
 	/**
 	 * @param userID the userID to set
 	 */
-	public void setUserID(String userID) {
+	public void setUserID(int userID) {
 		this.userID = userID;
 	}
 	/**

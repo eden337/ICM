@@ -9,7 +9,7 @@ public enum OperationType {
 	InsertEvaluation,
 	getViewRequestData,
 	// Results:
-//
+
 	LoginResult, ChangeRequest_File,
 	Allocate_GetITUsers,
 	Allocate_SetRoles,
@@ -38,8 +38,14 @@ public enum OperationType {
 	ChangeRequest_getStageObject, getEmployeeData, updateRoleInOrg, updateSystems, deleteMember, PreValidation_SetRole, PreValidation_GetCOMMITEE_MEMBERS, getSystemData, VAL_GetInitData,
 	DECISION_SendEmailToUser, Allocate_UpdateRoles,
 	DECISION_GetPrevStage, DECISION_updateRequestStatus, VALID_updateRequestStatus, EXECUTION_GetFailReport, VALID_GetReport, VALID_GetPrevStage,
-	VALID_UpdateRepeated
-	;
+	VALID_UpdateRepeated,
+
+	//Report
+	GenreateReport, InsertReport, DECISION_DeclineUpdate, Allocate_UpdateRequestStatus, Clousre_UpdateRequestStatus, Eval_updateRequestStatus, OpenReport, GetReports,
+
+	ForceUpdateUsersPermissions,Manager_updateRoleInOrg, VIEWRequest_confirmRequest, Closure_Init,
+
+	Main_getMyTotalRequests, Main_getMyActiveRequests,Main_getMyRequestTreatment,;
 
 
 }

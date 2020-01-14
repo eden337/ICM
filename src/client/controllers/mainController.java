@@ -2,6 +2,8 @@ package client.controllers;
 
 import client.App;
 import client.BypassedApp;
+import common.controllers.Message;
+import common.controllers.OperationType;
 import common.entity.OrganizationRole;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +22,7 @@ import java.util.ResourceBundle;
 /**
  * <code>Main controller</code>
  * class controls the template: 'main'
+ * The main screen of the application. all the others pages will be open in this 'center' pane
  * menu actions,
  * log out,
  * Notifications
@@ -185,10 +188,16 @@ public class mainController extends AppController implements Initializable {
         p4.setVisible(false);
         p5.setVisible(false);
         p6.setVisible(false);
+
+        loadPage("Homepage");
+
     }
 
     public void initialize_afterUserUpdate(){
-        gotoHome(null);
+        if(!App.appInitialized) {
+            gotoHome(null);
+            App.appInitialized = true;
+        }
 
         p6.setVisible(false);
 
@@ -198,11 +207,14 @@ public class mainController extends AppController implements Initializable {
             p2.setVisible(true);
             p3.setVisible(true);
             p4.setVisible(true);
-            p5.setVisible(true);
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+            p5.setVisible(true);
             p6.setVisible(true);
+        }
+        text_hello.setText("Hello, " + App.user.getFirstName() + " ( "+App.user.getOrgRole()+" ) ");
+
     }
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
@@ -216,7 +228,7 @@ public class mainController extends AppController implements Initializable {
         App.user.updatePermissions();
 
         if (App.user != null)
-            text_hello.setText("Hello, " + App.user.getFirstName().toString());
+            text_hello.setText("Hello, " + App.user.getFirstName());
         else
             text_hello.setText("Hello, ");
     }
@@ -229,7 +241,10 @@ public class mainController extends AppController implements Initializable {
      */
     @FXML
     void logout(MouseEvent event) {
+
+        App.client.handleMessageFromClientUI(new Message(OperationType.Logout, App.user.getUserName()));
         App.user = null;
+        BypassedApp.main(null);
         changeWindow((Stage) ((Node) event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
     }
 
@@ -241,5 +256,5 @@ public class mainController extends AppController implements Initializable {
         return borderPane;
     }
 
-    
+
 }
