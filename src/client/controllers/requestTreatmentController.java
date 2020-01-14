@@ -586,7 +586,7 @@ public class requestTreatmentController extends AppController implements Initial
 
 					// open the downloaded file using operation system
 					Desktop desktop = Desktop.getDesktop();
-					desktop.open(newFile);
+					desktop.open(new File(chosenDir.getPath()));
 
 				} catch (Exception e) {
 					e.printStackTrace();
