@@ -50,6 +50,9 @@ public class ExecutionController extends AppController implements Initializable 
     protected ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    @FXML
     private Text idText;
 
     @FXML
@@ -131,7 +134,7 @@ public class ExecutionController extends AppController implements Initializable 
 
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
-
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         btnRequestExtension.setVisible(false);
         btnAnswerStageExtensionRequest.setVisible(false);
         if (thisStage.getExtension_reason() != null)

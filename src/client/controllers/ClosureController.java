@@ -44,6 +44,10 @@ public class ClosureController extends AppController implements Initializable {
     protected ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    
+    @FXML
     private Text idText;
 
     @FXML
@@ -108,6 +112,7 @@ public class ClosureController extends AppController implements Initializable {
         inchargeTF.setText("Supervisor");
 
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         closureInit();

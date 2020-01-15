@@ -48,6 +48,10 @@ public class ValidationController extends AppController implements Initializable
 	private Stage thisStage;
 	protected ChangeRequest thisRequest;
 
+	
+	@FXML
+	private Text requestNumberTXT;
+	  
 	@FXML
 	private Text idText;
 
@@ -131,7 +135,7 @@ public class ValidationController extends AppController implements Initializable
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-
+		this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
 		btnAnswerStageExtensionRequest.setVisible(false);
 		thisStage = thisRequest.getCurrentStageObject();
 

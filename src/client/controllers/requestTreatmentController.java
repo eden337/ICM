@@ -248,7 +248,6 @@ public class requestTreatmentController extends AppController implements Initial
         searchBoxTF.setVisible(true);
         updateRemarksBtn.setVisible(false);
         freezeBtn.setVisible(false);
-
         // event when user click on a row
         table.setRowFactory(tv -> {
             TableRow<ChangeRequest> row = new TableRow<>();
@@ -298,6 +297,13 @@ public class requestTreatmentController extends AppController implements Initial
                         if (selectedRequested.getStatus().equals("SUSPENDED")
                                 && !(selectedRequested.getStatus().equals("DONE")
                                 || selectedRequested.getStatus().equals("CANCELED"))) {
+                        	 wantedChangeText.setEditable(false);
+                             reasonText.setEditable(false);
+                             existingCondition.setEditable(false);
+                             descripitionsTextArea.setEditable(false);
+                             dueDateLabel.setDisable(true);
+                             updateRemarksBtn.setDisable(true);
+                             btnIncharges.setDisable(true);
 
                             rightPane_Freezed.setVisible(true);
                             btnDownloadFiles.setDisable(true);
@@ -309,6 +315,15 @@ public class requestTreatmentController extends AppController implements Initial
                             rightPane_Freezed.setVisible(false);
                             rightPane_requestTreatment.setDisable(false);
                             stageProgressHBox.setVisible(true);
+                        }
+                        if(selectedRequested.getStatus().equals("DONE")||selectedRequested.getStatus().equals("CANCELED")) {
+                        	wantedChangeText.setEditable(false);
+                            reasonText.setEditable(false);
+                            existingCondition.setEditable(false);
+                            descripitionsTextArea.setEditable(false);
+                            dueDateLabel.setDisable(true);
+                            updateRemarksBtn.setDisable(true);
+                            btnIncharges.setDisable(true);
                         }
                     }
                     if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
@@ -477,7 +492,7 @@ public class requestTreatmentController extends AppController implements Initial
         String query2 = "INSERT INTO Frozen (RequestID, StageName, FreezeTime) VALUES ('"
                 + selectedRequested.getRequestID() + "', '" + getCurrentRequest().getCurrentStage() + "', '"
                 + dateFormat.format(today) + "'); ";
-        System.out.println(query);
+       // System.out.println(query);
         App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
         App.client.handleMessageFromClientUI(new Message(OperationType.insertFreezedRequest, query2));
 
@@ -503,10 +518,8 @@ public class requestTreatmentController extends AppController implements Initial
 
     public void unFreezeSelectFrozenResponse(Object object) {
         ArrayList<ZonedDateTime> frozenTimes = (ArrayList<ZonedDateTime>) object;
-        System.out.println(frozenTimes);
         days = Period.between(frozenTimes.get(0).toLocalDate(), ZonedDateTime.now().toLocalDate()).getDays();
         selectedRequested.setDueDate(selectedRequested.getDueDate().plusDays(days));
-        System.out.println(days);
         String query = "UPDATE Stage SET Deadline =DATE_ADD(Deadline,INTERVAL " + days + " DAY) WHERE RequestID = '"
                 + selectedRequested.getRequestID() + "' AND StageName ='" + selectedRequested.getCurrentStage() + "'";
         App.client.handleMessageFromClientUI(new Message(OperationType.updateUnfrozenStage, query));

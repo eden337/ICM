@@ -47,6 +47,9 @@ public class decisionController extends AppController implements Initializable {
     private Stage prevStage;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    @FXML
     private Text idText;
 
     @FXML
@@ -115,12 +118,12 @@ public class decisionController extends AppController implements Initializable {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
-
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         dueDateLabel.setVisible(false);
-
+        
         titledPane.setCollapsible(false);
         titledPane.setText("Waiting for your action");
-
+        
         approveBtn.setVisible(false);
         declineBtn.setVisible(false);
         reEvaluateBtn.setVisible(false);
@@ -187,7 +190,7 @@ public class decisionController extends AppController implements Initializable {
             long diff = reportDateCal.getTime().getTime() - todayCal.getTime().getTime();
             long daysDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-            if (thisRequest.getCurrentStage().equals("DECISION")) {
+           if (thisRequest.getCurrentStage().equals("DECISION")) {
                 if (daysDiff >= 0) {
                     titledPane_Text.setText(
                             TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + " Days left to complete this stage");
@@ -205,6 +208,7 @@ public class decisionController extends AppController implements Initializable {
             expectedResultText.setText(individualReport.getExpected_result());
             constraintText.setText(individualReport.getExpected_risks());
             timeEvaluationText.setText(individualReport.getEstimated_time().toLocalDate().toString());
+            
         }
     }
 

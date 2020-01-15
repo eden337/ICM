@@ -192,7 +192,6 @@ public class mainController extends AppController implements Initializable {
         p6.setVisible(false);
 
         loadPage("Homepage");
-
     }
 
     public void initialize_afterUserUpdate() {
@@ -216,7 +215,7 @@ public class mainController extends AppController implements Initializable {
             p6.setVisible(true);
         }
         text_hello.setText("Hello, " + App.user.getFirstName() + " ( " + App.user.getOrgRole() + " ) ");
-
+       
     }
 
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {

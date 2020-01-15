@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.controllers.ViewRequestController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ViewRequestController">
    <children>
       <HBox prefHeight="711.0" prefWidth="1000.0">
          <children>
@@ -24,9 +24,9 @@
                   <TextField fx:id="searchBoxTF" prefHeight="30.0" prefWidth="307.0" promptText="Search..." />
                   <TableView fx:id="table" prefHeight="686.0" prefWidth="250.0">
                     <columns>
-                      <TableColumn fx:id="colId" prefWidth="108.0" text="ID" />
-                      <TableColumn fx:id="colExisitCond" prefWidth="173.0" text="Exisiting Condition" />
-                        <TableColumn fx:id="colStatus" prefWidth="137.0" text="Status" />
+                      <TableColumn fx:id="colId" prefWidth="108.0" resizable="false" text="ID" />
+                      <TableColumn fx:id="colExisitCond" prefWidth="173.0" resizable="false" text="Exisiting Condition" />
+                        <TableColumn fx:id="colStatus" prefWidth="137.0" resizable="false" text="Status" />
                     </columns>
                   </TableView>
                </children>

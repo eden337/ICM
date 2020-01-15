@@ -50,6 +50,9 @@ public class EvaluationReportController extends AppController implements Initial
     protected ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    @FXML
     private Text idText;
 
     @FXML
@@ -182,6 +185,7 @@ public class EvaluationReportController extends AppController implements Initial
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
         Pane_Form.setVisible(false);

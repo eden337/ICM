@@ -50,6 +50,9 @@ public class ExtensionController extends AppController implements Initializable 
     @FXML
     private Pane msgPane;
 
+    @FXML
+    private Text currentStageText;
+    
 
     @FXML
     private Text warning;
@@ -104,7 +107,8 @@ public class ExtensionController extends AppController implements Initializable 
         instance = this;
         thisRequest = requestTreatmentController.Instance.selectedRequested;
         thisStage = thisRequest.getCurrentStageObject();
-
+        
+        this.currentStageText.setText(thisRequest.getCurrentStage());
         warning.setVisible(false);
         defualtPane.setVisible(false);
         msgPane.setVisible(false);

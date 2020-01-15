@@ -31,6 +31,9 @@ public class PreExecutionController extends AppController implements Initializab
     private ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    @FXML
     private Text idText;
 
     @FXML
@@ -132,7 +135,7 @@ public class PreExecutionController extends AppController implements Initializab
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         inchargeTF.setText("Executer");

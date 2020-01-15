@@ -96,7 +96,6 @@ public class ChangeRequestController extends AppController implements Initializa
         if (!formChecker())
             return;
         insertDataToDB();
-        thisRequest.setEmail(App.user.getEmail());
         clearAll();
     }
 
@@ -270,8 +269,7 @@ public class ChangeRequestController extends AppController implements Initializa
             if (filelist != null) {
                 createZip("Request_" + rid + ".zip");
             } else {
-                showAlert(AlertType.INFORMATION, "Request #" + rid + " was sent successfuly",
-                        "We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ",
+                showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\n\t\t\t\t\tThank you! ",
                         null);
                 //loadPage("Homepage");
             }

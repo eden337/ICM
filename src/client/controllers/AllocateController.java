@@ -27,6 +27,9 @@ public class AllocateController extends AppController implements Initializable {
     private ResourceBundle resources;
 
     @FXML
+    private Text requestNumberTXT;
+    
+    @FXML
     private URL location;
 
     @FXML
@@ -132,12 +135,12 @@ public class AllocateController extends AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        txtWarning.setVisible(false);
+    	txtWarning.setVisible(false);
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
         getUsersFromServer();
-
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
     }
 
     private void getUsersFromServer() {
