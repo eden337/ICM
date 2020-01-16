@@ -279,8 +279,8 @@ public class ExecutionController extends AppController implements Initializable 
         OperationType ot1 = OperationType.EXE_UpdateDB;
         App.client.handleMessageFromClientUI(new Message(ot1, query1));
         App.client.handleMessageFromClientUI(new Message(ot1, query2));
-        showAlert(AlertType.INFORMATION, "Request #" + thisRequest.getRequestID() + " Excution complete!",
-                "The request move forward to Tester.", null);
+        showAlert(AlertType.INFORMATION, "Request #" + thisRequest.getRequestID() + " Execution complete!",
+                "The request move forward to Validation Stage\nPlease Notify the committee chairman.", null);
         loadPage("requestTreatment");
     }
 
@@ -294,6 +294,7 @@ public class ExecutionController extends AppController implements Initializable 
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        showAlert(AlertType.INFORMATION, "Update Success!", "Data Error2.", null);
                         loadPage("requestTreatment");
                     }
                 });

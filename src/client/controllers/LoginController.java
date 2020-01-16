@@ -109,7 +109,7 @@ public class LoginController extends AppController implements Initializable {
             showAlert(AlertType.ERROR, "Login Failed", "Login Failed\nAlready connected", null);
         else {
             if (user.getFirstName().equals("fail"))
-                showAlert(AlertType.ERROR, "Login Failed", "Login Failed\\nCheck user name and password!", null);
+                showAlert(AlertType.ERROR, "Login Failed", "Login Failed!\nCheck user name and password!", null);
             else
                 changeWindow((Stage) ((Node) thisScreen.getSource()).getScene().getWindow(), "/client/views/Main.fxml");
         }

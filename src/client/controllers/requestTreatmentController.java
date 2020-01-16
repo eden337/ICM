@@ -182,6 +182,7 @@ public class requestTreatmentController extends AppController implements Initial
         return selectedRequested;
     }
 
+
     private void getDatafromServer() {
         App.client.handleMessageFromClientUI(new Message(OperationType.getRequirementData, setTableByUser()));
     }
@@ -280,10 +281,12 @@ public class requestTreatmentController extends AppController implements Initial
                             updateRemarksBtn.setDisable(false);
                             freezeBtn.setVisible(true);
                             freezeBtn.setDisable(false);
+                            btnIncharges.setDisable(false);
                             if (selectedRequested.getStatus().equals("DONE")
                                     || selectedRequested.getStatus().equals("CANCELED")) {
                                 freezeBtn.setDisable(true);
                                 updateRemarksBtn.setDisable(true);
+                                btnIncharges.setDisable(true);
                             }
                         }
 
@@ -579,7 +582,7 @@ public class requestTreatmentController extends AppController implements Initial
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
-        if (c == 2) {
+        if (c == 1) {
             if (res) {
                 Platform.runLater(new Runnable() {
                     @Override

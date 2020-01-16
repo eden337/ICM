@@ -41,7 +41,7 @@ public class Tools {
         }
         //need to send this to time exceptions..
         else {
-            titledPane_Text.setText(String.valueOf(Math.abs(estimatedTime)) + " Days left to complete this stage");
+            titledPane_Text.setText(String.valueOf(Math.abs(estimatedTime)) + " You are Late");
             titledPane.getStyleClass().removeAll();
             titledPane.getStyleClass().add("danger");
         }

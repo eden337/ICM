@@ -100,7 +100,7 @@ public class AllocateController extends AppController implements Initializable {
             App.client.handleMessageFromClientUI(new Message(ot, query));
 
             c = 1;
-            String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
+            String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION', Status ='ACTIVE' WHERE RequestID = '"
                     + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot2, query2));
             App.ForceAuthorizeAllUsers();

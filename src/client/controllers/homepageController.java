@@ -50,7 +50,7 @@ public class homepageController extends AppController implements Initializable {
 
     @FXML
     void gotoRequestTreatment(MouseEvent event) {
-        mainController.instance.goToViewRequest(null);
+        mainController.instance.gotoRequestTreatment(null);
     }
 
     @FXML
@@ -71,7 +71,6 @@ public class homepageController extends AppController implements Initializable {
 
         if (App.user.isEngineer())
             paneForIT.setVisible(true);
-
     }
 
     private void setGreeting() {
@@ -100,11 +99,11 @@ public class homepageController extends AppController implements Initializable {
 
 
     private void initData_Request() {
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests, setTableByUser()));
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
                 "SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
-        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests,
-                "SELECT COUNT(*) FROM Requests WHERE Status = 'ACTIVE' AND USERNAME = '" + App.user.getUserName() + "';"));
-        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment, setTableByUser()));
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment,
+                "SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status = 'WAITING')  AND USERNAME = '" + App.user.getUserName() + "';"));
     }
 
     // Main_getMyTotalRequests
@@ -130,29 +129,26 @@ public class homepageController extends AppController implements Initializable {
      * @return
      */
     private String setTableByUser() {
-        String query = "Select COUNT(*) FROM Requests ";
+        String query = "Select COUNT(*) FROM Requests WHERE Status='Waiting'";
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             return query;
         if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
-            query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
+            query = "SELECT COUNT(*) FROM Requests WHERE `Status` = 'SUSPENDED'";
             return query;
         }
-        query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
-                + " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
-                + " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
-                + "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
-                " AND `incharge` = '" + App.user.getUserName() + "'";
+        query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "')";
+
 
         if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
                 || App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
                 || App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
             // add option to see active decision stages in addition to other permission of
             // these user
-            query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
+            query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION')";
 
             if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
-                query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
-
+                query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'VALIDATION' AND S.StageName = 'VALIDATION' AND S.init_confirmed = 0)";
+            return query;
         }
         // general:
         return query;

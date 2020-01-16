@@ -35,8 +35,16 @@ public class User implements Serializable {
         this.type = type;
     }
 
+    public void setStudentPermission(Object object) {}
+
     public boolean isEngineer() {
         if (type.equals("Engineer"))
+            return true;
+        return false;
+    }
+
+    public boolean isStudent() {
+        if (type.equals("Student"))
             return true;
         return false;
     }

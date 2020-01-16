@@ -144,7 +144,7 @@ public class ChangeRequestController extends AppController implements Initializa
             String query = "INSERT INTO `Requests`(`USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`, `Treatment_Phase`, `Status`, `Reason`, `SystemID`, `Comments`, `Date`,`FILE`)"
                     + "VALUES" + "('" + App.user.getUserName() + "','" + App.user.getPosition() + "','"
                     + App.user.getEmail() + "','" + ExistingConditionText.getText() + "','" + suggestedText.getText()
-                    + "','" + StageName.INIT.toString() + "','" + RequestStatus.ACTIVE.toString() + "','"
+                    + "','" + StageName.INIT.toString() + "','" + RequestStatus.WAITING.toString() + "','"
                     + reasonText.getText() + "','" + infoSystemCombo.getValue() + "','" + remarksText.getText() + "','"
                     + current + "','" + "-" + "');";
 

@@ -100,6 +100,8 @@ public class PreExecutionController extends AppController implements Initializab
                 " where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     @FXML
@@ -134,11 +136,13 @@ public class PreExecutionController extends AppController implements Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         inchargeTF.setText("Executer");
+
         getCurrentReqestedDays();
 
         // GUI Init
@@ -165,8 +169,6 @@ public class PreExecutionController extends AppController implements Initializab
             btnAccept.setVisible(true);
             btnDeny.setVisible(true);
             tfDays.setEditable(false);
-            query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
-            App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             return;
         }
 
@@ -199,6 +201,7 @@ public class PreExecutionController extends AppController implements Initializab
 
                 @Override
                 public void run() {
+                    showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreExecution Updated", null);
                     loadPage("requestTreatment");
                 }
             });

@@ -83,11 +83,17 @@ public class ClientMessages {
             case User_getStageRoleObject:
                 App.user.setStageRoleServerResponse(m.getObject());
                 break;
+            case User_getStudentAccess:
+                App.user.setStudentPermission(m.getObject());
+                break;
             case User_getOrgRole:
                 App.user.setOrgRoleServerResponse(m.getObject());
                 break;
-            case updateRequestStatus:
+
             case SUPERVISOR_REMARKS:
+                requestTreatmentController.Instance.queryResult(m.getObject());
+                break;
+            case updateRequestStatus:
                 requestTreatmentController.Instance.freezeServerResponse(m.getObject());
                 break;
             case EVAL_GetAllReportsByRID:

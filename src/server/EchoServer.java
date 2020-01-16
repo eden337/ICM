@@ -100,6 +100,11 @@ public class EchoServer extends AbstractServer {
                 case Eval_updateRequestStatus:
                 case PreValidation_SetRole:
                 case Allocate_SetRoles:
+                case SUPERVISOR_REMARKS:
+                case updateRequestStatus:
+                case insertFreezedRequest:
+                case VALID_UpdateRepeated:
+                case DECISION_updateRequestStatus:
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(m.getOperationtype(), res), client);
                     break;
@@ -240,6 +245,10 @@ public class EchoServer extends AbstractServer {
                     System.out.println(stagesRoles);
                     sendToClient(new Message(OperationType.User_getStageRoleObject, stagesRoles), client);
                     break;
+                case User_getStudentAccess:
+                    User student = (User) m.getObject();
+                    sendToClient(new Message(OperationType.User_getStudentAccess, student), client);
+                    break;
                 case User_getOrgRole:
                     User u2 = (User) m.getObject();
                     query = "SELECT RoleInOrg FROM Employees WHERE USERNAME = '" + u2.getUserName() + "'";
@@ -250,13 +259,8 @@ public class EchoServer extends AbstractServer {
                             resOrgRole = rs.getString(1);
                         }
                     }
-                    System.out.println(resOrgRole);
+
                     sendToClient(new Message(OperationType.User_getOrgRole, resOrgRole), client);
-                    break;
-                case SUPERVISOR_REMARKS:
-                case updateRequestStatus:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(OperationType.updateRequestStatus, res), client);
                     break;
 
                 case DECISION_GetAllReportsByRID:
@@ -398,12 +402,6 @@ public class EchoServer extends AbstractServer {
                     } finally {
                         break;
                     }
-                case insertFreezedRequest:
-                case VALID_UpdateRepeated:
-                case DECISION_updateRequestStatus:
-                    res = mysql.insertOrUpdate(m.getObject().toString());
-                    sendToClient(new Message(m.getOperationtype(), res), client);
-                    break;
                 case VALID_GetReport:
                 case EXECUTION_GetFailReport:
                     rs = mysql.getQuery(m.getObject().toString());

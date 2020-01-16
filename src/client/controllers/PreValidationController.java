@@ -112,6 +112,7 @@ public class PreValidationController extends AppController implements Initializa
     public void queryResult(Object object) {
         boolean res = (boolean) object;
         if (res) {
+            showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {

@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="borderPane" maxHeight="800" maxWidth="1280" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="client.controllers.mainController">
+<BorderPane fx:id="borderPane" maxHeight="800" maxWidth="1280" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.mainController">
    <left>
       <VBox prefHeight="800.0" prefWidth="280.0" styleClass="bg_menu_color" BorderPane.alignment="CENTER">
          <children>
@@ -70,7 +70,7 @@
                         <Image url="@img/icons/icon_myRequest.png" />
                      </image>
                   </ImageView>
-                  <Text fill="WHITE" layoutX="98.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Request">
+                  <Text fill="WHITE" layoutX="98.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Request">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -135,7 +135,7 @@
             <Pane prefHeight="100.0" prefWidth="999.0">
                <children>
                   <VBox layoutY="1.0" />
-                  <Text fx:id="pageTitle" fill="WHITE" layoutX="21.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Page Title">
+                  <Text fx:id="pageTitle" fill="WHITE" layoutX="21.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ICM">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>

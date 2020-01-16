@@ -141,6 +141,7 @@ public class mainController extends AppController implements Initializable {
             p3.getStyleClass().remove("bg_currentPage");
         if (p != p4)
             p4.getStyleClass().remove("bg_currentPage");
+           // p4.getStyleClass().remove("bg_currentPage");
         if (p != p5)
             p5.getStyleClass().remove("bg_currentPage");
         if (p != p6)
@@ -208,6 +209,12 @@ public class mainController extends AppController implements Initializable {
             p2.setVisible(true);
             p3.setVisible(true);
             p4.setVisible(true);
+        }
+        System.out.println(App.user.getPosition());
+        if(App.user.getPosition().equals("Student")){
+            pHome.setVisible(true);
+            p2.setVisible(true);
+            p3.setVisible(true);
         }
 
         if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {

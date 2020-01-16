@@ -103,8 +103,9 @@ public class PreEvaluationController extends AppController implements Initializa
                 " `StartTime` = '" + dateFormat.format(today) + "'," +
                 " `Deadline` = '" + dateFormat.format(deadlineDate) + "'" +
                 " where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     @FXML
@@ -174,8 +175,6 @@ public class PreEvaluationController extends AppController implements Initializa
             btnAccept.setVisible(true);
             btnDeny.setVisible(true);
             tfDays.setEditable(false);
-            query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
-            App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             return;
         }
 
@@ -205,9 +204,9 @@ public class PreEvaluationController extends AppController implements Initializa
         boolean res = (boolean) object;
         if (res) {
             Platform.runLater(new Runnable() {
-
                 @Override
                 public void run() {
+                    showAlert(AlertType.INFORMATION, "Update Success", "Supervisor response has been updated", null);
                     loadPage("requestTreatment");
                 }
             });
