@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.homepageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" style="-fx-background-color: white;" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.homepageController">
    <children>
       <VBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -86,8 +86,8 @@
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d1e9ff" height="26.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1000.0" />
                   <TableView fx:id="table5last" layoutX="156.0" layoutY="35.0" prefHeight="285.0" prefWidth="689.0">
                      <columns>
-                        <TableColumn prefWidth="75.0" text="C1" />
-                        <TableColumn prefWidth="75.0" text="C2" />
+                        <TableColumn prefWidth="75.0" resizable="false" text="C1" />
+                        <TableColumn prefWidth="75.0" resizable="false" text="C2" />
                      </columns>
                   </TableView>
                   <Text layoutX="440.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your last 5 requests">

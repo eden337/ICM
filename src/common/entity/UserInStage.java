@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package common.entity;
 
@@ -11,63 +11,62 @@ package common.entity;
  * enumerator for the current Stage Role for every UserInStage instance 
  */
 public class UserInStage {
-	private ITEngineer engineer;
-	private Stage currentStage;
-	private StageRole currentStageRole;
+    private ITEngineer engineer;
+    private Stage currentStage;
+    private StageRole currentStageRole;
 
-	/**
-	 * @param engineer
-	 * @param currentStage
-	 * @param currentStageRole
-	 */
-	public UserInStage(ITEngineer engineer, Stage currentStage, StageRole currentStageRole) {
-		this.engineer = engineer;
-		this.currentStage = currentStage;
-		this.currentStageRole = currentStageRole;
-	}
+    /**
+     * @param engineer
+     * @param currentStage
+     * @param currentStageRole
+     */
+    public UserInStage(ITEngineer engineer, Stage currentStage, StageRole currentStageRole) {
+        this.engineer = engineer;
+        this.currentStage = currentStage;
+        this.currentStageRole = currentStageRole;
+    }
 
-	/**
-	 * @return the engineer
-	 */
-	public ITEngineer getEngineer() {
-		return engineer;
-	}
+    /**
+     * @return the engineer
+     */
+    public ITEngineer getEngineer() {
+        return engineer;
+    }
 
-	/**
-	 * @param engineer the engineer to set
-	 */
-	public void setEngineer(ITEngineer engineer) {
-		this.engineer = engineer;
-	}
+    /**
+     * @param engineer the engineer to set
+     */
+    public void setEngineer(ITEngineer engineer) {
+        this.engineer = engineer;
+    }
 
-	/**
-	 * @return the currentStage
-	 */
-	public Stage getCurrentStage() {
-		return currentStage;
-	}
+    /**
+     * @return the currentStage
+     */
+    public Stage getCurrentStage() {
+        return currentStage;
+    }
 
-	/**
-	 * @param currentStage the currentStage to set
-	 */
-	public void setCurrentStage(Stage currentStage) {
-		this.currentStage = currentStage;
-	}
+    /**
+     * @param currentStage the currentStage to set
+     */
+    public void setCurrentStage(Stage currentStage) {
+        this.currentStage = currentStage;
+    }
 
-	/**
-	 * @return the currentStageRole
-	 */
-	public StageRole getCurrentStageRole() {
-		return currentStageRole;
-	}
+    /**
+     * @return the currentStageRole
+     */
+    public StageRole getCurrentStageRole() {
+        return currentStageRole;
+    }
 
-	/**
-	 * @param currentStageRole the currentStageRole to set
-	 */
-	public void setCurrentStageRole(StageRole currentStageRole) {
-		this.currentStageRole = currentStageRole;
-	}
-
+    /**
+     * @param currentStageRole the currentStageRole to set
+     */
+    public void setCurrentStageRole(StageRole currentStageRole) {
+        this.currentStageRole = currentStageRole;
+    }
 
 
 }

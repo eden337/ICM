@@ -31,6 +31,9 @@ public class PreExecutionController extends AppController implements Initializab
     private ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+
+    @FXML
     private Text idText;
 
     @FXML
@@ -97,6 +100,8 @@ public class PreExecutionController extends AppController implements Initializab
                 " where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     @FXML
@@ -112,7 +117,7 @@ public class PreExecutionController extends AppController implements Initializab
         boolean flag = false;
         try {
             days = Integer.parseInt(tfDays.getText());
-            if ( days<=0 || days > 20) {
+            if (days <= 0 || days > 20) {
                 showAlert(Alert.AlertType.WARNING, "Error", "Days number must be greater then zero and not greater than 20.", null);
                 return;
             }
@@ -131,11 +136,13 @@ public class PreExecutionController extends AppController implements Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+                dueDateLabel, requestNameLabel, thisRequest);
         inchargeTF.setText("Executer");
+
         getCurrentReqestedDays();
 
         // GUI Init
@@ -154,6 +161,7 @@ public class PreExecutionController extends AppController implements Initializab
 
 
     public void getCurrentReqestedDays_ServerResponse(Object object) {
+        String query;
         List<Integer> res = (List<Integer>) object;
         tfDays.setText(res.get(0) + ""); // requestedDays
         // GUI Init by Permission
@@ -164,7 +172,7 @@ public class PreExecutionController extends AppController implements Initializab
             return;
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0){
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0) {
             txtMsg.setText("Waiting for new days evaluation from the Executer.");
             txtMsg.setVisible(true);
             tfDays.setVisible(false);
@@ -173,10 +181,13 @@ public class PreExecutionController extends AppController implements Initializab
         if (res.get(1) == 1) {
             txtMsg.setVisible(true);
             tfDays.setEditable(false);
-        }
-        else{
-            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER))
+        } else {
+            if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
                 btnSubmit.setVisible(true);
+                tfDays.setEditable(true);
+                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+                App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+            }
         }
 
 
@@ -190,6 +201,7 @@ public class PreExecutionController extends AppController implements Initializab
 
                 @Override
                 public void run() {
+                    showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreExecution Updated", null);
                     loadPage("requestTreatment");
                 }
             });

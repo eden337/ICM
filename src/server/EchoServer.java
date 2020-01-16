@@ -391,17 +391,11 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(OperationType.updateSystems, res), client);
                     break;
                 case DECISION_SendEmailToUser:
-                    try {
                         rs = mysql.getQuery(m.getObject().toString());
                         while (rs.next()) {
                             EmailSender.sendEmail(rs.getString("EMAIL"), "ICM Notification", "Please view your progress");
                         }
                         break;
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } finally {
-                        break;
-                    }
                 case VALID_GetReport:
                 case EXECUTION_GetFailReport:
                     rs = mysql.getQuery(m.getObject().toString());
@@ -636,10 +630,8 @@ public class EchoServer extends AbstractServer {
                         allReports.add(temp);
 
                     }
-                    
                     sendToClient(new Message(OperationType.GetReports, allReports), client);
                     break;
-
                 case ForceUpdateUsersPermissions:
                     sendToAllClients(new Message(OperationType.ForceUpdateUsersPermissions, null));
                     break;

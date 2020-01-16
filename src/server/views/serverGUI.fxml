@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.controllers.ServerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="server.controllers.ServerController">
    <children>
       <VBox prefHeight="771.0" prefWidth="1097.0">
          <children>
@@ -67,7 +67,7 @@
                         <Text layoutX="370.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
                         <Text layoutX="371.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
                         <Text layoutX="371.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scheme" />
-                        <TextField fx:id="port_field" layoutX="533.0" layoutY="160.0" prefHeight="25.0" prefWidth="49.0" />
+                        <TextField fx:id="port_field" layoutX="539.0" layoutY="160.0" prefHeight="33.0" prefWidth="80.0" />
                         <Text layoutX="508.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
                         <Text fill="#003790" layoutX="350.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Database Connection:">
                            <font>
@@ -79,7 +79,7 @@
                               <Font name="System Bold Italic" size="12.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="server_port_field" layoutX="533.0" layoutY="226.0" prefHeight="25.0" prefWidth="49.0" text="5454" />
+                        <TextField fx:id="server_port_field" layoutX="553.0" layoutY="230.0" prefHeight="33.0" prefWidth="62.0" text="5454" />
                         <Text layoutX="508.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
                      </children></AnchorPane>
                   <AnchorPane prefHeight="625.0" prefWidth="420.0">

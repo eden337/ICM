@@ -50,7 +50,7 @@ public class homepageController extends AppController implements Initializable {
 
     @FXML
     void gotoRequestTreatment(MouseEvent event) {
-        mainController.instance.goToViewRequest(null);
+        mainController.instance.gotoRequestTreatment(null);
     }
 
     @FXML
@@ -69,9 +69,8 @@ public class homepageController extends AppController implements Initializable {
         setGreeting();
         initData_Request();
 
-        if(App.user.isEngineer())
+        if (App.user.isEngineer())
             paneForIT.setVisible(true);
-
     }
 
     private void setGreeting() {
@@ -83,7 +82,7 @@ public class homepageController extends AppController implements Initializable {
 //        int month = time.get(Calendar.MONTH) + 1;
 //        int year = time.get(Calendar.YEAR);
 
-        if(hour < 4 )
+        if (hour < 4)
             greetingText = "Good Night";
         else if (hour < 12)
             greetingText = "Good Morning";
@@ -99,57 +98,57 @@ public class homepageController extends AppController implements Initializable {
     }
 
 
-    private void initData_Request(){
+    private void initData_Request() {
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests, setTableByUser()));
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
                 "SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
-        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests,
-                "SELECT COUNT(*) FROM Requests WHERE Status = 'ACTIVE' AND USERNAME = '" + App.user.getUserName() + "';"));
-        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment, setTableByUser()));
+        App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment,
+                "SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status = 'WAITING(SUPERVISOR)')  AND USERNAME = '" + App.user.getUserName() + "';"));
     }
 
     // Main_getMyTotalRequests
-    public void Main_getMyTotalRequests_Response(Object res){
-        if(res == null) return;
+    public void Main_getMyTotalRequests_Response(Object res) {
+        if (res == null) return;
         userTotalRequest.setText(res.toString());
     }
-    public void Main_getMyActiveRequests_Response(Object res){
-        if(res == null) return;
+
+    public void Main_getMyActiveRequests_Response(Object res) {
+        if (res == null) return;
         userRequestsInTreatment.setText(res.toString());
     }
-    public void Main_getMyRequestTreatment_Response(Object res){
-        if(res == null) return;
+
+    public void Main_getMyRequestTreatment_Response(Object res) {
+        if (res == null) return;
         UserNeedToTreat.setText(res.toString());
     }
 
 
     /**
      * Get Request Treatment query by permission
+     *
      * @return
      */
     private String setTableByUser() {
-        String query = "Select COUNT(*) FROM Requests ";
+        String query = "Select COUNT(*) FROM Requests WHERE Status='WAITING(SUPERVISOR)'";
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             return query;
         if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
-            query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
+            query = "SELECT COUNT(*) FROM Requests WHERE `Status` = 'SUSPENDED'";
             return query;
         }
-        query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
-                + " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
-                + " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
-                + "AND r.`Treatment_Phase` = s.`StageName`" + // active stage
-                " AND `incharge` = '" + App.user.getUserName() + "'";
+        query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "')";
+
 
         if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER1)
                 || App.user.isOrganizationRole(OrganizationRole.COMMITEE_MEMBER2)
                 || App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
             // add option to see active decision stages in addition to other permission of
             // these user
-            query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'DECISION' AND s.`StageName` = 'DECISION'";
+            query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION')";
 
             if (App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN))
-                query += " OR r.`RequestID` = s.`RequestID` AND r.`Treatment_Phase` = 'VALIDATION' AND s.`StageName` = 'VALIDATION' AND 'init_confirmed' = 0";
-
+                query = "SELECT COUNT(*) FROM Requests R WHERE R.RequestID IN(SELECT RequestID FROM Stage S WHERE R.RequestID = S.RequestID AND R.Treatment_Phase =S.StageName AND S.Incharge = '" + App.user.getUserName() + "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'VALIDATION' AND S.StageName = 'VALIDATION' AND S.init_confirmed = 0)";
+            return query;
         }
         // general:
         return query;

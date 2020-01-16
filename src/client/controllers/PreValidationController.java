@@ -34,6 +34,9 @@ public class PreValidationController extends AppController implements Initializa
     private ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+
+    @FXML
     private Text idText;
 
     @FXML
@@ -96,7 +99,7 @@ public class PreValidationController extends AppController implements Initializa
 
         String query1 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today) +
                 "' ,`Deadline` = '" + dateFormat.format(deadlineDate) +
-                "' , `Incharge` = '" +cbValidator.getValue() +
+                "' , `Incharge` = '" + cbValidator.getValue() +
                 "' , `init` = 1" +
                 " , `init_confirmed` = 1" +
                 " where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
@@ -109,9 +112,11 @@ public class PreValidationController extends AppController implements Initializa
     public void queryResult(Object object) {
         boolean res = (boolean) object;
         if (res) {
+
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
                     loadPage("requestTreatment");
                 }
             });
@@ -125,14 +130,15 @@ public class PreValidationController extends AppController implements Initializa
         btnAllocate.setVisible(true);
         cbValidator.setDisable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+                dueDateLabel, requestNameLabel, thisRequest);
         inchargeTF.setText("Tester");
         //getUsersFromServer();
-        if(!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
-        	btnAllocate.setVisible(false);
-        	cbValidator.setDisable(true);
-        	return;
+        if (!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+            btnAllocate.setVisible(false);
+            cbValidator.setDisable(true);
+            return;
         }
         getUsersFromServer();
     }
@@ -151,7 +157,8 @@ public class PreValidationController extends AppController implements Initializa
                 ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
                 int size = oblist.size();
                 Random r = new Random(size);
-                cbValidator.setItems(oblist);            }
+                cbValidator.setItems(oblist);
+            }
         });
 
     }

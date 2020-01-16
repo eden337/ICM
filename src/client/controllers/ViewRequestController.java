@@ -216,7 +216,7 @@ public class ViewRequestController extends AppController implements Initializabl
 
                     resetStageImgStyleClass();
                     Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequestInstance);
-                    if (selectedRequestInstance.getCurrentStage().equals("CLOSURE")) {
+                    if (selectedRequestInstance.getCurrentStage().equals("CLOSURE")&&selectedRequestInstance.getStatus().equals("WAITING(USER)")) {
                         // possible bug
                         finishedStatus.setVisible(true);
                         confirmRequest.setDisable(false);

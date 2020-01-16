@@ -33,6 +33,9 @@ public class PreEvaluationController extends AppController implements Initializa
     private ChangeRequest thisRequest;
 
     @FXML
+    private Text requestNumberTXT;
+
+    @FXML
     private Text idText;
 
     @FXML
@@ -83,8 +86,6 @@ public class PreEvaluationController extends AppController implements Initializa
     @FXML
     private Button btnDeny;
 
-
-
     @FXML
     void AcceptPreEval(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -102,14 +103,16 @@ public class PreEvaluationController extends AppController implements Initializa
                 " `StartTime` = '" + dateFormat.format(today) + "'," +
                 " `Deadline` = '" + dateFormat.format(deadlineDate) + "'" +
                 " where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
     @FXML
     void DenyPreEval(ActionEvent event) {
         OperationType ot = OperationType.PreEVAL_SetConfirmationStatus;
-        String query = "UPDATE `Stage` SET `init` = false where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
+        String query = "UPDATE `Stage` SET `init` = false where  `StageName` = 'EVALUATION' AND `RequestID` = '"
+                + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
@@ -128,9 +131,11 @@ public class PreEvaluationController extends AppController implements Initializa
 
         if (flag) {
             OperationType ot = OperationType.PreEVAL_SetInitStat;
-            String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
+            String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText()
+                    + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
-            showAlert(AlertType.INFORMATION, "Evaluation end time asked", "Evaluation period has been sent to the Supervisor", null);
+            showAlert(AlertType.INFORMATION, "Evaluation end time asked",
+                    "Evaluation period has been sent to the Supervisor", null);
             loadPage("requestTreatment");
         }
     }
@@ -138,10 +143,11 @@ public class PreEvaluationController extends AppController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
+                dueDateLabel, requestNameLabel, thisRequest);
         inchargeTF.setText("Evaluator");
         getCurrentReqestedDays();
 
@@ -155,12 +161,14 @@ public class PreEvaluationController extends AppController implements Initializa
 
     private void getCurrentReqestedDays() {
         OperationType ot = OperationType.PreEVAL_getData;
-        String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EVALUATION' AND `RequestID`= '" + thisRequest.getRequestID() + "'";
+        String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EVALUATION' AND `RequestID`= '"
+                + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
     public void getCurrentReqestedDays_ServerResponse(Object object) {
         List<Integer> res = (List<Integer>) object;
+        String query;
         tfDays.setText(res.get(0) + ""); // requestedDays
         // GUI Init by Permission
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(1) == 1) {
@@ -170,21 +178,25 @@ public class PreEvaluationController extends AppController implements Initializa
             return;
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0){
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0) {
             txtMsg.setText("Waiting for new days evaluation from the Evaluator.");
             txtMsg.setVisible(true);
             tfDays.setVisible(false);
+
         }
 
         if (res.get(1) == 1) {
             txtMsg.setVisible(true);
             tfDays.setEditable(false);
-        }
-        else{
-            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR))
+        } else {
+            if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) {
                 btnSubmit.setVisible(true);
-        }
+                tfDays.setEditable(true);
+                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+                App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+            }
 
+        }
 
     }
 
@@ -192,9 +204,9 @@ public class PreEvaluationController extends AppController implements Initializa
         boolean res = (boolean) object;
         if (res) {
             Platform.runLater(new Runnable() {
-
                 @Override
                 public void run() {
+                    showAlert(AlertType.INFORMATION, "Update Success", "Supervisor response has been updated", null);
                     loadPage("requestTreatment");
                 }
             });
@@ -203,5 +215,3 @@ public class PreEvaluationController extends AppController implements Initializa
     }
 
 }
-
-

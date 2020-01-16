@@ -1,4 +1,5 @@
 package client.controllers;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,36 +41,36 @@ public class clientConnectionDialog {
 
     @FXML
     void setServerIP(MouseEvent event) {
-    	App.server_ip = ipAddress.getText();
-    	App.server_port = port.getText();
+        App.server_ip = ipAddress.getText();
+        App.server_port = port.getText();
 
-    	boolean res = App.startClient();
-		changeWindow((Stage)((Node)event.getSource()).getScene().getWindow(), "/client/views/prototype.fxml");
+        boolean res = App.startClient();
+        changeWindow((Stage) ((Node) event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
 
     }
 
 
-	public static void changeWindow(Window window,String fxml) {
-		Platform.runLater(new Runnable() {
+    public static void changeWindow(Window window, String fxml) {
+        Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
-				window.hide();
-				try {
-					Pane  root = FXMLLoader.load(getClass().getResource(fxml));
-					Scene scene=new Scene(root);
-					Stage primaryStage= new Stage();
-					primaryStage.setScene(scene);
-					primaryStage.show();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+            @Override
+            public void run() {
+                window.hide();
+                try {
+                    Pane root = FXMLLoader.load(getClass().getResource(fxml));
+                    Scene scene = new Scene(root);
+                    Stage primaryStage = new Stage();
+                    primaryStage.setScene(scene);
+                    primaryStage.show();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
-			}
-		});
+            }
+        });
 
-	}
+    }
 
 
     @FXML

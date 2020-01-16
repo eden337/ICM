@@ -27,6 +27,9 @@ public class AllocateController extends AppController implements Initializable {
     private ResourceBundle resources;
 
     @FXML
+    private Text requestNumberTXT;
+
+    @FXML
     private URL location;
 
     @FXML
@@ -77,60 +80,58 @@ public class AllocateController extends AppController implements Initializable {
 
     @FXML
     void submitForm(ActionEvent event) {
-    	c=0;
-    	boolean init=thisRequest.getCurrentStage().equals("INIT");
-    	String query;
-    	if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
+        c = 0;
+        boolean init = thisRequest.getCurrentStage().equals("INIT");
+        String query;
+        if (cbEvaluator.getValue() == null || cbExecuter.getValue() == null) {
             txtWarning.setVisible(true);
             return;
         }
         OperationType ot2 = OperationType.Allocate_UpdateRoles;
 
-        if(init) {
-	        OperationType ot = OperationType.Allocate_SetRoles;
-	        query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
-	                "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
-	                "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
-	                "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
-	                "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
-	                "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
-	        App.client.handleMessageFromClientUI(new Message(ot, query));
+        if (init) {
+            OperationType ot = OperationType.Allocate_SetRoles;
+            query = "INSERT INTO Stage (RequestID,StageName,Incharge) VALUES " +
+                    "('" + thisRequest.getRequestID() + "','EVALUATION','" + cbEvaluator.getValue() + "')," +
+                    "('" + thisRequest.getRequestID() + "','DECISION','" + "" + "')," +
+                    "('" + thisRequest.getRequestID() + "','EXECUTION','" + cbExecuter.getValue() + "')," +
+                    "('" + thisRequest.getRequestID() + "','VALIDATION','" + "" + "')," +
+                    "('" + thisRequest.getRequestID() + "','CLOSURE','" + "" + "')";
+            App.client.handleMessageFromClientUI(new Message(ot, query));
 
-	        c = 1;
-	        String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION' WHERE RequestID = '"
-	                + thisRequest.getRequestID() + "'";
-	        App.client.handleMessageFromClientUI(new Message(ot2, query2));
+            c = 1;
+            String query2 = "UPDATE Requests SET Treatment_Phase = 'EVALUATION', Status ='ACTIVE' WHERE RequestID = '"
+                    + thisRequest.getRequestID() + "'";
+            App.client.handleMessageFromClientUI(new Message(ot2, query2));
             App.ForceAuthorizeAllUsers();
-	    }
-	    else{
-	        c = 2;
-	    	query="UPDATE Stage SET Incharge = '"+cbEvaluator.getValue()+"' WHERE StageName = 'EVALUATION' AND RequestID = '"+thisRequest.getRequestID()+"';";
-	        App.client.handleMessageFromClientUI(new Message(ot2, query));
-	        query="UPDATE Stage SET Incharge = '"+cbExecuter.getValue()+"' WHERE StageName = 'EXECUTION' AND RequestID = '"+thisRequest.getRequestID()+"';";
-	        App.client.handleMessageFromClientUI(new Message(ot2, query));
+        } else {
+            c = 2;
+            query = "UPDATE Stage SET Incharge = '" + cbEvaluator.getValue() + "' WHERE StageName = 'EVALUATION' AND RequestID = '" + thisRequest.getRequestID() + "';";
+            App.client.handleMessageFromClientUI(new Message(ot2, query));
+            query = "UPDATE Stage SET Incharge = '" + cbExecuter.getValue() + "' WHERE StageName = 'EXECUTION' AND RequestID = '" + thisRequest.getRequestID() + "';";
+            App.client.handleMessageFromClientUI(new Message(ot2, query));
 
-	    }
-	    loadPage("requestTreatment");
+        }
+        loadPage("requestTreatment");
     }
-    
 
 
-	public void allocQueryResult(Object object) {
-		c--;
-		boolean res = (boolean) object;
-		if (c == 0 || !res) {
-			if (res) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
-						loadPage("requestTreatment");
-					}
-				});
-			} else
-				showAlert(AlertType.ERROR, "Error!", "Could not assign employees", null);
-		}
-	}
+    public void allocQueryResult(Object object) {
+        c--;
+        boolean res = (boolean) object;
+        if (c == 0 || !res) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Could not assign employees", null);
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -139,7 +140,7 @@ public class AllocateController extends AppController implements Initializable {
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
         getUsersFromServer();
-
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
     }
 
     private void getUsersFromServer() {

@@ -7,49 +7,50 @@ package common.entity;
 
 public class UserRole {
 
-	private String roleID;
-	private static UserRole userRoleInstance = new UserRole();
-	private OrganizationRole roleName;
-	/** blank constructor 
-	 * 
-	 */
-	private UserRole() {}
+    private String roleID;
+    private static UserRole userRoleInstance = new UserRole();
+    private OrganizationRole roleName;
 
-	/**
-	 * @return the roleID
-	 */
-	public String getRoleID() {
-		return roleID;
-	}
+    /**
+     * blank constructor
+     */
+    private UserRole() {
+    }
 
-	/**
-	 * @param roleID the roleID to set
-	 */
-	public void setRoleID(String roleID) {
-		this.roleID = roleID;
-	}
+    /**
+     * @return the roleID
+     */
+    public String getRoleID() {
+        return roleID;
+    }
 
-	/**
-	 * @return the userRoleInstance
-	 */
-	public static UserRole getUserRoleInstance() {
-		return userRoleInstance;
-	}
+    /**
+     * @param roleID the roleID to set
+     */
+    public void setRoleID(String roleID) {
+        this.roleID = roleID;
+    }
 
-	/**
-	 * @return the roleName
-	 */
-	public OrganizationRole getRoleName() {
-		return roleName;
-	}
+    /**
+     * @return the userRoleInstance
+     */
+    public static UserRole getUserRoleInstance() {
+        return userRoleInstance;
+    }
 
-	/**
-	 * @param roleName the roleName to set
-	 */
-	public void setRoleName(OrganizationRole roleName) {
-		this.roleName = roleName;
-	}
+    /**
+     * @return the roleName
+     */
+    public OrganizationRole getRoleName() {
+        return roleName;
+    }
 
-	
+    /**
+     * @param roleName the roleName to set
+     */
+    public void setRoleName(OrganizationRole roleName) {
+        this.roleName = roleName;
+    }
+
 
 }

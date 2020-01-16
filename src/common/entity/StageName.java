@@ -1,12 +1,12 @@
 package common.entity;
 
 public enum StageName {
-	INIT,
-	EVALUATION,
-	DECISION,
-	EXECUTION,
-	VALIDATION,
-	CLOUSRE
-	
-	
+    INIT,
+    EVALUATION,
+    DECISION,
+    EXECUTION,
+    VALIDATION,
+    CLOUSRE
+
+
 }

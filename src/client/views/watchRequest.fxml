@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -21,12 +23,23 @@
          <children>
             <VBox prefHeight="711.0" prefWidth="420.0">
                <children>
-                  <TextField fx:id="searchBoxTF" prefHeight="35.0" prefWidth="420.0" promptText="Search..." />
+                  <HBox prefHeight="30.0" prefWidth="417.0">
+                     <children>
+                        <TextField fx:id="searchBoxTF" prefHeight="30.0" prefWidth="307.0" promptText="Search..." />
+                        <MenuButton mnemonicParsing="false" prefHeight="32.0" prefWidth="209.0" text="Filter Options">
+                           <items>
+                              <MenuItem fx:id="clearBtn" mnemonicParsing="false" onAction="#clearBtnClicked" text="Clear Filter" />
+                              <MenuItem fx:id="activeStatusBtn" mnemonicParsing="false" onAction="#activeStatusBtn" text="Active Status" />
+                              <MenuItem fx:id="userWaiting" mnemonicParsing="false" onAction="#userWaitingClicked" text="Waiting for your response" />
+                           </items>
+                        </MenuButton>
+                     </children>
+                  </HBox>
                   <TableView fx:id="table" prefHeight="686.0" prefWidth="250.0">
                     <columns>
-                      <TableColumn fx:id="colId" prefWidth="108.0" text="ID" />
-                      <TableColumn fx:id="colExisitCond" prefWidth="173.0" text="Exisiting Condition" />
-                        <TableColumn fx:id="colStatus" prefWidth="137.0" text="Status" />
+                      <TableColumn fx:id="colId" prefWidth="108.0" resizable="false" text="ID" />
+                      <TableColumn fx:id="colExisitCond" prefWidth="173.0" resizable="false" text="Exisiting Condition" />
+                        <TableColumn fx:id="colStatus" prefWidth="137.0" resizable="false" text="Status" />
                     </columns>
                   </TableView>
                </children>
@@ -140,6 +153,11 @@
                   <Text fx:id="msg" fill="#0e2eff" layoutX="38.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false">
                      <font>
                         <Font name="System Bold" size="38.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="finishedStatus" layoutX="229.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="267.13671875">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
                      </font>
                   </Text>
                </children>

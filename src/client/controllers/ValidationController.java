@@ -27,11 +27,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -47,6 +44,11 @@ public class ValidationController extends AppController implements Initializable
 	public static ValidationController instance;
 	private Stage thisStage;
 	protected ChangeRequest thisRequest;
+
+
+
+	@FXML
+	private Text requestNumberTXT;
 
 	@FXML
 	private Text idText;
@@ -131,7 +133,7 @@ public class ValidationController extends AppController implements Initializable
 		instance = this;
 		long estimatedTime = 0;
 		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-
+		this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
 		btnAnswerStageExtensionRequest.setVisible(false);
 		thisStage = thisRequest.getCurrentStageObject();
 
@@ -174,6 +176,9 @@ public class ValidationController extends AppController implements Initializable
 		failureReportBtn.setDisable(true);
 		failureReportBtn.setVisible(false);
 	}
+
+
+
 
 	private void checkPreConditions() {
 		OperationType ot = OperationType.VAL_GetInitData;
@@ -342,7 +347,7 @@ public class ValidationController extends AppController implements Initializable
 		Date today = new Date(System.currentTimeMillis());
 		ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
 		String tomorrowFormat = tomorrow.getYear() + "/" + tomorrow.getMonthValue() + "/" + tomorrow.getDayOfMonth();
-		String query = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+		String query = "UPDATE Requests SET Status = 'WAITING(USER)', Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
 				+ thisRequest.getRequestID() + "'";
 		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
 				+ "' where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";

@@ -40,311 +40,298 @@ import java.util.ResourceBundle;
 
 public class ExecutionController extends AppController implements Initializable {
 
-	/*
-	 * this static variable is supposed to hold all the data of the request chosen
-	 * in request treatment
-	 */
-	// public static ChangeRequest thisRequest;
-	public static ExecutionController instance;
+    /*
+     * this static variable is supposed to hold all the data of the request chosen
+     * in request treatment
+     */
+    // public static ChangeRequest thisRequest;
+    public static ExecutionController instance;
 
-	protected ChangeRequest thisRequest;
+    protected ChangeRequest thisRequest;
 
-	@FXML
-	private Text idText;
+    @FXML
+    private Text requestNumberTXT;
 
-	@FXML
-	private Text requestID;
+    @FXML
+    private Text idText;
 
-	@FXML
-	private TextArea existingCondition;
+    @FXML
+    private Text requestID;
 
-	@FXML
-	private TextArea descripitionsTextArea;
+    @FXML
+    private TextArea existingCondition;
 
-	@FXML
-	private Text msg;
+    @FXML
+    private TextArea descripitionsTextArea;
 
-	@FXML
-	private TextField inchargeTF;
+    @FXML
+    private Text msg;
 
-	@FXML
-	private Text departmentID;
+    @FXML
+    private TextField inchargeTF;
 
-	@FXML
-	private Text idText1;
+    @FXML
+    private Text departmentID;
 
-	@FXML
-	private Text requestNameLabel;
+    @FXML
+    private Text idText1;
 
-	@FXML
-	private Text idText2;
+    @FXML
+    private Text requestNameLabel;
 
-	@FXML
-	private Text dueDateLabel;
+    @FXML
+    private Text idText2;
 
-	@FXML
-	private AnchorPane rightPane;
+    @FXML
+    private Text dueDateLabel;
 
-	@FXML
-	private Pane pane_form;
+    @FXML
+    private AnchorPane rightPane;
 
-	@FXML
-	private AnchorPane returnedNoteAP;
+    @FXML
+    private Pane pane_form;
 
-	@FXML
-	private TextArea returnedNotes;
+    @FXML
+    private AnchorPane returnedNoteAP;
 
-	@FXML
-	private TitledPane titledPane;
+    @FXML
+    private TextArea returnedNotes;
 
-	@FXML
-	private Text titledPane_Text;
+    @FXML
+    private TitledPane titledPane;
 
-	@FXML
-	private Button workDone;
+    @FXML
+    private Text titledPane_Text;
 
-	@FXML
-	private Pane pane_msg;
+    @FXML
+    private Button workDone;
 
-	@FXML
-	private Text textInMsgPane;
+    @FXML
+    private Pane pane_msg;
 
-	@FXML
-	private Button btnRequestExtension;
+    @FXML
+    private Text textInMsgPane;
 
-	@FXML
-	private Button btnAnswerStageExtensionRequest;
+    @FXML
+    private Button btnRequestExtension;
 
-	private String reportResult;
+    @FXML
+    private Button btnAnswerStageExtensionRequest;
+
+    private String reportResult;
 
 
-	private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
+    private boolean responseSupervisor = false; // this provide if the supervisor agree or not.
 
-	static LocalDate saveAfterResponse;
+    static LocalDate saveAfterResponse;
 
-	private common.entity.Stage thisStage;
+    private common.entity.Stage thisStage;
+    long estimatedTime = 0;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		instance = this;
-		long estimatedTime = 0;
-		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		thisStage = thisRequest.getCurrentStageObject();
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        instance = this;
 
-		btnRequestExtension.setVisible(false);
-		btnAnswerStageExtensionRequest.setVisible(false);
-		if (thisStage.getExtension_reason() != null)
-			btnAnswerStageExtensionRequest.setVisible(true);
+        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
+        btnRequestExtension.setVisible(false);
+        btnAnswerStageExtensionRequest.setVisible(false);
+        if (thisStage.getExtension_reason() != null)
+            btnAnswerStageExtensionRequest.setVisible(true);
 
-		pane_msg.setVisible(false);
-		pane_form.setVisible(false);
-		titledPane.setCollapsible(false);
-		titledPane.setText("Waiting for your action");
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
-		checkPreConditions();
-		reportNoteUpdater();
-		setExtensionVisability();
-		if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
-			pane_msg.setVisible(true);
-			inchargeTF.setText("Executer");
-			return;
-		}
+        pane_msg.setVisible(false);
+        pane_form.setVisible(false);
+        titledPane.setCollapsible(false);
+        titledPane.setText("Waiting for your action");
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+                dueDateLabel, requestNameLabel, thisRequest);
+        checkPreConditions();
+        reportNoteUpdater();
+        setExtensionVisability();
+        if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
+            pane_msg.setVisible(true);
+            inchargeTF.setText("Executer");
+            return;
+        }
 
-		if (!App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)
-				&& !App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-			textInMsgPane.setFill(Color.BLUE);
-			textInMsgPane.setText("Stage in progress");
-			pane_msg.setVisible(true);
-			return;
-		}
+        if (!App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)
+                && !App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+            textInMsgPane.setFill(Color.BLUE);
+            textInMsgPane.setText("Stage in progress");
+            pane_msg.setVisible(true);
+            return;
+        }
 
-		
 
-		// the supervisor should present the stage in progress after he approved the
-		// time
-		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-			textInMsgPane.setFill(Color.BLUE);
-			textInMsgPane.setText("Stage in progress");
-			pane_msg.setVisible(true);
-			return;
-		}
+        // the supervisor should present the stage in progress after he approved the
+        // time
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+            textInMsgPane.setFill(Color.BLUE);
+            textInMsgPane.setText("Stage in progress");
+            pane_msg.setVisible(true);
+            return;
+        }
 
-		// Otherwise: this is the Executer in his stage
-		if (thisRequest.isReturned()) {
-			returnedNoteAP.setVisible(true);
-			returnedNotes.setText(thisRequest.getReturnedNote());
-		}
-		pane_form.setVisible(true);
-		inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime+=1;
-		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+        // Otherwise: this is the Executer in his stage
+        if (thisRequest.isReturned()) {
+            returnedNoteAP.setVisible(true);
+            returnedNotes.setText(thisRequest.getReturnedNote());
+        }
+        pane_form.setVisible(true);
+        inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 
-	}
-	
-	private void reportNoteUpdater() {
-		OperationType ot = OperationType.EXECUTION_GetFailReport;
-		String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID()+" LIMIT 1";
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}
-	
-	public void getReport_ServerResponse(Object object) {
-		this.reportResult = (String) object;
-		if (reportResult == null) {
-			//showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
-			returnedNoteAP.setVisible(false);
-		} else { // if the returned result was back 
-			returnedNoteAP.setVisible(true);
-			returnedNotes.setText(reportResult);
-		}
-	}
-	
+    }
 
-	// first click on this button to send to supervisor
-	private void checkPreConditions() {
-		OperationType ot = OperationType.EXE_GetInitData;
-		String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID()
-				+ "' AND `StageName` = 'EXECUTION'";
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}
+    private void reportNoteUpdater() {
+        OperationType ot = OperationType.EXECUTION_GetFailReport;
+        String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID() + " LIMIT 1";
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+    }
 
-	public void checkPreConditions_ServerResponse(Object object) {
-		List<Boolean> init_res = (List<Boolean>) object;
-		boolean init = init_res.get(0);
-		boolean init_confirmed = init_res.get(1);
+    public void getReport_ServerResponse(Object object) {
+        this.reportResult = (String) object;
+        if (reportResult == null) {
+            //showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
+            returnedNoteAP.setVisible(false);
+        } else { // if the returned result was back
+            returnedNoteAP.setVisible(true);
+            returnedNotes.setText(reportResult);
+        }
+    }
 
-		if (init_confirmed && init) {
-			init();
-			rightPane.setVisible(true);
-			return;
-		}
-		// else
-		Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
-				loadPage("PreExecution");
-			}
-		});
-	}
+    // first click on this button to send to supervisor
+    private void checkPreConditions() {
+        OperationType ot = OperationType.EXE_GetInitData;
+        String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID()
+                + "' AND `StageName` = 'EXECUTION'";
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+    }
 
-	private void init() {
+    public void checkPreConditions_ServerResponse(Object object) {
+        List<Boolean> init_res = (List<Boolean>) object;
+        boolean init = init_res.get(0);
+        boolean init_confirmed = init_res.get(1);
 
-		if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-			workDone.setVisible(true);// Change to false once you deal with permissions
+        if (init_confirmed && init) {
+            init();
+            rightPane.setVisible(true);
+            return;
+        }
+        // else
+        Platform.runLater(new Runnable() {
 
-			if (responseSupervisor) {
-				titledPane.getStyleClass().remove("danger");
-				titledPane.getStyleClass().add("success");
-				titledPane.setCollapsible(false);
-				titledPane.setText("This stage is done.");
-				titledPane_Text.setText("You have only a viewing permission.");
-				titledPane_Text.setFill(Color.FORESTGREEN);
-				titledPane_Text.setVisible(true);
-				workDone.setVisible(false);
+            @Override
+            public void run() {
+                loadPage("PreExecution");
+            }
+        });
+    }
 
-				if (!thisRequest.getCurrentStage().equals("EXECUTION")) { // Watching only
-					titledPane.getStyleClass().remove("danger");
-					titledPane.getStyleClass().add("success");
-					titledPane.setCollapsible(false);
-					titledPane.setText("This stage is done.");
-					titledPane_Text.setText("You have only a viewing permission.");
-					titledPane_Text.setFill(Color.FORESTGREEN);
-					titledPane_Text.setVisible(true);
-					workDone.setVisible(false);
-				}
-			}
-		}
-	}
+    private void init() {
 
-	// submit of the executer after the supervisor click agree.
-	@FXML
-	void submitWorkDone(ActionEvent event) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Calendar c = Calendar.getInstance();
-		Date today = new Date(System.currentTimeMillis());
-		c.setTime(today);
-		c.add(Calendar.DATE, 7);
-		Date deadlineDate = c.getTime();
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+            workDone.setVisible(true);// Change to false once you deal with permissions
 
-		String query1 = "UPDATE Requests SET Treatment_Phase = 'VALIDATION' WHERE RequestID = '"
-				+ thisRequest.getRequestID() + "';";
-		String query2 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+            if (responseSupervisor) {
+                titledPane.getStyleClass().remove("danger");
+                titledPane.getStyleClass().add("success");
+                titledPane.setCollapsible(false);
+                titledPane.setText("This stage is done.");
+                titledPane_Text.setText("You have only a viewing permission.");
+                titledPane_Text.setFill(Color.FORESTGREEN);
+                titledPane_Text.setVisible(true);
+                workDone.setVisible(false);
+                estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+                        .toDays();
+                estimatedTime += 1;
+                Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+                if (!thisRequest.getCurrentStage().equals("EXECUTION")) { // Watching only
+                    titledPane.getStyleClass().remove("danger");
+                    titledPane.getStyleClass().add("success");
+                    titledPane.setCollapsible(false);
+                    titledPane.setText("This stage is done.");
+                    titledPane_Text.setText("You have only a viewing permission.");
+                    titledPane_Text.setFill(Color.FORESTGREEN);
+                    titledPane_Text.setVisible(true);
+                    workDone.setVisible(false);
+                }
+            }
+        }
+    }
 
-		OperationType ot1 = OperationType.EXE_UpdateDB;
-		App.client.handleMessageFromClientUI(new Message(ot1, query1));
-		App.client.handleMessageFromClientUI(new Message(ot1, query2));
-		showAlert(AlertType.INFORMATION, "Request #" + thisRequest.getRequestID() + " Excution complete!",
-				"The request move forward to Tester.", null);
-		loadPage("requestTreatment");
-	}
+    // submit of the executer after the supervisor click agree.
+    @FXML
+    void submitWorkDone(ActionEvent event) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar c = Calendar.getInstance();
+        Date today = new Date(System.currentTimeMillis());
+        c.setTime(today);
+        c.add(Calendar.DATE, 7);
+        Date deadlineDate = c.getTime();
 
-	private static int c = 0;
+        String query1 = "UPDATE Requests SET Treatment_Phase = 'VALIDATION' WHERE RequestID = '"
+                + thisRequest.getRequestID() + "';";
+        String query2 = " UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
-	public void queryResult(Object object) {
-		c++;
-		boolean res = (boolean) object;
-		if (c == 3) {
-			if (res) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						loadPage("requestTreatment");
-					}
-				});
-			} else
-				showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
-		}
-	}
-	// Extensions:
-	private void setExtensionVisability() {
-		btnRequestExtension.setVisible(false);
-		long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
-		if (daysDifference >= -3) {
-			btnRequestExtension.setVisible(true);
-			if (thisStage.getExtension_days() != 0)
-				btnRequestExtension.setDisable(true);
-		}
+        OperationType ot1 = OperationType.EXE_UpdateDB;
+        App.client.handleMessageFromClientUI(new Message(ot1, query1));
+        App.client.handleMessageFromClientUI(new Message(ot1, query2));
+        showAlert(AlertType.INFORMATION, "Request #" + thisRequest.getRequestID() + " Execution complete!",
+                "The request move forward to Validation Stage\nPlease Notify the committee chairman.", null);
+        loadPage("requestTreatment");
+    }
 
-	}
+    private static int c = 0;
 
-	@FXML
-	void requestExtension(ActionEvent event) {
-		start(new Stage());
-	}
+    public void queryResult(Object object) {
+        c++;
+        boolean res = (boolean) object;
+        if (c == 3) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAlert(AlertType.INFORMATION, "Update Success!", "Data Error2.", null);
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+        }
+    }
 
-	public void start(Stage primaryStage) {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
-			Scene scene = new Scene(root);
-			primaryStage.setTitle("Extension");
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Could not load execution prompt");
-			e.printStackTrace();
-		}
-	}
+    // Extensions:
+    private void setExtensionVisability() {
+        btnRequestExtension.setVisible(false);
+        long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
+        if (daysDifference >= -3) {
+            btnRequestExtension.setVisible(true);
+            if (thisStage.getExtension_days() != 0)
+                btnRequestExtension.setDisable(true);
+        }
+
+    }
+
+    @FXML
+    void requestExtension(ActionEvent event) {
+        start(new Stage());
+    }
+
+    public void start(Stage primaryStage) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setTitle("Extension");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Could not load execution prompt");
+            e.printStackTrace();
+        }
+    }
 }
 
-//	
-//	try {
-//	java.util.Date date = Date.from(DeadlinetimeExec.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-//	java.sql.Date deadLine = new java.sql.Date(date.getTime());
-//	
-//	 Calendar currenttime = Calendar.getInstance();               //creates the Calendar object of the current time
-//	 Date endtime = new Date((currenttime.getTime()).getTime());  //creates the sql Date of the above created object
-//	 
-//	  
-//	String query="UPDATE `Stage` SET `EndTime` = '"+endtime+"', `Deadline` = '"+deadLine+"', `Handlers` = 'handler', `Incharge` = 'incharge' WHERE `Stage`.`RequestID` = "+thisRequest.getRequestID()+" AND `Stage`.`StageName` = '"+StageName.EXECUTION+"'";
-//	OperationType ot = OperationType.UpdateStage;
-//	App.client.handleMessageFromClientUI(new Message(ot, query));
-//	
-//	}catch(Exception e) {
-//		System.out.println("error here");
-//		e.printStackTrace();
-//	}

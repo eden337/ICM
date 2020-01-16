@@ -22,7 +22,7 @@
                      <children>
                         <Pane prefHeight="45.0" prefWidth="420.0" styleClass="bg_color4">
                            <children>
-                              <Text layoutX="134.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
+                              <Text fx:id="requestNumberTXT" layoutX="134.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
                                  <font>
                                     <Font name="System Bold" size="18.0" />
                                  </font>
