@@ -169,6 +169,7 @@ public class ReportGenerateController extends AppController implements Initializ
             } else {
                 showAlert(AlertType.WARNING, "Report already exist", "this file Exist at " + path + report.toString() + ".csv", null);
 
+
         		try {
 					Desktop desktop = Desktop.getDesktop();
 
@@ -179,6 +180,7 @@ public class ReportGenerateController extends AppController implements Initializ
 				}
                 
 			}
+
         } else {
             //if(!(file=new File(path+regularReport+".csv")).exists())
             file = new File(path + report.toString() + ".csv");
@@ -188,6 +190,8 @@ public class ReportGenerateController extends AppController implements Initializ
             
 
         }
+
+
 
 
 
@@ -250,6 +254,7 @@ public class ReportGenerateController extends AppController implements Initializ
 
         File f = new File(path);
         f.mkdirs();
+
 		try {
         csvFile = new PrintWriter(file);
         csvFile.write(report.getData());
@@ -257,13 +262,18 @@ public class ReportGenerateController extends AppController implements Initializ
         buffer.setVisible(false);
         showAlert(AlertType.INFORMATION, "Success", "new file", "Report Generated");
 
+
+
 		// open the downloaded file using operation system
 
 		Desktop desktop = Desktop.getDesktop();
 
+
+
 			desktop.open(file);
 		}
 		catch (IOException e){}
+
     }
     
     
