@@ -52,7 +52,7 @@ public class AppController {
                     Stage primaryStage = new Stage();
                     primaryStage.setScene(scene);
                     primaryStage.setResizable(false);
-                    Image image = new Image("/client/views/img/logo.png");
+                    Image image = new Image("/client/views/img/logoicon.png");
                     primaryStage.getIcons().add(image);
                     primaryStage.setTitle("ICM");
                     primaryStage.show();

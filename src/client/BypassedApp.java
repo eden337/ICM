@@ -84,7 +84,7 @@ public class BypassedApp extends Application {
             Scene s1 = new Scene(root);
             primaryStage.setScene(s1);
             primaryStage.show();
-            Image image = new Image("/client/views/img/logo.png");
+            Image image = new Image("/client/views/img/logoicon.png");
             primaryStage.getIcons().add(image);
             primaryStage.setTitle("ICM");
             primaryStage.setResizable(false);

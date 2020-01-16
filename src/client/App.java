@@ -74,7 +74,7 @@ public class App extends Application {
             primaryStage.setScene(s1);
             primaryStage.show();
             primaryStage.setResizable(false);
-            Image image = new Image("/client/views/img/logo.png");
+            Image image = new Image("/client/views/img/logoicon.png");
             primaryStage.getIcons().add(image);
             primaryStage.setTitle("ICM");
         } catch (Exception e) {
