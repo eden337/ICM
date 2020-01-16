@@ -85,8 +85,8 @@ public class ChangeRequestController extends AppController implements Initializa
     }
 
     /**
-     * submit button pressed so check the warnings and add attached file and insert
-     * data to DB
+     * submit button pressed so check the warnings and add attached file 
+     * and insert data to DB
      *
      * @param event
      */
@@ -166,7 +166,10 @@ public class ChangeRequestController extends AppController implements Initializa
     void browsebtnAction(ActionEvent event) {
         openFile();
     }
-
+/**
+ * get the string of the path of the file and create zip from this path
+ * @param filename
+ */
     void createZip(String filename) {
         if (filelist == null) {
             return;
@@ -198,7 +201,11 @@ public class ChangeRequestController extends AppController implements Initializa
         fileNames.setVisible(true);
         fileNames.setText(printNameFiles(filelist));
     }
-
+/**
+ * upload to server the zip file 
+ * @param file
+ * @return true/false if success true else false
+ */
     private boolean UploadRequestFilesToServer(File file) {
         Message msgToServer;
         MyFile myFile = new MyFile(file.getName(), file.getPath());
