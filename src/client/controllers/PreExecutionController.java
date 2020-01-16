@@ -185,7 +185,7 @@ public class PreExecutionController extends AppController implements Initializab
             if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
                 btnSubmit.setVisible(true);
                 tfDays.setEditable(true);
-                query = "UPDATE Requests SET Status = 'WAITING' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
                 App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             }
         }

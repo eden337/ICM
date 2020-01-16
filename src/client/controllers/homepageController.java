@@ -103,7 +103,7 @@ public class homepageController extends AppController implements Initializable {
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
                 "SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
         App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment,
-                "SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status = 'WAITING')  AND USERNAME = '" + App.user.getUserName() + "';"));
+                "SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status = 'WAITING(SUPERVISOR)')  AND USERNAME = '" + App.user.getUserName() + "';"));
     }
 
     // Main_getMyTotalRequests
@@ -129,7 +129,7 @@ public class homepageController extends AppController implements Initializable {
      * @return
      */
     private String setTableByUser() {
-        String query = "Select COUNT(*) FROM Requests WHERE Status='Waiting'";
+        String query = "Select COUNT(*) FROM Requests WHERE Status='WAITING(SUPERVISOR)'";
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             return query;
         if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {

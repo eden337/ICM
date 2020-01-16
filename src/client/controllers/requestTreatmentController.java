@@ -35,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -176,8 +177,17 @@ public class requestTreatmentController extends AppController implements Initial
     @FXML
     private TextArea reasonText;
 
-    ObservableList<ChangeRequest> o;
 
+    @FXML
+    private MenuItem clearBtn;
+
+    @FXML
+    private MenuItem activeStatusBtn;
+
+    @FXML
+    private MenuItem supervisorWaiting;
+
+    ObservableList<ChangeRequest> o;
     protected ChangeRequest getCurrentRequest() {
         return selectedRequested;
     }
@@ -187,6 +197,22 @@ public class requestTreatmentController extends AppController implements Initial
         App.client.handleMessageFromClientUI(new Message(OperationType.getRequirementData, setTableByUser()));
     }
 
+    @FXML
+    void activeStatusBtn(ActionEvent event) {
+        searchBoxTF.setText("ACTIVE");
+    }
+
+
+    @FXML
+    void clearBtnClicked(ActionEvent event) {
+        searchBoxTF.setText("");
+        searchBoxTF.setPromptText("Search...");
+    }
+
+    @FXML
+    void supervisorWaitingClicked(ActionEvent event) {
+        searchBoxTF.setText("WAITING(SUPERVISOR)");
+    }
     /**
      * Query by Permission
      *
@@ -241,6 +267,9 @@ public class requestTreatmentController extends AppController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Instance = this;
+        supervisorWaiting.setVisible(false);
+        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+            supervisorWaiting.setVisible(true);
         // request data from server
         getDatafromServer();
         rightPane_selectRequest.setVisible(true);

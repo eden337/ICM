@@ -129,11 +129,26 @@ public class ViewRequestController extends AppController implements Initializabl
         return selectedRequestInstance;
     }
 
+    @FXML
+    void activeStatusBtn(ActionEvent event) {
+        searchBoxTF.setText("ACTIVE");
+    }
+
+    @FXML
+    void clearBtnClicked(ActionEvent event) {
+        searchBoxTF.setText("");
+        searchBoxTF.setPromptText("Search...");
+    }
+
+    @FXML
+    void userWaitingClicked(ActionEvent event) {
+        searchBoxTF.setText("WAITING(USER)");
+    }
 
     @FXML
     void confirmRequestClicked(ActionEvent event) {
         c = 0;
-        String query = "UPDATE Requests SET Status = 'WAITING', Request_Confirmed = 1 WHERE RequestID ='"
+        String query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)', Request_Confirmed = 1 WHERE RequestID ='"
                 + selectedRequestInstance.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(OperationType.VIEWRequest_confirmRequest, query));
     }

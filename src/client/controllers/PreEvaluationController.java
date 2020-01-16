@@ -192,7 +192,7 @@ public class PreEvaluationController extends AppController implements Initializa
             if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) {
                 btnSubmit.setVisible(true);
                 tfDays.setEditable(true);
-                query = "UPDATE Requests SET Status = 'WAITING' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
                 App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             }
 
