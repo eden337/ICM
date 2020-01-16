@@ -285,7 +285,6 @@ public class ViewRequestController extends AppController implements Initializabl
 
     @SuppressWarnings("unchecked")
     public void setDataTable(Object object) {
-        // System.out.println("--> setDataTable");
 
         ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
         o = FXCollections.observableArrayList(info);

@@ -86,11 +86,13 @@
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d1e9ff" height="26.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1000.0" />
                   <TableView fx:id="table5last" layoutX="156.0" layoutY="35.0" prefHeight="285.0" prefWidth="689.0">
                      <columns>
-                        <TableColumn prefWidth="75.0" resizable="false" text="C1" />
-                        <TableColumn prefWidth="75.0" resizable="false" text="C2" />
+                        <TableColumn fx:id="IDtable" prefWidth="146.0" resizable="false" text="ID" />
+                        <TableColumn fx:id="EXsitingConditiontable" prefWidth="206.0" resizable="false" text="Existing condition" />
+                        <TableColumn fx:id="Statustable" prefWidth="154.0" resizable="false" text="Status" />
+                        <TableColumn fx:id="Stagetable" prefWidth="182.0" resizable="false" text="Stage" />
                      </columns>
                   </TableView>
-                  <Text layoutX="440.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your last 5 requests">
+                  <Text layoutX="440.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your last 10 requests">
                      <font>
                         <Font size="14.0" />
                      </font>

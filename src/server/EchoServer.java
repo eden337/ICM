@@ -677,6 +677,12 @@ public class EchoServer extends AbstractServer {
                         e.printStackTrace();
                     }
                     break;
+                case FiveRequest:
+                	rs = mysql.getQuery(m.getObject().toString());
+                	   ArrayList<ChangeRequest> requests5 = getRequsets(rs);
+                       sendToClient(new Message(OperationType.FiveRequest,  requests5), client);
+                       rs.close();
+                	break;
 
                 default:
                     break;
@@ -1073,30 +1079,6 @@ public class EchoServer extends AbstractServer {
         return (int) ((mainStages + freezeStages) - freezeStages);
     }
 
-    /*
-     * public HashMap<String, Long> calcDelayedDaysPerRequest(HashMap<String, Long>
-     * mapDelays) { ResultSet delayData=mysql.
-     * getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL"
-     * ); ZonedDateTime deadline; ZonedDateTime compareTo; try {
-     * while(delayData.next()) {
-     * deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline")); Date
-     * temp=delayData.getDate("Endtime"); compareTo=
-     * temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now(); long
-     * res=Duration.between(deadline, compareTo).toDays(); res=res>0?res:0; String
-     * system=delayData.getString("SystemID"); mapDelays.replace(system,
-     * mapDelays.get(system)+res); } delayData=mysql.
-     * getQuery("SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL"
-     * ); while(delayData.next()) {
-     * deadline=Tools.convertDateSQLToZoned(delayData.getDate("Deadline")); Date
-     * temp=delayData.getDate("Endtime"); compareTo=
-     * temp!=null?Tools.convertDateSQLToZoned(temp):ZonedDateTime.now(); long
-     * res=Duration.between(deadline, compareTo).toDays(); res=res>0?res:0; String
-     * system=delayData.getString("SystemID"); mapDelays.replace(system,
-     * mapDelays.get(system)+res); } } catch (SQLException e) { // TODO
-     * Auto-generated catch block e.printStackTrace(); } return mapDelays;
-     *
-     * }
-     */
     public void calcDelayedDaysPer(HashMap<String, Integer> mapDelays) {
         ResultSet delayData = mysql.getQuery(
                 "SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
