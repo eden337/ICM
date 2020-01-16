@@ -596,10 +596,14 @@ public class EchoServer extends AbstractServer {
                     ArrayList<Report> allReports = new ArrayList<Report>();
                     ResultSet repoData = mysql.getQuery(m.getObject().toString());
                     while (repoData.next()) {
-                        allReports.add(new Report(repoData.getString("ReportType"), repoData.getDate("Created"), repoData.getDate("Since"), repoData.getDate("Till")));
+                    	Report temp=new Report(repoData.getString("ReportType"), repoData.getDate("Created"), repoData.getDate("Since"), repoData.getDate("Till"));
+                    	temp.setData(repoData.getString("Data"));
+                        allReports.add(temp);
                     }
+                    
                     sendToClient(new Message(OperationType.GetReports, allReports), client);
                     break;
+
                 case ForceUpdateUsersPermissions:
                     sendToAllClients(new Message(OperationType.ForceUpdateUsersPermissions, null));
                     break;
@@ -883,7 +887,7 @@ public class EchoServer extends AbstractServer {
             }
             while (repeated.next()) {
                 res = 0;
-                int temp = current.getInt("RequestID");
+                int temp = repeated.getInt("RequestID");
                 d1 = Tools.convertDateSQLToZoned(repeated.getDate("StartTime"));
                 if (d1.isBefore(from))
                     d1 = from;
@@ -895,7 +899,7 @@ public class EchoServer extends AbstractServer {
             }
             while (frozen.next()) {
                 res = 0;
-                int temp = current.getInt("RequestID");
+                int temp = frozen.getInt("RequestID");
                 d1 = Tools.convertDateSQLToZoned(frozen.getDate("FreezeTime"));
                 if (d1.isBefore(from))
                     d1 = from;
@@ -1149,7 +1153,7 @@ public class EchoServer extends AbstractServer {
         ret.append(',');
         ret.append("Standard Deviation");
         ret.append(',');
-        ret.append("Total");
+        //ret.append("Total");
         ret.append("\r\n");
 
 
