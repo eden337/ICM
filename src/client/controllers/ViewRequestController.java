@@ -34,14 +34,31 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+/**
+ * 
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam.<br>
+ * 
+ *	This class is the controller of  "My Requests" page.
+ *	
+ */
 public class ViewRequestController extends AppController implements Initializable {
-
+	
+	/**
+	 * This attribute is an implementation of "Singleton" design pattern and it is meant to hold the "live" instance of the class
+	 */
     public static ViewRequestController Instance;
-
+    
+    /**
+     * This attribute is meant to hold the object of the current chosen request from the table
+     */
     protected ChangeRequest selectedRequestInstance;
 
-    // private Map<String, List<Object>> m;
+    /**
+     * This attribute is meant to hold the data to present on the table in the page
+     */
+    ObservableList<ChangeRequest> o;
+    
     @FXML
     private TableView<ChangeRequest> table;
 
@@ -117,35 +134,63 @@ public class ViewRequestController extends AppController implements Initializabl
     @FXML
     private TextArea reasonText;
 
-
     @FXML
     private Button confirmRequest;
 
     @FXML
     private Text finishedStatus;
-
-    ObservableList<ChangeRequest> o;
-
+    
+    
+    /**
+     * <PRE><B> getCurrentRequest</B><BR>
+     *  protected ChangeRequest getCurrentRequest()<BR>
+     * @return the instance of the selected request from the table.
+     */
     protected ChangeRequest getCurrentRequest() {
         return selectedRequestInstance;
     }
-
+   
+    /**
+	 * <PRE><B> activeStatusBtn</B><BR>
+	 *  void activeStatusBtn(ActionEvent event)<BR>
+	 * Runs when "Active" is pressed in the filter and set {@link #searchBoxTF} to "ACTIVE"
+     * @param event
+     */
     @FXML
     void activeStatusBtn(ActionEvent event) {
         searchBoxTF.setText("ACTIVE");
     }
-
+    
+    /**
+	 * <PRE><B> clearBtnClicked</B><BR>
+	 *  void clearBtnClicked(ActionEvent event)<BR>
+	 * Runs when "Clear" is pressed in the filter and set {@link #searchBoxTF} to empty
+     * @param event
+     */
     @FXML
     void clearBtnClicked(ActionEvent event) {
         searchBoxTF.setText("");
         searchBoxTF.setPromptText("Search...");
     }
-
+    
+    /**
+	 * <PRE><B> userWaitingClicked</B><BR>
+	 *  void userWaitingClicked(ActionEvent event)<BR>
+	 * Runs when "Waiting" is pressed in the filter and set {@link #searchBoxTF} to "WAITING"
+     * @param event
+     */
     @FXML
     void userWaitingClicked(ActionEvent event) {
         searchBoxTF.setText("WAITING(USER)");
     }
-
+    
+    /**
+	 * <PRE><B> confirmRequestClicked</B><BR>
+	 *  void confirmRequestClicked(ActionEvent event)<BR>
+	 * Runs when "Confirm Closure" is pressed and send the server a query to update the status of the request.
+	 * This method is linked with {@link #queryResult(Object)} method as it is the answer to the query.
+     * @param event
+     */
     @FXML
     void confirmRequestClicked(ActionEvent event) {
         c = 0;
@@ -155,7 +200,15 @@ public class ViewRequestController extends AppController implements Initializabl
     }
 
     private static int c = 0;
-
+    
+    /**
+	 * <PRE><B> queryResult</B><BR>
+	 *  public void queryResult(Object object)<BR>
+	 *  This method is called after server runs a query from this class
+	 *  On success pop an alert of success and disable the button "Confirm Closure"
+	 *  On failure pop an alert of failure
+	 * @param object holds the answer from the server after running the query
+     */
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -177,12 +230,25 @@ public class ViewRequestController extends AppController implements Initializabl
     }
 
 
-    // needs to add specific details about the user
+    /**
+     * <PRE><B> getDatafromServer</B><BR>
+     *  private void getDatafromServer()<BR>
+     * This method send a query to the server in order to reload the table.
+     * This method is linked with {@link #setDataTable(Object)} method as it is the answer to the query.
+     */
     private void getDatafromServer() {
         App.client.handleMessageFromClientUI(new Message(OperationType.getViewRequestData,
                 "SELECT * FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
     }
-
+	
+    /**
+	 * <PRE><B> initialize</B><BR>
+	 *  public void initialize(URL location, ResourceBundle resources)<BR>
+	 * Is the first to run when this class is created.
+	 * it is meant to give default values for the arguments in the class.
+	 * @param location 
+	 * @param resources 
+	 */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -231,13 +297,27 @@ public class ViewRequestController extends AppController implements Initializabl
             return row;
         });
     }
-
+    
+    /**
+     * <PRE><B> getPrevStage</B><BR>
+     *  public void getPrevStage()<BR>
+     * This method is called on {@link #initialize(URL, ResourceBundle)} and sends a query to the server
+     * This method is linked with {@link #getPrevStage_ServerResponse(Object)} method as it is the answer to the query.
+     */
     public void getPrevStage() {
         String q = "SELECT * FROM Stage WHERE RequestID='" + selectedRequestInstance.getRequestID()
                 + "' AND StageName='CLOSURE'";
         App.client.handleMessageFromClientUI(new Message(OperationType.getViewPrevStage, q));
     }
-
+    
+    /**
+	 * <PRE><B> getPrevStage_ServerResponse</B><BR>
+	 *  public void queryResult(Object object)<BR>
+	 * This method is called after server runs the query from {@link #getPrevStage()}.
+	 * If the answer from the server is not an existing stage it will pop an alert of failure.
+	 * Set the text near the "Confirm Closure" according to the stage return from server. 
+     * @param object holds the answer from the server after running the query
+     */
     public void getPrevStage_ServerResponse(Object object) {
         Stage thisStage = (common.entity.Stage) object;
 
@@ -258,6 +338,11 @@ public class ViewRequestController extends AppController implements Initializabl
 
     }
 
+    /**
+     * <PRE><B> resetStageImgStyleClass</B><BR>
+     *  private void resetStageImgStyleClass()<BR>
+     * This method is called on {@link #initialize(URL, ResourceBundle)} and removes all style class from stages icons
+     */
     private void resetStageImgStyleClass() {
         stage1.getStyleClass().remove("img_stage_blocked");
         stage1.getStyleClass().remove("img_stage_passed");
@@ -286,6 +371,12 @@ public class ViewRequestController extends AppController implements Initializabl
 
     }
 
+    /**
+     * <PRE><B> setDataTable</B><BR>
+     *  public void setDataTable(Object object)<BR>
+     * This method loads the data received from the server into the table.
+     * @param object
+     */
     @SuppressWarnings("unchecked")
     public void setDataTable(Object object) {
 
@@ -331,19 +422,12 @@ public class ViewRequestController extends AppController implements Initializabl
         // table.setItems(o);
     }
 
-    public void alertMsg(Object object) {
-        Boolean queryResult = (Boolean) object;
-        FadeTransition ft = new FadeTransition(Duration.millis(1400), msg);
-        msg.setText(queryResult ? "Done" : "Failed");
-        msg.setFill(queryResult ? Color.BLUE : Color.RED);
-        msg.setVisible(true);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
-        ft.setAutoReverse(false);
-        ft.play();
-        getDatafromServer();
-    }
-
+    /**
+     * <PRE><B> refrshBtn</B><BR>
+     *  void refrshBtn(MouseEvent event)<BR>
+     * This method is called when refresh is pressed and resets the data present in the table
+     * @param event
+     */
     @FXML
     void refrshBtn(MouseEvent event) {
         getDatafromServer();
@@ -364,6 +448,12 @@ public class ViewRequestController extends AppController implements Initializabl
     @FXML
     private HBox MainPane;
 
+    /**
+     * <PRE><B> refrshBtn</B><BR>
+     *  void showLoading(boolean enable)<BR>
+     * shows the processing animation
+     * @param enable true in order to display and false in order to hide
+     */
     void showLoading(boolean enable){
         LoadingPane.setVisible(false);
         MainPane.setVisible(false);
