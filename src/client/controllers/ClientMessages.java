@@ -43,9 +43,6 @@ public class ClientMessages {
             case getViewRequestData:
                 ViewRequestController.Instance.setDataTable(m.getObject());
                 break;
-            // case updateRequirement:
-            // PrototypeController.Instance.alertMsg(m.getObject());
-            // break;
             case DECISION_DeclineUpdate:
                 decisionController.instance.decisionDeclineQueryResult(m.getObject());
                 break;
