@@ -6,6 +6,7 @@ import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.User;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -84,7 +85,12 @@ public class App extends Application {
     }
 
     public static void ForceAuthorizeAllUsers() {
-        App.client.handleMessageFromClientUI(new Message(OperationType.ForceUpdateUsersPermissions, null));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                App.client.handleMessageFromClientUI(new Message(OperationType.ForceUpdateUsersPermissions, null));
+            }
+        });
     }
 
 }
