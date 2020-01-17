@@ -1,5 +1,28 @@
 package client.controllers;
 
+import client.App;
+import common.Tools;
+import common.controllers.Message;
+import common.controllers.OperationType;
+import common.entity.ChangeRequest;
+import common.entity.EvaluationReport;
+import common.entity.OrganizationRole;
+import common.entity.StageRole;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -12,36 +35,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import client.App;
-import common.Tools;
-import common.controllers.Message;
-import common.controllers.OperationType;
-import common.entity.ChangeRequest;
-import common.entity.EvaluationReport;
-import common.entity.StageRole;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
 /**
- *Controller for decision phase page
- * @version 1.0 - 01/2020
+ * Controller for decision phase page
+ *
  * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ * @version 1.0 - 01/2020
  */
 
 public class EvaluationReportController extends AppController implements Initializable {
@@ -148,8 +146,6 @@ public class EvaluationReportController extends AppController implements Initial
         estimatedTime = date.toString();
         btnAnswerStageExtensionRequest.setVisible(false);
 
-        if (thisStage.getExtension_reason() != null)
-            btnAnswerStageExtensionRequest.setVisible(true);
 
         String query1 = "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
 
@@ -169,11 +165,10 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     private static int c2 = 0;
+
     /**
-     *
      * @param object
-     * @apiNote
-     * client response from Server, this function checks of the update of SbmtEvlBtnClick was updated successfully
+     * @apiNote client response from Server, this function checks of the update of SbmtEvlBtnClick was updated successfully
      * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
      */
     public void evaluationStageUpdateQueryResult(Object object) {
@@ -193,7 +188,6 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     /**
-     *
      * @param location
      * @param resources
      * @apiNote initialization of the Evaluation screen
@@ -204,7 +198,7 @@ public class EvaluationReportController extends AppController implements Initial
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
-        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
+        this.requestNumberTXT.setText("Request Number " + thisRequest.getRequestID());
         SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
         Pane_Form.setVisible(false);
@@ -215,6 +209,8 @@ public class EvaluationReportController extends AppController implements Initial
         titledPane.setText("Welcome");
 
         btnRequestExtension.setVisible(false);
+        if (thisStage.getExtension_reason() != null)
+            btnAnswerStageExtensionRequest.setVisible(true);
 
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
@@ -249,7 +245,7 @@ public class EvaluationReportController extends AppController implements Initial
 
             } else { // NOT EVALUATOR
                 Pane_locked.setVisible(true);
-                if (thisStage.getExtension_days() != 0)
+                if (thisStage.getExtension_reason() != null)
                     btnRequestExtension.setVisible(true);
 
             }
@@ -311,9 +307,7 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     /**
-     *
-     * @param object
-     * client response from server for setFieldData, it will load the recent evaluation report on screen
+     * @param object client response from server for setFieldData, it will load the recent evaluation report on screen
      */
     public void setFieldsData_ServerResponse(Object object) {
         ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
@@ -338,9 +332,7 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     /**
-     *
-     * @param object
-     * client response from server, submit button was pressed and it is updating the dates and stages of the request
+     * @param object client response from server, submit button was pressed and it is updating the dates and stages of the request
      */
 
     public void insertNewRequestResult(Object object) {
@@ -370,11 +362,9 @@ public class EvaluationReportController extends AppController implements Initial
     private static int c = 0;
 
     /**
-     *
-     * @param object
-     * query result of the updates from insertNewRequestResult method,
-     * if successful it will move to requestTreatment and show a success message
-     * otherwise, show an error message.
+     * @param object query result of the updates from insertNewRequestResult method,
+     *               if successful it will move to requestTreatment and show a success message
+     *               otherwise, show an error message.
      */
     public void queryResult(Object object) {
         c++;
@@ -392,6 +382,7 @@ public class EvaluationReportController extends AppController implements Initial
                 showAlert(AlertType.ERROR, "Error!", "Could not update dates and stages", null);
         }
     }
+
     /**
      * Extension option visible only if day difference is bigger then -3
      */
@@ -413,9 +404,7 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     /**
-     *
-     * @param primaryStage
-     * loads the extenstion screen
+     * @param primaryStage loads the extenstion screen
      */
 
     public void start(Stage primaryStage) {

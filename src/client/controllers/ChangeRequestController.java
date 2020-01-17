@@ -139,7 +139,6 @@ public class ChangeRequestController extends AppController implements Initializa
         try {
             String pathServerFiles = printNameFiles(filelist);
             System.out.println(pathServerFiles);
-            // TODO:CURR_RESPONSE,DUE TIME,TREATMENT_PHASE
             String query = "INSERT INTO `Requests`(`USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`, `Treatment_Phase`, `Status`, `Reason`, `SystemID`, `Comments`, `Date`,`FILE`)"
                     + "VALUES" + "('" + App.user.getUserName() + "','" + App.user.getPosition() + "','"
                     + App.user.getEmail() + "','" + ExistingConditionText.getText() + "','" + suggestedText.getText()
