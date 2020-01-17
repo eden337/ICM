@@ -45,7 +45,7 @@ public enum OperationType {
 
     ForceUpdateUsersPermissions, Manager_updateRoleInOrg, VIEWRequest_confirmRequest, Closure_Init,User_getStudentAccess,
 
-    Main_getMyTotalRequests, Main_getMyActiveRequests, Main_getMyRequestTreatment, getTimeFromFrozen, updateUnfrozenStage, insertFreezedRequest, getViewPrevStage, ClousreEmail, FiveRequest,
+    Main_getMyTotalRequests, Main_getMyActiveRequests, Main_getMyRequestTreatment, getTimeFromFrozen, updateUnfrozenStage, insertFreezedRequest, getViewPrevStage, ClousreEmail, TenRequest,
     ;
 
 

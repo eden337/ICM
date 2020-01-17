@@ -78,12 +78,12 @@
                </children></Pane>
             <Pane fx:id="p4" onMouseClicked="#gotoRequestTreatment" prefHeight="200.0" prefWidth="200.0" styleClass="bg_menu_item">
                <children>
-                  <ImageView fitHeight="78.0" fitWidth="102.0" layoutX="89.0" layoutY="14.0" onMouseClicked="#gotoRequestTreatment">
+                  <ImageView fitHeight="78.0" fitWidth="102.0" layoutX="89.0" layoutY="6.0" onMouseClicked="#gotoRequestTreatment">
                      <image>
                         <Image url="@img/icons/icon_requestTreatment.png" />
                      </image>
                   </ImageView>
-                  <Text fill="WHITE" layoutX="73.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Treatment">
+                  <Text fill="WHITE" layoutX="73.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request Treatment">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

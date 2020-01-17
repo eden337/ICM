@@ -24,6 +24,12 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+/**
+ * Extension prompt controller
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class ExtensionController extends AppController implements Initializable {
     public static ExtensionController instance;
     protected ChangeRequest thisRequest;
@@ -57,6 +63,12 @@ public class ExtensionController extends AppController implements Initializable 
     @FXML
     private Text warning;
 
+    /**
+     *
+     * @param event
+     * submission of time extension send to DB
+     */
+
     @FXML
     void submitForm(ActionEvent event) {
         this.event = event;
@@ -74,6 +86,12 @@ public class ExtensionController extends AppController implements Initializable 
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     *
+     * @param event
+     * supervisor accepted the extension, deadLine is updated on database
+     */
+
     @FXML
     void accept(ActionEvent event) {
         this.event = event;
@@ -87,7 +105,11 @@ public class ExtensionController extends AppController implements Initializable 
         App.client.handleMessageFromClientUI(new Message(ot, query));
         loadPage("requestTreatment");
     }
-
+    /**
+     *
+     * @param event
+     * supervisor denied the extension, result sent to server
+     */
     @FXML
     void deny(ActionEvent event) {
         this.event = event;
@@ -102,6 +124,12 @@ public class ExtensionController extends AppController implements Initializable 
 
     private Event event;
 
+    /**
+     *
+     * @param location
+     * @param resources
+     * initialization of the extension screen
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -117,7 +145,9 @@ public class ExtensionController extends AppController implements Initializable 
         initScreen();
     }
 
-
+    /**
+     * initialization of the extension screen with the validation of the extension data.
+     */
     public void initScreen() {
         if (thisStage.getExtension_reason() != null) { // if request sent
             defualtPane.setVisible(true);
@@ -138,8 +168,6 @@ public class ExtensionController extends AppController implements Initializable 
             if (thisStage.getExtension_decision() != null) {
                 btnAccept.setVisible(false);
                 btnDeny.setVisible(false);
-                tfDays.setEditable(false);
-                taReason.setEditable(false);
                 return;
             }
 
@@ -161,13 +189,18 @@ public class ExtensionController extends AppController implements Initializable 
         }
     }
 
+    /**
+     *
+     * @param object
+     * client response from server, its a response from the submitForm method, it will show an alert if the update is a success or not
+     */
     public void InsertOrUpdate_ServerResponse(Object object) {
         Boolean res = (Boolean) object;
         if (res) {
-            showAlert(Alert.AlertType.INFORMATION, "Operation Done!", "Operation done successfully!", null);
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    showAlert(Alert.AlertType.INFORMATION, "Operation Done!", "Operation done successfully!", null);
                     ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
                 }
             });

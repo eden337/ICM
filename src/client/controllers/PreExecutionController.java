@@ -25,6 +25,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for pre-evaluation phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 public class PreExecutionController extends AppController implements Initializable {
 
     public static PreExecutionController instance;
@@ -81,6 +86,12 @@ public class PreExecutionController extends AppController implements Initializab
     @FXML
     private Text txtMsg;
 
+    /**
+     * if pre - execution is confirmed by pressing accept, the start time and deadline of execution stage for this request
+     * is going to be updated om DB, and also changing the status of the request to ACTIVE
+     * @param event
+     */
+
     @FXML
     void AcceptPreExe(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -104,12 +115,22 @@ public class PreExecutionController extends AppController implements Initializab
         App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
 
+    /**
+     * if pre - execution is denied by pressing deny button, the init set to false
+     * @param event
+     */
+
     @FXML
     void DenyPreExe(ActionEvent event) {
         OperationType ot = OperationType.PreEXE_SetConfirmationStatus;
         String query = "UPDATE `Stage` SET `init` = false where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
+
+    /**
+     * requested execution days are submitted and uploaded to DB by pressing deny button
+     * @param event
+     */
 
     @FXML
     void SubmitDaysRequest(ActionEvent event) {
@@ -133,6 +154,12 @@ public class PreExecutionController extends AppController implements Initializab
         }
     }
 
+    /**
+     * Initialize the pre execution screen
+     * @param location
+     * @param resources
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -152,7 +179,9 @@ public class PreExecutionController extends AppController implements Initializab
         txtMsg.setVisible(false);
 
     }
-
+    /**
+     * gets the submitted days of execution stage
+     */
     private void getCurrentReqestedDays() {
         OperationType ot = OperationType.PreEXE_getData;
         String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EXECUTION' AND `RequestID`= '" + thisRequest.getRequestID() + "'";
@@ -193,6 +222,10 @@ public class PreExecutionController extends AppController implements Initializab
 
     }
 
+    /**
+     * server response from AcceptPreExe method
+     * @param object
+     */
 
     public void updateStatus_serverResponse(Object object) {
         boolean res = (boolean) object;

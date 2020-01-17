@@ -32,6 +32,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import server.controllers.EmailSender;
 
+/**
+ *
+ * Controller for Closure phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class ClosureController extends AppController implements Initializable {
 
     /*
@@ -101,6 +108,13 @@ public class ClosureController extends AppController implements Initializable {
     @FXML
     private Text titledPane_Text;
 
+    /**
+     *
+     * @param location
+     * @param resources
+     * @apiNote initialization of the Closure screen
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         dueDateLabel.setVisible(true);
@@ -133,11 +147,9 @@ public class ClosureController extends AppController implements Initializable {
         // Otherwise: this is the Supervisor in his stage
         pane_msg.setVisible(true);
         textInMsgPane.setText("The request waiting for " + thisRequest.getInitiator() + " Action");
-        //pane_form.setVisible(true);
         estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
                 .toDays();
         estimatedTime += 1;
-        // titlePane_Text.setText(String.valueOf(estimatedTime));
         Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
         if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
             finishedStatus.setFill(Color.DARKRED);
@@ -147,10 +159,11 @@ public class ClosureController extends AppController implements Initializable {
             finishedStatus.setFill(Color.FORESTGREEN);
             finishedStatus.setText("Request Processed Correctly");
         }
-
-        // inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
-
     }
+
+    /**
+     * Getting confirmed requests from the request initiator
+     */
 
     void closureInit() {
         String query = "SELECT Request_Confirmed FROM Requests WHERE RequestID = '" + thisRequest.getRequestID()
@@ -159,6 +172,12 @@ public class ClosureController extends AppController implements Initializable {
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     *
+     * @param object
+     * @apiNote
+     * server response from closureInit function, if there is a confirmed request, the closure process will be available on screen
+     */
     public void checkPreConditions_ServerResponse(Object object) {
         List<Boolean> init_res = (List<Boolean>) object;
         boolean closure_init = init_res.get(0);
@@ -169,13 +188,6 @@ public class ClosureController extends AppController implements Initializable {
 
             return;
         }
-        /*
-         * // else Platform.runLater(new Runnable() {
-         *
-         * @Override public void run() {
-         *
-         * } });
-         */
     }
 
     /**
@@ -211,6 +223,11 @@ public class ClosureController extends AppController implements Initializable {
         App.client.handleMessageFromClientUI(new Message(ot2, query3));
     }
 
+    /**
+     * @apiNote
+     * client response from server, if request closure Updates were updating the correct tuple on the DB successfully
+     * its using the Clousre_UpdateRequestStatus Operation
+     */
     private static int c = 0;
 
     public void closureQueryResult(Object object) {
@@ -223,7 +240,7 @@ public class ClosureController extends AppController implements Initializable {
                     public void run() {
                         showAlert(AlertType.INFORMATION, "Request Treatment Completed",
                                 "Request #" + thisRequest.getRequestID() + " is now " + thisRequest.getStatus()
-                                        + "\nnotifying appropirate users via email",
+                                        + "\nnotifying appropriate users via email",
                                 null);
                         loadPage("requestTreatment");
                     }
@@ -233,8 +250,14 @@ public class ClosureController extends AppController implements Initializable {
         }
     }
 
+    /**
+     * @apiNote
+     * client response from server, if request closure mail was sent successfully
+     * its using the ClosureEmail Operation
+     */
+
     public void emailResponse(Object object) {
         if (!(boolean) object)
-            showAlert(AlertType.ERROR, "Error", "Canwt send email please try agian", null);
+            showAlert(AlertType.ERROR, "Error", "Can't send email please try again", null);
     }
 }

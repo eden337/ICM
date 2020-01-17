@@ -28,8 +28,8 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * change request window
- *
- * @author Hen Hess
+ *@version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 //
 public class ChangeRequestController extends AppController implements Initializable {
@@ -73,7 +73,7 @@ public class ChangeRequestController extends AppController implements Initializa
 
     private Stage stage;
     private List<File> filelist;
-
+    static int rid;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -139,7 +139,6 @@ public class ChangeRequestController extends AppController implements Initializa
         try {
             String pathServerFiles = printNameFiles(filelist);
             System.out.println(pathServerFiles);
-            // TODO:CURR_RESPONSE,DUE TIME,TREATMENT_PHASE
             String query = "INSERT INTO `Requests`(`USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`, `Treatment_Phase`, `Status`, `Reason`, `SystemID`, `Comments`, `Date`,`FILE`)"
                     + "VALUES" + "('" + App.user.getUserName() + "','" + App.user.getPosition() + "','"
                     + App.user.getEmail() + "','" + ExistingConditionText.getText() + "','" + suggestedText.getText()
@@ -270,7 +269,7 @@ public class ChangeRequestController extends AppController implements Initializa
      * @param object the object that return from the server is boolean
      */
     public void queryResult(Object object) {
-        int rid = (int) object;
+        rid = (int) object;
         if (rid > 0) {
             if (filelist != null) {
                 createZip("Request_" + rid + ".zip");
@@ -292,8 +291,8 @@ public class ChangeRequestController extends AppController implements Initializa
     public void uploadFileResult(Object object) {
         boolean fileRes = (boolean) object;
         if (fileRes) {
-            showAlert(AlertType.INFORMATION, "Request was sent successfuly",
-                    "We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
+            showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\n\t\t\t\t\tThank you! ",
+                    null);
             //loadPage("Homepage");
         } else
             showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);

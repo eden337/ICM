@@ -4,6 +4,7 @@ import client.App;
 import client.BypassedApp;
 import common.controllers.Message;
 import common.controllers.OperationType;
+import common.entity.EmployeeUser;
 import common.entity.OrganizationRole;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert.AlertType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,6 +29,8 @@ import java.util.ResourceBundle;
  * menu actions,
  * log out,
  * Notifications
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class mainController extends AppController implements Initializable {
     public static mainController instance;
@@ -206,6 +210,12 @@ public class mainController extends AppController implements Initializable {
             App.appInitialized = true;
         }
 
+        // DEFAULT
+        pHome.setVisible(true);
+        p2.setVisible(true);
+        p3.setVisible(true);
+
+
         p6.setVisible(false);
 
         // Menu Permissions:
@@ -215,17 +225,15 @@ public class mainController extends AppController implements Initializable {
             p3.setVisible(true);
             p4.setVisible(true);
         }
-        if (App.user.getPosition().equals("Student")) {
-            pHome.setVisible(true);
-            p2.setVisible(true);
-            p3.setVisible(true);
-        }
+
 
         if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
             p5.setVisible(true);
             p6.setVisible(true);
         }
-        text_hello.setText("Hello, " + App.user.getFirstName() + " ( " + App.user.getOrgRole() + " ) ");
+
+        String showRole= !App.user.getOrgRole().equals("") ? " ( " + App.user.getOrgRole() + " ) " :"";
+        text_hello.setText("Hello, " + App.user.getFirstName() + showRole);
 
     }
 

@@ -39,10 +39,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-//
 
 /**
- * @author Hen_Eden_Yuda
+ * controller for manager page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class ManagerViewPage extends AppController implements Initializable {
     public static ManagerViewPage Instance;
@@ -127,12 +128,17 @@ public class ManagerViewPage extends AppController implements Initializable {
     @FXML
     private AnchorPane rightPane;
 
+    /**
+     * fetching all the IT-engineers from the DB
+     */
 
     private void getDatafromServer() {
         App.client.handleMessageFromClientUI(
                 new Message(OperationType.getEmployeeData, "SELECT * FROM Employees WHERE Department = 'IT';"));
     }
-
+    /**
+     * fetching all the system technician from db
+     */
     private void getSystemsTable() {
         App.client.handleMessageFromClientUI(
                 new Message(OperationType.getSystemData, "SELECT `SystemID`, `username` FROM `Systems Techncian` WHERE 1 ;"));
@@ -317,6 +323,10 @@ public class ManagerViewPage extends AppController implements Initializable {
         appointment("COMMITEE_MEMBER2");
     }
 
+    /**
+     * setting the table view of the manager page
+     * @param object
+     */
     @SuppressWarnings("unchecked")
     public void setDataTable(Object object) {
         // System.out.println("--> setDataTable");

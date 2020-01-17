@@ -38,6 +38,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ *Controller for execution phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class ExecutionController extends AppController implements Initializable {
 
     /*
@@ -128,6 +134,13 @@ public class ExecutionController extends AppController implements Initializable 
     private common.entity.Stage thisStage;
     long estimatedTime = 0;
 
+    /**
+     *
+     * @param location
+     * @param resources
+     * @apiNote initialization of the execution screen
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -183,16 +196,24 @@ public class ExecutionController extends AppController implements Initializable 
 
     }
 
+    /**
+     * checks if there is any available failure report for this current request on DB
+     */
+
     private void reportNoteUpdater() {
         OperationType ot = OperationType.EXECUTION_GetFailReport;
         String query = "SELECT * FROM `Execution Failure Report`  WHERE `RequestID` = " + thisRequest.getRequestID() + " LIMIT 1";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+
+    /**
+     * client response from server, if there is any available failure report for this current request on DB
+     * then show the report, otherwise don't show the report.
+     */
     public void getReport_ServerResponse(Object object) {
         this.reportResult = (String) object;
         if (reportResult == null) {
-            //showAlert(AlertType.ERROR, "Error", "Could not find prev stage", null);
             returnedNoteAP.setVisible(false);
         } else { // if the returned result was back
             returnedNoteAP.setVisible(true);
@@ -200,8 +221,9 @@ public class ExecutionController extends AppController implements Initializable 
         }
     }
 
-
-    // first click on this button to send to supervisor
+    /**
+     * checks if pre - execution step is complete
+     */
     private void checkPreConditions() {
         OperationType ot = OperationType.EXE_GetInitData;
         String query = "SELECT `init`,`init_confirmed` FROM `Stage` WHERE `RequestID` = '" + thisRequest.getRequestID()
@@ -209,6 +231,12 @@ public class ExecutionController extends AppController implements Initializable 
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     *
+     * @param object
+     * client response from server, if the pre execution stage is complete then the execution stage will start
+     * otherwise the pre-execution stage is starting.
+     */
     public void checkPreConditions_ServerResponse(Object object) {
         List<Boolean> init_res = (List<Boolean>) object;
         boolean init = init_res.get(0);
@@ -229,6 +257,9 @@ public class ExecutionController extends AppController implements Initializable 
         });
     }
 
+    /**
+     * initialize the execution screen;
+     */
     private void init() {
 
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
@@ -261,9 +292,15 @@ public class ExecutionController extends AppController implements Initializable 
         }
     }
 
+    /**
+     *
+     * @param event
+     * execution submitting, it will update the phase, and the init parameters for execution stage for this request.
+     */
     // submit of the executer after the supervisor click agree.
     @FXML
     void submitWorkDone(ActionEvent event) {
+        c=0;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Calendar c = Calendar.getInstance();
         Date today = new Date(System.currentTimeMillis());
@@ -285,25 +322,33 @@ public class ExecutionController extends AppController implements Initializable 
     }
 
     private static int c = 0;
-
+    /**
+     *
+     * @param object
+     * @apiNote
+     * client response from Server, this function checks of the update of approveBtnClick was updated successfully
+     * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
+     */
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
-        if (c == 3) {
+        if (c == 2) {
             if (res) {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        showAlert(AlertType.INFORMATION, "Update Success!", "Data Error2.", null);
+                        showAlert(AlertType.INFORMATION, "Update Success!", "Execution finished\nNotify the committee-chairman to resume the process", null);
                         loadPage("requestTreatment");
                     }
                 });
             } else
-                showAlert(AlertType.ERROR, "Error!", "Data Error2.", null);
+                showAlert(AlertType.ERROR, "Error!", "Execution update failed!!!", null);
         }
     }
 
-    // Extensions:
+    /**
+     * Extension option visible only if day difference is bigger then -3
+     */
     private void setExtensionVisability() {
         btnRequestExtension.setVisible(false);
         long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
@@ -319,7 +364,11 @@ public class ExecutionController extends AppController implements Initializable 
     void requestExtension(ActionEvent event) {
         start(new Stage());
     }
-
+    /**
+     *
+     * @param primaryStage
+     * loads the extenstion screen
+     */
     public void start(Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));

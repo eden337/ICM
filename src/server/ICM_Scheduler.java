@@ -57,16 +57,18 @@ public class ICM_Scheduler {
             EchoServer.connectedUsers.forEach((k, v) -> {
                 if (!v.isAlive()) {
                     System.out.println("remove " + k);
-                    EchoServer.connectedUsers.remove(k);
+                    if(EchoServer.connectedUsers.containsKey(k))
+                        EchoServer.connectedUsers.remove(k);
                 }
             });
             updateUserList();
         } catch (Exception e) {
-            System.out.println("!! Timer Exception !!");
+            ServerController.instance.startServer();
         }
     }
 
     public static void updateUserList(){
+
         ServerController.instance.usersList.setItems(FXCollections.observableArrayList(EchoServer.connectedUsers.keySet()));
     }
 }//ICM_Scheduler

@@ -27,6 +27,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+/**
+ *  Controller for pre-validation phase page
+ *  @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 
 public class PreValidationController extends AppController implements Initializable {
 
@@ -82,6 +87,9 @@ public class PreValidationController extends AppController implements Initializa
     private Text txtWarning;
 
     @FXML
+    /**
+     * send to the data base the allocated tester that was selected via cbValidator
+     */
     void allocateTester(ActionEvent event) {
         if (cbValidator.getValue() == null) {
             txtWarning.setVisible(true);
@@ -104,11 +112,14 @@ public class PreValidationController extends AppController implements Initializa
                 " , `init_confirmed` = 1" +
                 " where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
         App.client.handleMessageFromClientUI(new Message(ot, query1));
-        App.ForceAuthorizeAllUsers();
 
 
     }
 
+    /**
+     * server response from the allocateTester queries that were sent
+     * @param object
+     */
     public void queryResult(Object object) {
         boolean res = (boolean) object;
         if (res) {
@@ -116,14 +127,19 @@ public class PreValidationController extends AppController implements Initializa
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    //App.ForceAuthorizeAllUsers();
                     showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
-                    loadPage("requestTreatment");
+                    loadPage("requestTreatment", "Request Treatment and Management");
                 }
             });
         } else
             showAlert(Alert.AlertType.ERROR, "Error!", "Could not update.", null);
     }
-
+    /**
+     * Initialize the pre validation screen
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -143,12 +159,21 @@ public class PreValidationController extends AppController implements Initializa
         getUsersFromServer();
     }
 
+    /**
+     * called from preValidationController.initialize method
+     * gets all the available committee members for the testing of execution stage
+     * this is done by loading the fetched data into a comboBox.
+     */
     private void getUsersFromServer() {
         OperationType ot = OperationType.PreValidation_GetCOMMITEE_MEMBERS;
         String query = "SELECT * FROM `Employees` WHERE `RoleInOrg` LIKE 'COMMITEE_MEMBER%'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     * server response, this method build the data within the combobox that located in prevalidation screen
+     * @param object
+     */
     public void setComboBoxesData(Object object) {
         List<String> listOfUsers = (List<String>) object;
         Platform.runLater(new Runnable() {

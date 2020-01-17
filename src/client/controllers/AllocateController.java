@@ -20,6 +20,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for Allocate page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class AllocateController extends AppController implements Initializable {
     public static AllocateController instance;
     protected ChangeRequest thisRequest;
@@ -78,6 +84,12 @@ public class AllocateController extends AppController implements Initializable {
 
     private static int c = 0;
 
+    /**
+     *
+     * @param event
+     * @apiNote This function responsible of submitting of the initialization of the INIT phase.
+     */
+
     @FXML
     void submitForm(ActionEvent event) {
         c = 0;
@@ -115,6 +127,11 @@ public class AllocateController extends AppController implements Initializable {
         loadPage("requestTreatment");
     }
 
+    /**
+     *
+     * @param object
+     * @apiNote this function is the response from the server  of the query updates from submitForm function
+     */
 
     public void allocQueryResult(Object object) {
         c--;
@@ -143,6 +160,10 @@ public class AllocateController extends AppController implements Initializable {
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
     }
 
+    /**
+     * @apiNote
+     * getUsersFromServer gets all the engineers that available on the SQL database, this function is called via the initialize function.
+     */
     private void getUsersFromServer() {
         OperationType ot = OperationType.Allocate_GetITUsers;
         String query = "SELECT * FROM Employees WHERE Type = 'Engineer' AND USERNAME != '" + App.user.getUserName() + "'";
@@ -151,6 +172,12 @@ public class AllocateController extends AppController implements Initializable {
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     *
+     * @param object
+     * client response from server via Allocate_GetITUsers, the Object is converted to "List<String>" which is loaded on the Allocate Incharges page.
+     * mainly, the function loads the data of listOfUsers into the combobox on the screens.
+     */
     public void setComboBoxesData(Object object) {
         List<String> listOfUsers = (List<String>) object;
         ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
@@ -169,6 +196,12 @@ public class AllocateController extends AppController implements Initializable {
             }
         });
     }
+
+    /**
+     *
+     * @param object
+     * response from the server in order to alert the user if the the roll appointment is either done or not, it is a response from Allocate_SetRoles
+     */
 
     public void showResult(Object object) {
         boolean res = (boolean) object;

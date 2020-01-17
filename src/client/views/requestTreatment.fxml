@@ -43,6 +43,9 @@
                                     <MenuItem fx:id="clearBtn" mnemonicParsing="false" onAction="#clearBtnClicked" text="Clear Filter" />
                                   <MenuItem fx:id="activeStatusBtn" mnemonicParsing="false" onAction="#activeStatusBtn" text="Active Status" />
                                   <MenuItem fx:id="supervisorWaiting" mnemonicParsing="false" onAction="#supervisorWaitingClicked" text="Waiting to Supervisor" />
+                                   <MenuItem fx:id="canceledFilter" mnemonicParsing="false" onAction="#canceledFilterClicked" text="Canceled" />
+                                   <MenuItem fx:id="waitingFilter" mnemonicParsing="false" onAction="#waitingFilterClicked" text="Waiting for response" />
+                                   <MenuItem fx:id="suspendedFilter" mnemonicParsing="false" onAction="#suspendedFilterClicked" text="Suspended Requests" />
                                 </items>
                               </MenuButton>
                            </children>

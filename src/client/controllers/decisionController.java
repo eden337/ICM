@@ -33,6 +33,12 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *Controller for decision phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class decisionController extends AppController implements Initializable {
 
     /*
@@ -112,6 +118,13 @@ public class decisionController extends AppController implements Initializable {
     @FXML
     private Button btnRequestExtension;
 
+    /**
+     *
+     * @param location
+     * @param resources
+     * @apiNote initialization of the decision screen
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         long estimatedTime = 0;
@@ -159,12 +172,23 @@ public class decisionController extends AppController implements Initializable {
         Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
     }
 
+    /**
+     * @apiNote this function is called from the initialization of the page
+     * Its loads from the DB the current request evaluation report.
+     */
+
     private void setFieldsData() {
         OperationType ot = OperationType.DECISION_GetAllReportsByRID;
         String query = "SELECT * FROM `EvaluationReports` WHERE REQUESTID = " + thisRequest.getRequestID()
                 + " ORDER BY Report_ID DESC LIMIT 1;";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
+
+    /**
+     *
+     * @param object
+     * client response from server, this function loads the recent evaluation report on the screen.
+     */
 
     public void setFieldsData_ServerResponse(Object object) {
         ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
@@ -212,6 +236,12 @@ public class decisionController extends AppController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param event
+     * approve button on the page was clicked, it tries to update the phase of the request to execution phase.
+     */
+
     @FXML
     void approveBtnClick(ActionEvent event) {
         c=0;
@@ -231,6 +261,13 @@ public class decisionController extends AppController implements Initializable {
 
     private static int c = 0;
 
+    /**
+     *
+     * @param object
+     * @apiNote
+     * client response from Server, this function checks of the update of approveBtnClick was updated successfully
+     * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
+     */
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -244,9 +281,15 @@ public class decisionController extends AppController implements Initializable {
                     }
                 });
             } else
-                showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
+                showAlert(AlertType.ERROR, "Error!", "Can't update approval", null);
         }
     }
+
+    /**
+     *
+     * @param event
+     * decline button on the page was clicked, it tries to update the phase of the request to closure phase.
+     */
 
     @FXML
     void declineBtnClick(ActionEvent event) {
@@ -272,15 +315,18 @@ public class decisionController extends AppController implements Initializable {
         App.client.handleMessageFromClientUI(new Message(ot, query3));
         App.client.handleMessageFromClientUI(new Message(ot, query4));
         App.client.handleMessageFromClientUI(new Message(ot, query5));
-        //showAlert(AlertType.INFORMATION, "Evaluation Declined", "Request moved to closure phase...", null);
-        //reEvaluateBtn.setDisable(true);
-        //approveBtn.setDisable(true);
-        //declineBtn.setDisable(true);
-        //loadPage("requestTreatment");
+
     }
 
     private static int c3 = 0;
 
+    /**
+     *
+     * @param object
+     * @apiNote
+     * client response from Server, this function checks of the update of declineBtnClick was updated successfully
+     * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
+     */
     public void decisionDeclineQueryResult(Object object) {
         c3++;
         boolean res = (boolean) object;
@@ -297,9 +343,15 @@ public class decisionController extends AppController implements Initializable {
                     }
                 });
             } else
-                showAlert(AlertType.ERROR, "Error!", "Cannot approve the declinement", null);
+                showAlert(AlertType.ERROR, "Error!", "Cannot approve the decline", null);
         }
     }
+
+    /**
+     *
+     * @param event
+     * re-evaluate button on the page was clicked, it tries to update the phase of the request to evaluation phase.
+     */
 
     @FXML
     void reEvaluateBtnClick(ActionEvent event) {
@@ -307,14 +359,11 @@ public class decisionController extends AppController implements Initializable {
         String query = "SELECT * FROM `Stage`  WHERE `RequestID` = " + thisRequest.getRequestID()
                 + " AND `StageName` = 'EVALUATION' LIMIT 1";
         App.client.handleMessageFromClientUI(new Message(ot, query));
-
-//		reEvaluateBtn.setDisable(true);
-//		approveBtn.setDisable(true);
-//		declineBtn.setDisable(true);
-//		loadPage("requestTreatment");
     }
 
-    // Extensions:
+    /**
+     * Extension option visible only if day difference is bigger then -3
+     */
     private void setExtensionVisability() {
         btnRequestExtension.setVisible(false);
         long daysDifference = Tools.DaysDifferenceFromToday(thisRequest.getCurrentStageObject().getDeadline());
@@ -330,6 +379,12 @@ public class decisionController extends AppController implements Initializable {
         start(new javafx.stage.Stage());
     }
 
+    /**
+     *
+     * @param primaryStage
+     * loads the extenstion screen
+     */
+
     public void start(javafx.stage.Stage primaryStage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/client/views/Extension.fxml"));
@@ -344,6 +399,13 @@ public class decisionController extends AppController implements Initializable {
         }
     }
 
+    /**
+     *
+     * @param object
+     * client response from server, appendPrevStageObject_ServerResponse is the response for the query that search the previous stage
+     * if there is any, setStageTable will be called, else error message will be thrown.
+     */
+
     public void appendPrevStageObject_ServerResponse(Object object) {
         this.prevStage = (common.entity.Stage) object;
         if (prevStage == null) {
@@ -353,6 +415,9 @@ public class decisionController extends AppController implements Initializable {
         }
     }
 
+    /**
+     * resetting all the confirming information of pre- evaluation stage, and trying to send an email to the evaluator
+     */
     void setStageTable() {
         c2 = 0;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -385,6 +450,12 @@ public class decisionController extends AppController implements Initializable {
 
     private static int c2 = 0;
 
+    /**
+     *
+     * @param object
+     * client response form server, it will check if all the updates from setStageTable were sent correctly
+     * returns to request treatment screen of successful and show an success prompt, otherwise, throws an error message.
+     */
     public void queryResult2(Object object) {
         c2++;
         boolean res = (boolean) object;
@@ -399,7 +470,7 @@ public class decisionController extends AppController implements Initializable {
                     }
                 });
             } else
-                showAlert(AlertType.ERROR, "Error!", "Cannot re-evealuate", null);
+                showAlert(AlertType.ERROR, "Error!", "Cannot re-evaluate", null);
         }
     }
 
