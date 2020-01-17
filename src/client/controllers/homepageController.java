@@ -7,6 +7,8 @@ import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -14,12 +16,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Observable;
 import java.util.ResourceBundle;
 
 /**
@@ -192,6 +196,7 @@ public class homepageController extends AppController implements Initializable {
 						+ "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'VALIDATION' AND S.StageName = 'VALIDATION' AND S.init_confirmed = 0)";
 			return query;
 		}
+
 		// general:
 		return query;
 	}
@@ -210,6 +215,26 @@ public class homepageController extends AppController implements Initializable {
         Statustable.setCellValueFactory(new PropertyValueFactory<>("status"));
         Stagetable.setCellValueFactory(new PropertyValueFactory<>("currentStage"));
         table5last.setItems(o);
-		
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		showLoading(false);
+
+
 	}
+
+	@FXML
+	private Pane LoadingPane;
+
+	@FXML
+	private VBox MainPane;
+
+	void showLoading(boolean enable){
+		LoadingPane.setVisible(false);
+		MainPane.setVisible(false);
+		LoadingPane.setVisible(enable);
+		MainPane.setVisible(!enable);
+	}
+
 }
