@@ -163,7 +163,6 @@ public class EchoServer extends AbstractServer {
                             }
                         }
                     }
-                    // if the user already connected
                     if (!rs.next() && employeeUser == null) {
                         sendToClient(new Message(OperationType.LoginResult, new User("fail", null, null, null, null, null)),
                                 client);
@@ -606,18 +605,28 @@ public class EchoServer extends AbstractServer {
                          */
                         boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('"
                                 + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
+                        
+                        HashMap<String, ArrayList<Integer>> frequency = new HashMap<>();
 
-                        HashMap<String, Integer> frequency = new HashMap<String, Integer>();
-
-                        frequency.put("Moodle", 0);
-                        frequency.put("Labs", 0);
-                        frequency.put("Information Station", 0);
-                        frequency.put("Computer Farm", 0);
-                        frequency.put("Collage website", 0);
-                        frequency.put("Class Computers", 0);
-                        frequency.put("Library", 0);
+                        frequency.put("Moodle", new ArrayList<Integer>());
+                        frequency.get("Moodle").add(0);
+                        frequency.put("Labs", new ArrayList<Integer>());
+                        frequency.get("Labs").add(0);
+                        frequency.put("Information Station", new ArrayList<Integer>());
+                        frequency.get("Information Station").add(0);
+                        frequency.put("Computer Farm", new ArrayList<Integer>());
+                        frequency.get("Computer Farm").add(0);
+                        frequency.put("Collage website", new ArrayList<Integer>());
+                        frequency.get("Collage website").add(0);
+                        frequency.put("Class Computers", new ArrayList<Integer>());
+                        frequency.get("Class Computers").add(0);
+                        frequency.put("Library", new ArrayList<Integer>());
+                        frequency.get("Library").add(0);
                         calcDelayedDaysPer(frequency);
-                        String reportDelayData = reportBuilderOnePram(frequency, "Delayed Days");
+                        ArrayList<String> dealyCols=new ArrayList<String>();
+                        dealyCols.add("Delayed Days");
+                        dealyCols.add("delayed Times");
+                        String reportDelayData = reportBuilder(frequency, dealyCols);
                         if (insertOrUpdeate)
                             mysql.insertOrUpdate("UPDATE `Reports` SET `Data`='" + reportDelayData + "'WHERE `ReportType`='"
                                     + report.getType() + "' AND `Created`='" + report.getCreated() + "'  ");
@@ -1102,7 +1111,7 @@ public class EchoServer extends AbstractServer {
         return (int) ((mainStages + freezeStages) - freezeStages);
     }
 
-    public void calcDelayedDaysPer(HashMap<String, Integer> mapDelays) {
+    public void calcDelayedDaysPer(HashMap<String, ArrayList<Integer>> mapDelays) {
         ResultSet delayData = mysql.getQuery(
                 "SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
         ZonedDateTime deadline;
@@ -1115,7 +1124,10 @@ public class EchoServer extends AbstractServer {
                 int res = (int) Duration.between(deadline, compareTo).toDays();
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
-                mapDelays.replace(system, mapDelays.get(system) + res);
+                ArrayList<Integer> tempdelays=new ArrayList<Integer>();
+                tempdelays.add(mapDelays.get(system).get(0));
+                
+                mapDelays.replace(system, tempdelays);
             }
             delayData = mysql.getQuery(
                     "SELECT `SystemID`,EndTime,Deadline FROM `Requests` as r, `Repeted` as s WHERE r.RequestID=s.RequestID AND Deadline IS NOT NULL");
@@ -1126,8 +1138,18 @@ public class EchoServer extends AbstractServer {
                 int res = (int) Duration.between(deadline, compareTo).toDays();
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
-                mapDelays.replace(system, mapDelays.get(system) + res);
+                ArrayList<Integer> tempdelays=new ArrayList<Integer>();
+                tempdelays.add(mapDelays.get(system).get(0));
+                
+                mapDelays.replace(system, tempdelays);
             }
+            for(String s: mapDelays.keySet())
+            {
+            	delayData=mysql.getQuery("SELECT COUNT(*) FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND s.delay=1 AND r.SystemID='"+s+"'");
+            	delayData.next();
+            	 mapDelays.get(s).add(delayData.getInt(1));
+            }
+      
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

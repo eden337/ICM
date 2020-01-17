@@ -92,16 +92,24 @@ public class ReportGrapicsController extends AppController implements Initializa
 		}
 		else 
 		{
+			
 			CategoryAxis xAxis=new CategoryAxis();
 			NumberAxis yAxis= new NumberAxis();
 			yAxis.setLabel("Days");
-			BarChart amount =new BarChart(xAxis, yAxis, getDataDelaysFreq());
-			freqPane.getChildren().add(amount);
+			BarChart days =new BarChart(xAxis, yAxis, getDataDelaysDaysFreq());
+			
+			CategoryAxis xAxis0=new CategoryAxis();
+			NumberAxis yAxis0= new NumberAxis();
+			BarChart amount =new BarChart(xAxis0, yAxis0, getDataDelaysDTimesFreq());
+			freqPane.getChildren().addAll(amount,days);
 			CategoryAxis xAxis2=new CategoryAxis();
 			NumberAxis yAxis2= new NumberAxis();
-			BarChart statsChart =new BarChart(xAxis2, yAxis2,getDataDelaysStats());
+			BarChart statsChart =new BarChart(xAxis2, yAxis2,getDataDelaysStatsDays());
 			statsChart.setTitle("Statistics: Days");
-			stsPane.getChildren().addAll(statsChart);
+			CategoryAxis xAxis3=new CategoryAxis();
+			NumberAxis yAxis3= new NumberAxis();
+			BarChart statsChartTimes =new BarChart(xAxis3, yAxis3,getDataDelaysStatsTomes());
+			stsPane.getChildren().addAll(statsChart,statsChartTimes);
 		}
 		
 	}
@@ -163,7 +171,7 @@ public class ReportGrapicsController extends AppController implements Initializa
     		
     }
     
-    private ObservableList<XYChart.Series<String, Integer>> getDataDelaysFreq()
+    private ObservableList<XYChart.Series<String, Integer>> getDataDelaysDaysFreq()
     {
     	
     	ObservableList<XYChart.Series<String, Integer>> data=FXCollections.observableArrayList();
@@ -173,6 +181,23 @@ public class ReportGrapicsController extends AppController implements Initializa
     	for(String s:ViewReportsController.datesAndData.keySet())
     	{
     		delays.getData().add(new XYChart.Data(s,ViewReportsController.datesAndData.get(s).get(0)));
+    	}
+    	
+    	data.add(delays);
+
+    	return data;
+    		
+    }
+    private ObservableList<XYChart.Series<String, Integer>> getDataDelaysDTimesFreq()
+    {
+    	
+    	ObservableList<XYChart.Series<String, Integer>> data=FXCollections.observableArrayList();
+    	Series<String,Integer> delays=new Series<String, Integer>();
+
+    	delays.setName("Delayed");
+    	for(String s:ViewReportsController.datesAndData.keySet())
+    	{
+    		delays.getData().add(new XYChart.Data(s,ViewReportsController.datesAndData.get(s).get(1)));
     	}
     	
     	data.add(delays);
@@ -204,7 +229,7 @@ public class ReportGrapicsController extends AppController implements Initializa
     	return data;
     		
     }
-    private ObservableList<XYChart.Series<String, Double>> getDataDelaysStats()
+    private ObservableList<XYChart.Series<String, Double>> getDataDelaysStatsDays()
     {
     	
     	ObservableList<XYChart.Series<String, Double>> data=FXCollections.observableArrayList();
@@ -217,9 +242,12 @@ public class ReportGrapicsController extends AppController implements Initializa
     	avg.setName("AVG");
     	for(String s:ViewReportsController.columns.keySet())
     	{ 		
-    		median.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(0)));
-   			SD.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(1)));
-   			avg.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(2)));
+    		if(s.equals("Delayed Days"))
+    		{
+    			median.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(0)));
+   				SD.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(1)));
+   				avg.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(2)));
+    		}
     	}
     	
        	data.addAll(median,SD,avg);
@@ -227,6 +255,36 @@ public class ReportGrapicsController extends AppController implements Initializa
     	return data;
     		
     }
+    
+    
+    private ObservableList<XYChart.Series<String, Double>> getDataDelaysStatsTomes()
+    {
+    	
+    	ObservableList<XYChart.Series<String, Double>> data=FXCollections.observableArrayList();
+    	Series<String,Double> median=new Series<String, Double>();
+    	Series<String,Double> SD=new Series<String, Double>();
+    	Series<String,Double> avg=new Series<String, Double>();
+    	
+    	median.setName("Median");
+    	SD.setName("SD");
+    	avg.setName("AVG");
+    	for(String s:ViewReportsController.columns.keySet())
+    	{ 		
+    		if(!s.equals("Delayed Days"))
+    		{
+    			median.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(0)));
+   				SD.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(1)));
+   				avg.getData().add(new XYChart.Data(s,ViewReportsController.columns.get(s).get(2)));
+    		}
+    	}
+    	
+       	data.addAll(median,SD,avg);
+
+    	return data;
+    		
+    }
+    
+    
     private ObservableList<XYChart.Series<String, Double>> getDataPerfomencesStats()
     {
     	
