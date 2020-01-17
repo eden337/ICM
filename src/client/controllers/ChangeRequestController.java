@@ -28,8 +28,8 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * change request window
- *
- * @author Hen Hess
+ *@version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 //
 public class ChangeRequestController extends AppController implements Initializable {

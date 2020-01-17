@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * @apiNote Controller for pre-evaluation phase page
+ * Controller for pre-evaluation phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class PreExecutionController extends AppController implements Initializable {
 

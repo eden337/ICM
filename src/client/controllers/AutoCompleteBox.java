@@ -16,7 +16,8 @@ import java.util.stream.Stream;
  * It does not work with space, space and escape cause the combobox to hide and
  * clean the filter ... Send me a PR if you want it to work with all characters
  * -> It should be a custom controller - I KNOW!
- *
+ *@version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  * @param <T>
  */
 public class AutoCompleteBox<T> {

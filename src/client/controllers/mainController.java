@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
  * menu actions,
  * log out,
  * Notifications
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class mainController extends AppController implements Initializable {
     public static mainController instance;

@@ -39,7 +39,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * @apiNote Controller for execution phase page
+ *Controller for execution phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class ExecutionController extends AppController implements Initializable {

@@ -20,6 +20,8 @@ import javafx.stage.Window;
 
 /**
  * Responsible of the feedback of the connection of the client to the database
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class clientConnectionDialog {

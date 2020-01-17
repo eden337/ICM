@@ -28,7 +28,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 /**
- *  @apiNote Controller for pre-validation phase page
+ *  Controller for pre-validation phase page
+ *  @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class PreValidationController extends AppController implements Initializable {

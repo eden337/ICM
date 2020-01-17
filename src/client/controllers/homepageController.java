@@ -28,6 +28,8 @@ import java.util.ResourceBundle;
 
 /**
  * controller for homepage
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class homepageController extends AppController implements Initializable {
 	public static homepageController instance;

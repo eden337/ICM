@@ -24,6 +24,12 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+/**
+ * Extension prompt controller
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+
 public class ExtensionController extends AppController implements Initializable {
     public static ExtensionController instance;
     protected ChangeRequest thisRequest;

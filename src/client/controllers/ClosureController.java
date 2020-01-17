@@ -33,8 +33,10 @@ import javafx.scene.text.Text;
 import server.controllers.EmailSender;
 
 /**
- * @apiNote
+ *
  * Controller for Closure phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class ClosureController extends AppController implements Initializable {

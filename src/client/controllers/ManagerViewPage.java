@@ -42,6 +42,8 @@ import javafx.util.Duration;
 
 /**
  * controller for manager page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class ManagerViewPage extends AppController implements Initializable {
     public static ManagerViewPage Instance;

@@ -34,7 +34,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @apiNote Controller for decision phase page
+ *Controller for decision phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class decisionController extends AppController implements Initializable {

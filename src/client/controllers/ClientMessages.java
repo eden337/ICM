@@ -8,8 +8,8 @@ import common.controllers.Message;
 /**
  * get <Code> Message </code> from server and send it to the relevant
  * controller. Usually used for transfer data from db to client.
- *
- * @author Idan Abergel
+ *@version 1.0 - 01/2020
+ *@author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class ClientMessages {
 

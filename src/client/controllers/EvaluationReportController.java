@@ -39,7 +39,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * @apiNote Controller for decision phase page
+ *Controller for decision phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 
 public class EvaluationReportController extends AppController implements Initializable {
