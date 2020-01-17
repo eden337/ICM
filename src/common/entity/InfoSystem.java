@@ -4,24 +4,19 @@ import java.io.Serializable;
 
 /**
  * infoSystem is all the information systems of the college.
- * @author Hen_Yehuda
- *
+ * A data structure for client-server communication.
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class InfoSystem implements Serializable{
-//
-	
-	
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	String SystemID;
 	String UserName;
 	
 
-
 	/**
+	 * InfoSystem constructor, defined by Database fields.
 	 * @param systemID
 	 * @param userName
 	 */

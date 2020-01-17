@@ -60,6 +60,7 @@ public class ICM_Scheduler {
                     EchoServer.connectedUsers.remove(k);
                 }
             });
+            updateUserList();
         } catch (Exception e) {
             System.out.println("!! Timer Exception !!");
         }

@@ -6,6 +6,9 @@ import java.sql.Date;
 
 import java.sql.*;
 
+/**
+ * Evaluation Report is a data structure for client-server communication.
+ */
 public class EvaluationReport implements Serializable {
     private int reportID;
     private String requestID;
@@ -16,7 +19,17 @@ public class EvaluationReport implements Serializable {
     private Date estimated_time;
     private Timestamp timestamp;
 
-
+    /**
+     * EvaluationReport constructor, defined by Database fields.
+     * @param reportID
+     * @param requestID
+     * @param system_id
+     * @param required_change
+     * @param expected_result
+     * @param expected_risks
+     * @param estimated_time
+     * @param timestamp
+     */
     public EvaluationReport(int reportID, String requestID, String system_id, String required_change, String expected_result, String expected_risks, Date estimated_time, Timestamp timestamp) {
         this.reportID = reportID;
         this.requestID = requestID;
@@ -28,6 +41,9 @@ public class EvaluationReport implements Serializable {
         this.timestamp = timestamp;
     }
 
+    /**
+     * @return All Evaluation Report object data to String.
+     */
     @Override
     public String toString() {
         return "EvaluationReport{" +
@@ -41,6 +57,8 @@ public class EvaluationReport implements Serializable {
                 ", timestamp=" + timestamp +
                 '}';
     }
+
+    // Setters:
 
     public void setReportID(int reportID) {
         this.reportID = reportID;
@@ -73,6 +91,9 @@ public class EvaluationReport implements Serializable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+
+
+    // Getters:
 
     public int getReportID() {
         return reportID;

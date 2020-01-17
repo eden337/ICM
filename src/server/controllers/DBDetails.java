@@ -1,6 +1,9 @@
 package server.controllers;
 
-
+/**
+ * Database Connections details object.
+ * Used for supporting more than one connection options. (for App Server GUI)
+ */
 public class DBDetails {
 
 	public String DB_HOST = "remotemysql.com";
@@ -9,6 +12,14 @@ public class DBDetails {
 	public String DB_PORT = "3306";
 	public String DB_PASSWORD = "QOMMWb8Jo6";
 
+	/**
+	 * DBDetails Constructor.
+	 * @param dB_HOST
+	 * @param dB_SCHEME
+	 * @param dB_USERNAME
+	 * @param dB_PASSWORD
+	 * @param dB_PORT
+	 */
 	public DBDetails(String dB_HOST, String dB_SCHEME, String dB_USERNAME,  String dB_PASSWORD ,String dB_PORT) {
 		DB_HOST = dB_HOST;
 		DB_SCHEME = dB_SCHEME;

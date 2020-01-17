@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * MyFile represents the File information.
+ * fileName, original path, Description , size, byte-array
+ */
 public class MyFile implements Serializable {
 
     private String Description = null;

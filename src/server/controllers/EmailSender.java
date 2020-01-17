@@ -14,6 +14,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 // USE IT LIKE: EmailSender.sendEmail("EMAIL","TITLE","CONTENT");
+
+/**
+ * Email Sender.
+ * send email as ICM mail account.
+
+ */
 public class EmailSender {
 
     public void sendPlainTextEmail(String host, String port,
@@ -58,12 +64,13 @@ public class EmailSender {
     }
 
     /**
-     * Email Sender: sends email from ICM mail account. Support HTML
-     *
+     * Email Sender: sends email from ICM mail account. HTML Friendly.
+     * Email sends from: icm.systemg.10@gmail.com
+     * Using: SMTP - google
+     * TLS: Enabled.
      * @param mailTo  : String - One contact only
      * @param subject : String
      * @param message : String (HTML)
-     * @author Idan Abergel - Using javafx
      */
     public static void sendEmail(String mailTo, String subject, String message) {
         // SMTP server information

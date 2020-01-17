@@ -19,6 +19,10 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ *  GUI Controller - <code>serverGUI.fxml</code>
+ *  let the server user ability to control the server and database connections, see logs, connected users etc.
+ */
 public class ServerController implements Initializable {
 
     public static ServerController instance;
@@ -96,18 +100,10 @@ public class ServerController implements Initializable {
         Platform.runLater(() -> textBox.appendText(str));
     }
 
-    @FXML
-    void initialize() {
-
-        assert textBox != null : "fx:id=\"textBox\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert radio_mysqlWorkbench != null : "fx:id=\"radio_mysqlWorkbench\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert radio_remoteSQL != null : "fx:id=\"radio_remoteSQL\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert onBtn != null : "fx:id=\"onBtn\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert offBtn != null : "fx:id=\"offBtn\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert server_light != null : "fx:id=\"server_light\" was not injected: check your FXML file 'serverGUI.fxml'.";
-
-    }
-
+    /**
+     * fills in default database connection.
+     * @param dbDetails
+     */
     private void printFormFields(DBDetails dbDetails) {
         host_field.setText(dbDetails.getDB_HOST());
         scheme_field.setText(dbDetails.getDB_SCHEME());
@@ -115,6 +111,7 @@ public class ServerController implements Initializable {
         username_field.setText(dbDetails.getDB_USERNAME());
         port_field.setText(dbDetails.getDB_PORT());
     }
+
 
     private void setDBDetailsFromGUI() {
         DBDetails dbDetails = null;
@@ -135,6 +132,9 @@ public class ServerController implements Initializable {
 
     }
 
+    /**
+     * Use OCSF in order to create a new server connection, and a new Database connection.
+     */
     @FXML
     void startServer() {
         // EchoServer.mainServer(args);
@@ -156,8 +156,10 @@ public class ServerController implements Initializable {
         else if (radio_mysqlWorkbench.isSelected())
             currentDB = MySQLWorkbench;
 
+        // create new Database connection.
         startDBService();
 
+        // create new server connection
         if (!AppServer.echoserver.isListening()) {
             try {
                 AppServer.echoserver.listen(); // Start listening for
@@ -183,15 +185,20 @@ public class ServerController implements Initializable {
             alert.show();
         }
 
+        // update Server GUI component
         if (AppServer.echoserver.getDBStatus())
             db_light.setFill(Paint.valueOf("#1ffb1b"));
         else
             db_light.setFill(Paint.valueOf("#ff1717"));
 
+        // call to ICM Scheduler.
         ICM_Scheduler.scheduler();
 
     }
 
+    /**
+     * stop server listening.
+     */
     @FXML
     void stopServer() {
         // EchoServer.mainServer(args);
@@ -219,6 +226,10 @@ public class ServerController implements Initializable {
             db_light.setFill(Paint.valueOf("#ff1717"));
     }
 
+    /**
+     * call to <code>printFormFields</code> function according to the selected database connection.
+     * @param e
+     */
     @FXML
     void setFormFields(ActionEvent e) {
         DBDetails dbDetails = null;

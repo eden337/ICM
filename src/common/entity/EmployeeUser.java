@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Yuda Hatam This class represents the employees of our system
+ * This class represents the employees of our system
+ * Employee has unique roles in the application, therefore, this object override permission functions of <code>User</code> Object
  */
 public class EmployeeUser extends User {
 

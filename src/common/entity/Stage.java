@@ -6,13 +6,10 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
- * @author Ira Goor
- * <p>
- * <p>
- * class purpose: General structure of a stage in request treatment
- * process classes extends from it: Evaluation, Decision,
- * Execution,Validation and Closure. Auxiliary classes, enums, and
- * interfaces: StageName
+ * Structure of a stage in request treatment.
+ * fits to ICM Database.
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class Stage implements Serializable {
 
@@ -44,7 +41,10 @@ public class Stage implements Serializable {
         this.preStage = preStage;
     }
 
-
+    /**
+     * Generate a string of object attributes.
+     * @return
+     */
     @Override
     public String toString() {
         return "Stage{" +
@@ -62,6 +62,9 @@ public class Stage implements Serializable {
                 ", init_confirmed=" + init_confirmed +
                 '}';
     }
+
+
+    // Getters:
 
     public int getRequestID() {
         return requestID;
@@ -111,74 +114,5 @@ public class Stage implements Serializable {
     public String getPreStage() {
         return preStage;
     }
-
-    public void setPreStage(String preStage) {
-        this.preStage = preStage;
-    }
-
-
-//	/**
-//	 *
-//	 * @author Ira Goor
-//	 * @apiNote
-//	 * method purpose:set final time info per Stage
-//	 * a.stage delayed
-//	 * b.stage not delayed
-//	 * @return true (a),false (b)
-//	 */
-//
-//	protected boolean  closeStage()
-//	{
-//		this.endTime=ZonedDateTime.now();
-//		return isDelayed();
-//	}
-//
-//
-//
-//
-//	/**
-//	 *
-//	 * @author Ira Goor
-//	 * @apiNote
-//	 * method purpose: does stage can be extended? check first if
-//	 *         stage wasn't extended already (can only extend once per Stage) then
-//	 *         check if there's 3 or less days until deadline if so return true else
-//	 *         return false
-//	 *
-//	 *
-//	 * @return if Stage can be Extended
-//	 */
-//	private boolean canExtend() {
-//		if (canBeExtend)
-//			return Duration.between(ZonedDateTime.now(), deadline).toDays() > 3 ? false : true;
-//		return false;
-//	}
-//
-//	/**
-//	 *
-//	 * @author Ira Goor
-//	 * @apiNote
-//	 * method purpose: check if stage is delayed and update amount of days delayed
-//	 *
-//	 *
-//	 * @return
-//	 */
-//
-//	private boolean isDelayed() {
-//		setDayDelayed();
-//		return this.daysDelayed == 0 ? false : true;
-//
-//	}
-//	/**
-//	 *
-//	 * @author Ira Goor
-//	 * @apiNote
-//	 * method purpose: update amount of days delayed
-//	 *
-//	 */
-//	private void setDayDelayed() {
-//		long temp = Duration.between(deadline, ZonedDateTime.now()).toDays();
-//		this.daysDelayed = temp > 0 ? temp : 0;
-//	}
 
 }

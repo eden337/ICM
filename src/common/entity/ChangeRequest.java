@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * @author Yuda Hatam
+ * ChangeRequest object contains a request data
+ * this object is not connected to currentStage object, until the user use this object.
+ * in this case, <code>stage</code> object will be updated in this object.
  *
  */
 public class ChangeRequest implements Serializable {
@@ -119,6 +121,24 @@ public class ChangeRequest implements Serializable {
         this.currentStageObject = currentStageObject;
     }
 
+    /**
+     * ChangeRequest constructor, defined by Database fields.
+     * @param initiator
+     * @param intiatorType
+     * @param status
+     * @param requestID
+     * @param infoSystem
+     * @param existingCondition
+     * @param suggestedChange
+     * @param reasonForChange
+     * @param remarks
+     * @param dueDate
+     * @param submitTime
+     * @param currentStage
+     * @param filesPaths
+     * @param incharges
+     * @param currentStageObject
+     */
     public ChangeRequest(String initiator, String intiatorType, String status, int requestID, String infoSystem,
                          String existingCondition, String suggestedChange, String reasonForChange, String remarks,
                          ZonedDateTime dueDate, ZonedDateTime submitTime, String currentStage, String filesPaths, String incharges, Stage currentStageObject) {
@@ -205,13 +225,6 @@ public class ChangeRequest implements Serializable {
     }
 
 
-    /**
-     *
-     * @author Ira Goor
-     *
-     *
-     * @return
-     */
     public String getInitiator() {
         return this.initiator;
     }
@@ -271,14 +284,9 @@ public class ChangeRequest implements Serializable {
         this.submitTime = submitTime;
     }
 
-
-    /**
-     * @return the submitTime
-     */
     public ZonedDateTime getSubmitTime() {
         return submitTime;
     }
-
 
     public String getIntiatorType() {
         return intiatorType;

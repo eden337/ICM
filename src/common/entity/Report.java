@@ -4,14 +4,17 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
-
+/**
+ * Report Object contains individual report information.
+ * type, date of creation, reported date range, data (generated string for CSV Files) and period(for supported types)
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 public class Report implements Serializable {
 
     private String type;
     private Date created;
     private Date from;
-
-
     private Date to;
     private String data;
     private ArrayList<String> period;
@@ -20,7 +23,6 @@ public class Report implements Serializable {
     /**
      * @param type
      * @param created
-     * @author: Ira Goor
      * <p>
      * Constructors purpose: non period Report
      */
@@ -35,7 +37,6 @@ public class Report implements Serializable {
      * @param type
      * @param from
      * @param to
-     * @author: Ira Goor
      * <p>
      * Constructors purpose: for a period report
      */
@@ -48,6 +49,7 @@ public class Report implements Serializable {
         period.add("Activity");
 
     }
+
 
     public String getType() {
         return type;
@@ -88,7 +90,6 @@ public class Report implements Serializable {
     public void setCreated(Date created) {
         this.created = created;
     }
-
 
     public ArrayList<String> getPeriod() {
         return period;

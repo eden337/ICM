@@ -10,8 +10,9 @@ import common.controllers.OperationType;
 import javafx.application.Platform;
 
 /**
- * @author Yuda Hatam
- *	This class represents the students  of our system 
+ * Represents a student in the system
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class StudentUser extends User {
 
@@ -19,6 +20,7 @@ public class StudentUser extends User {
     private String faculty;
 
     /**
+     * Student Constructor
      * @param firstName
      * @param lastName
      * @param email
@@ -31,12 +33,20 @@ public class StudentUser extends User {
         this.userID = userID;
     }
 
+    /**
+     * Student has no special permissions / roles in the system at this version.
+     * this implementation is for potential features.
+     */
     @Override
     public void updatePermissions() {
         OperationType ot2 = OperationType.User_getStudentAccess;
         App.client.handleMessageFromClientUI(new Message(ot2, this));
     }
 
+    /**
+     * Student has no special permissions / roles in the system at this version.
+     * this implementation is for potential features.
+     */
     @Override
     public void setStudentPermission(Object object) {
         User student = (User) object;
@@ -53,33 +63,5 @@ public class StudentUser extends User {
             });
 
         }
-    }
-
-    /**
-     * @return the userID
-     */
-    public int getUserID() {
-        return userID;
-    }
-
-    /**
-     * @param userID the userID to set
-     */
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    /**
-     * @return the faculty
-     */
-    public String getFaculty() {
-        return faculty;
-    }
-
-    /**
-     * @param faculty the faculty to set
-     */
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
     }
 }
