@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -547,11 +548,27 @@ public class EchoServer extends AbstractServer {
                                             + system + "'");
                             performData.next();
                             Integer val = performData.getInt(1);
-                            if (val != null)
+                            /***************************************/
+                            performData = mysql.getQuery(
+                                    "SELECT Deadline,EndTime,extension_days FROM `Requests` as r ,`Stage` as s WHERE s.extension_days IS NOT NULL AND r.RequestID=s.RequestID AND r.SystemID='"
+                                            + system + "'");
+                            while(performData.next()) {
+                            ZonedDateTime t1,t2;
+                            t1=Tools.convertDateSQLToZoned(performData.getDate("EndTime"));
+                            t2=Tools.convertDateSQLToZoned(performData.getDate("Deadline"));
+                            int extensionDays=performData.getInt("extension_days");
+                            int days=(int) Duration.between(t1, t2).toDays();
+                            if(days>extensionDays)
+                            	days=extensionDays;
+                            val=val-days;
+                            }
+                            /***************************************/
+                            
+                            if (val != null&&val>0)
                                 values.add((Integer) val);
                             else
                                 values.add(0);
-
+                           
                             performData = mysql.getQuery(
                                     "SELECT rep.`StartTime`, rep.`EndTime` FROM `Repeted` as rep, `Requests` as r WHERE rep.RequestID=r.RequestID AND r.SystemID='"
                                             + system + "'");
