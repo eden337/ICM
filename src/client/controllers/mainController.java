@@ -5,16 +5,17 @@ import client.BypassedApp;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.OrganizationRole;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert.AlertType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -131,21 +132,25 @@ public class mainController extends AppController implements Initializable {
      * @param p : Pane to be colored as selected.
      */
     void markPage(Pane p) {
-        if (p == null) return;
-        p.getStyleClass().add("bg_currentPage");
-        if (p != pHome)
-            pHome.getStyleClass().remove("bg_currentPage");
-        if (p != p2)
-            p2.getStyleClass().remove("bg_currentPage");
-        if (p != p3)
-            p3.getStyleClass().remove("bg_currentPage");
-        if (p != p4)
-            p4.getStyleClass().remove("bg_currentPage");
-           // p4.getStyleClass().remove("bg_currentPage");
-        if (p != p5)
-            p5.getStyleClass().remove("bg_currentPage");
-        if (p != p6)
-            p6.getStyleClass().remove("bg_currentPage");
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (p == null) return;
+                p.getStyleClass().add("bg_currentPage");
+                if (p != pHome)
+                    pHome.getStyleClass().remove("bg_currentPage");
+                if (p != p2)
+                    p2.getStyleClass().remove("bg_currentPage");
+                if (p != p3)
+                    p3.getStyleClass().remove("bg_currentPage");
+                if (p != p4)
+                    p4.getStyleClass().remove("bg_currentPage");
+                if (p != p5)
+                    p5.getStyleClass().remove("bg_currentPage");
+                if (p != p6)
+                    p6.getStyleClass().remove("bg_currentPage");
+            }
+        });
     }
 
 
@@ -210,7 +215,7 @@ public class mainController extends AppController implements Initializable {
             p3.setVisible(true);
             p4.setVisible(true);
         }
-        if(App.user.getPosition().equals("Student")){
+        if (App.user.getPosition().equals("Student")) {
             pHome.setVisible(true);
             p2.setVisible(true);
             p3.setVisible(true);

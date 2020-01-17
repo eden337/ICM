@@ -162,6 +162,7 @@ public class EchoServer extends AbstractServer {
                             }
                         }
                     }
+                    // if the user already connected
                     if (!rs.next() && employeeUser == null) {
                         sendToClient(new Message(OperationType.LoginResult, new User("fail", null, null, null, null, null)),
                                 client);
@@ -1275,7 +1276,7 @@ public class EchoServer extends AbstractServer {
             ResultSet rs = mysql.getQuery(query);
             if (rs != null) {
                 res = row0;
-                while (rs.next()) {
+                while (rs.next()) { // TODO : add mail to supervisor in case that "WAITING%"
                     row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
                     res += row;
                     EmailSender.sendEmail(rs.getString(4), "ICM - Reminder : You have to treat request +" + rs.getInt(1), row0 + row);
