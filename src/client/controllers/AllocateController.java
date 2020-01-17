@@ -138,10 +138,10 @@ public class AllocateController extends AppController implements Initializable {
         boolean res = (boolean) object;
         if (c == 0 || !res) {
             if (res) {
+                showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
                         loadPage("requestTreatment", "Request Treatment and Management");
                     }
                 });

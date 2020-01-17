@@ -95,7 +95,7 @@ public class ChangeRequestController extends AppController implements Initializa
         if (!formChecker())
             return;
         insertDataToDB();
-        clearAll();
+
     }
 
     /**
@@ -243,6 +243,8 @@ public class ChangeRequestController extends AppController implements Initializa
      */
     private Boolean formChecker() {
         boolean flag = true;
+        String existingCondition=ExistingConditionText.getText();
+
         if (ExistingConditionText.getText().isEmpty()) {
             ExistingconditionEmptyWarning.setVisible(true);
             flag = false;
@@ -274,12 +276,13 @@ public class ChangeRequestController extends AppController implements Initializa
             if (filelist != null) {
                 createZip("Request_" + rid + ".zip");
             } else {
-                showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\n\t\t\t\t\tThank you! ",
+                showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\nThank you! ",
                         null);
+                clearAll();
                 //loadPage("Homepage");
             }
         } else
-            showAlert(AlertType.ERROR, "Error!", "Data Error1.", null);
+            showAlert(AlertType.ERROR, "Error!", "Could not compress the files.", null);
 
     }
 
@@ -291,8 +294,9 @@ public class ChangeRequestController extends AppController implements Initializa
     public void uploadFileResult(Object object) {
         boolean fileRes = (boolean) object;
         if (fileRes) {
-            showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\n\t\t\t\t\tThank you! ",
+            showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\nThank you! ",
                     null);
+            clearAll();
             //loadPage("Homepage");
         } else
             showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);
