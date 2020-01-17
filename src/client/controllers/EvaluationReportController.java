@@ -263,6 +263,7 @@ public class EvaluationReportController extends AppController implements Initial
      * and finally calls setFieldData method
      */
     private void formInit() {
+        setFieldsData();
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
             Platform.runLater(new Runnable() {
                 @Override
@@ -296,7 +297,6 @@ public class EvaluationReportController extends AppController implements Initial
 
         }
 
-        setFieldsData();
     }
 
     /**

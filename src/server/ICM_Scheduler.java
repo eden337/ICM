@@ -62,7 +62,7 @@ public class ICM_Scheduler {
             });
             updateUserList();
         } catch (Exception e) {
-            System.out.println("!! Timer Exception !!");
+            ServerController.instance.startServer();
         }
     }
 

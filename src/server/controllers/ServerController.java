@@ -136,7 +136,7 @@ public class ServerController implements Initializable {
      * Use OCSF in order to create a new server connection, and a new Database connection.
      */
     @FXML
-    void startServer() {
+    public void startServer() {
         // EchoServer.mainServer(args);
         setDBDetailsFromGUI();
         int port = 0; // Port to listen on
