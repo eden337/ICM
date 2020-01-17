@@ -73,7 +73,7 @@ public class ChangeRequestController extends AppController implements Initializa
 
     private Stage stage;
     private List<File> filelist;
-
+    static int rid;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -270,7 +270,7 @@ public class ChangeRequestController extends AppController implements Initializa
      * @param object the object that return from the server is boolean
      */
     public void queryResult(Object object) {
-        int rid = (int) object;
+        rid = (int) object;
         if (rid > 0) {
             if (filelist != null) {
                 createZip("Request_" + rid + ".zip");
@@ -292,8 +292,8 @@ public class ChangeRequestController extends AppController implements Initializa
     public void uploadFileResult(Object object) {
         boolean fileRes = (boolean) object;
         if (fileRes) {
-            showAlert(AlertType.INFORMATION, "Request was sent successfuly",
-                    "We will mail you a receipt to " + App.user.getEmail() + "\r\n" + "\t\t\t\t\tThank you! ", null);
+            showAlert(AlertType.INFORMATION, "Request #" + rid ,"Your Request had been submitted successfully" + "\n\t\t\t\t\tThank you! ",
+                    null);
             //loadPage("Homepage");
         } else
             showAlert(AlertType.ERROR, "Error!", "File upload Error.", null);

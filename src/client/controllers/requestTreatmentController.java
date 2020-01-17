@@ -51,6 +51,9 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+/**
+ * Controller for request treatment screen
+ */
 public class requestTreatmentController extends AppController implements Initializable {
 
     public static requestTreatmentController Instance;
@@ -59,8 +62,6 @@ public class requestTreatmentController extends AppController implements Initial
 
     @FXML
     private TextArea supervisorRemarks;
-    // @FXML
-    // private Pane Footer_defualt;
 
 
     private static long days;
@@ -189,28 +190,80 @@ public class requestTreatmentController extends AppController implements Initial
     @FXML
     private MenuItem supervisorWaiting;
 
+    @FXML
+    private MenuItem suspendedFilter;
+
+    @FXML
+    private MenuItem waitingFilter;
+
+    @FXML
+    private MenuItem canceledFilter;
+
     ObservableList<ChangeRequest> o;
+
+
+
+
     protected ChangeRequest getCurrentRequest() {
         return selectedRequested;
     }
 
-
+    /**
+     * called from initialize, sets up data on table, with the implementation of setTableByUser
+     */
     private void getDatafromServer() {
         App.client.handleMessageFromClientUI(new Message(OperationType.getRequirementData, setTableByUser()));
     }
+
+    /**
+     * change text of searchBoxTF to ACTIVE
+     * @param event
+     */
 
     @FXML
     void activeStatusBtn(ActionEvent event) {
         searchBoxTF.setText("ACTIVE");
     }
 
-
+    /**
+     * change text of searchBoxTF to ""
+     * @param event
+     */
     @FXML
     void clearBtnClicked(ActionEvent event) {
         searchBoxTF.setText("");
         searchBoxTF.setPromptText("Search...");
     }
 
+    /**
+     * change text of searchBoxTF to WAITING
+     * @param event
+     */
+    @FXML
+    void waitingFilterClicked(ActionEvent event) {
+        searchBoxTF.setText("WAITING");
+    }
+    /**
+     * change text of searchBoxTF to SUSPENDED
+     * @param event
+     */
+    @FXML
+    void suspendedFilterClicked(ActionEvent event) {
+        searchBoxTF.setText("SUSPENDED");
+    }
+    /**
+     * change text of searchBoxTF to CANCELED
+     * @param event
+     */
+
+    @FXML
+    void canceledFilterClicked(ActionEvent event) {
+        searchBoxTF.setText("CANCELED");
+    }
+    /**
+     * change text of searchBoxTF to WAITING(SUPERVISOR)
+     * @param event
+     */
     @FXML
     void supervisorWaitingClicked(ActionEvent event) {
         searchBoxTF.setText("WAITING(SUPERVISOR)");
@@ -222,12 +275,8 @@ public class requestTreatmentController extends AppController implements Initial
      */
     private String setTableByUser() {
         String query = "Select * FROM Requests ";
-        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)||App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
             return query;
-        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
-            query = "SELECT * FROM Requests WHERE `Status` = 'SUSPENDED'";
-            return query;
-        }
         query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
                 + " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
                 + " `Due_Date`, `FILE` FROM `Requests` as r , `Stage` as s " + "WHERE r.`RequestID` = s.`RequestID`"
@@ -249,6 +298,9 @@ public class requestTreatmentController extends AppController implements Initial
         return query;
     }
 
+    /**
+     * initialization of request controller rightPane
+     */
     private void initPanes() {
         // init layers:
         rightPane_requestTreatment.setVisible(false);
@@ -266,11 +318,30 @@ public class requestTreatmentController extends AppController implements Initial
         // Footer_defualt.setVisible(true);
     }
 
+    /**
+     * initialize the filter menu for director or other users.
+     */
+    private void initDirector(){
+        waitingFilter.setVisible(false);
+        suspendedFilter.setVisible(false);
+        canceledFilter.setVisible(false);
+        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)){
+            waitingFilter.setVisible(true);
+            suspendedFilter.setVisible(true);
+            canceledFilter.setVisible(true);
+        }
+    }
+
+    /**
+     * initialize the request Treatment page
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Instance = this;
-        showLoading(true);
         supervisorWaiting.setVisible(false);
+        initDirector();
         if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             supervisorWaiting.setVisible(true);
         // request data from server
@@ -381,6 +452,9 @@ public class requestTreatmentController extends AppController implements Initial
 
     }// initialize
 
+    /**
+     * setting the treatment phase progress bar pictures.
+     */
     private void resetStageImgStyleClass() {
         stage1.getStyleClass().remove("img_stage_blocked");
         stage1.getStyleClass().remove("img_stage_passed");
@@ -409,6 +483,10 @@ public class requestTreatmentController extends AppController implements Initial
 
     }
 
+    /**
+     * called from getDatafromServer, loading the details from the DB to the tableView object
+     * @param object
+     */
     public void setDataTable(Object object) {
         ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
         o = FXCollections.observableArrayList(info);
@@ -470,6 +548,10 @@ public class requestTreatmentController extends AppController implements Initial
         getDatafromServer();
     }
 
+    /**
+     * refresh button pressed
+     * @param event
+     */
     @FXML
     void refrshBtn(MouseEvent event) {
         getDatafromServer();
@@ -483,6 +565,11 @@ public class requestTreatmentController extends AppController implements Initial
         ft.setAutoReverse(false);
         ft.play();
     }
+
+    /**
+     *  Go to Allocate screen
+     * @param event
+     */
 
     @FXML
     void allocatePersonelButtonClick(ActionEvent event) {
@@ -552,6 +639,10 @@ public class requestTreatmentController extends AppController implements Initial
 
     }
 
+    /**
+     * response from getTimeFromFrozen operation, its updates the add time for the treatment phase for the selected request
+     * @param object
+     */
     public void unFreezeSelectFrozenResponse(Object object) {
         ArrayList<ZonedDateTime> frozenTimes = (ArrayList<ZonedDateTime>) object;
         days = Period.between(frozenTimes.get(0).toLocalDate(), ZonedDateTime.now().toLocalDate()).getDays();
@@ -561,6 +652,10 @@ public class requestTreatmentController extends AppController implements Initial
         App.client.handleMessageFromClientUI(new Message(OperationType.updateUnfrozenStage, query));
     }
 
+    /**
+     * response from insertFreezedRequest operation, adds freezing time into the DB
+     * @param object
+     */
     public void freezeUpdateResponse(Object object) {
         boolean res = (boolean) object;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -573,6 +668,10 @@ public class requestTreatmentController extends AppController implements Initial
         showAlert(AlertType.INFORMATION, "Request Suspended!", "Please notify your director", null);
     }
 
+    /**
+     * response from updateUnfrozenStage operation, shows an alert if the unfreezing action is either success or failure
+     * @param object
+     */
     public void unFreezeUpdateResponse(Object object) {
         boolean res = (boolean) object;
         if (!res) {
@@ -581,12 +680,21 @@ public class requestTreatmentController extends AppController implements Initial
             showAlert(AlertType.INFORMATION, "Request Resumed", "Please notify your Supervisor", null);
     }
 
+    /**
+     * main purpose is to all requests from client that need to update their request.
+     * @param object
+     */
     public void freezeServerResponse(Object object) {
         refrshBtn(null);
         initialize(null, null);
 
     }
 
+    /**
+     * submit update (only for supervisor use)
+     * updating all the changes of the request and insert the update report to Supervisor Update history
+     * @param event
+     */
     @FXML
     void submitBtnClicked(ActionEvent event) {
         c = 0;
@@ -612,6 +720,10 @@ public class requestTreatmentController extends AppController implements Initial
 
     private static int c = 0;
 
+    /**
+     * query result for SUPERVISOR_REMARKS
+     * @param object
+     */
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -628,6 +740,11 @@ public class requestTreatmentController extends AppController implements Initial
         }
     }
 
+    /**
+     * (SUPERVISOR ONLY)
+     * supervisor presses on this button and he has the ability to edit the request and update.
+     * @param event
+     */
     @FXML
     void updateRemarksBtnClicked(ActionEvent event) {
         updateRemarksBtn.setVisible(false);
@@ -640,7 +757,10 @@ public class requestTreatmentController extends AppController implements Initial
         stageProgressHBox.setVisible(false);
     }
 
-    /* DOWNLOAD FILES */
+    /**
+     * download files from server
+     * @param event
+     */
 
     @FXML
     void DownloadFiles(ActionEvent event) {
@@ -692,6 +812,9 @@ public class requestTreatmentController extends AppController implements Initial
     }
     // get Stage Object to Request:
 
+    /**
+     * Get the stage object for the selected request
+     */
     void appendStageObject() {
         if (selectedRequested.getCurrentStage().equals("INIT"))
             return;

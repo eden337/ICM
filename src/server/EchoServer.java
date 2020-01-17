@@ -563,12 +563,12 @@ public class EchoServer extends AbstractServer {
                             val=val-days;
                             }
                             /***************************************/
-                            
+
                             if (val != null&&val>0)
                                 values.add((Integer) val);
                             else
                                 values.add(0);
-                           
+
                             performData = mysql.getQuery(
                                     "SELECT rep.`StartTime`, rep.`EndTime` FROM `Repeted` as rep, `Requests` as r WHERE rep.RequestID=r.RequestID AND r.SystemID='"
                                             + system + "'");
@@ -700,10 +700,10 @@ public class EchoServer extends AbstractServer {
                         e.printStackTrace();
                     }
                     break;
-                case FiveRequest:
+                case TenRequest:
                 	rs = mysql.getQuery(m.getObject().toString());
                 	   ArrayList<ChangeRequest> requests5 = getRequsets(rs);
-                       sendToClient(new Message(OperationType.FiveRequest,  requests5), client);
+                       sendToClient(new Message(OperationType.TenRequest,  requests5), client);
                        rs.close();
                 	break;
 

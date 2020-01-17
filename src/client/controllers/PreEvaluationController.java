@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ *  @apiNote Controller for pre-evaluation phase page
+ */
 public class PreEvaluationController extends AppController implements Initializable {
 
     public static PreEvaluationController instance;
@@ -86,6 +89,12 @@ public class PreEvaluationController extends AppController implements Initializa
     @FXML
     private Button btnDeny;
 
+    /**
+     * if pre - evaluation is confirmed by pressing accept, the start time and deadline of evaluation stage for this request
+     * is going to be updated om DB, and also changing the status of the request to ACTIVE
+     * @param event
+     */
+
     @FXML
     void AcceptPreEval(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -107,6 +116,10 @@ public class PreEvaluationController extends AppController implements Initializa
         query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
+    /**
+     * if pre - evaluation is denied by pressing deny button, the init set to false
+     * @param event
+     */
 
     @FXML
     void DenyPreEval(ActionEvent event) {
@@ -115,7 +128,10 @@ public class PreEvaluationController extends AppController implements Initializa
                 + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
-
+    /**
+     * requested evaluation days are submitted and uploaded to DB by pressing deny button
+     * @param event
+     */
     @FXML
     void SubmitDaysRequest(ActionEvent event) {
         int days = 0;
@@ -140,6 +156,12 @@ public class PreEvaluationController extends AppController implements Initializa
         }
     }
 
+    /**
+     * Initialize the pre evaluation screen
+     * @param location
+     * @param resources
+     */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
@@ -159,12 +181,16 @@ public class PreEvaluationController extends AppController implements Initializa
 
     }
 
+    /**
+     * gets the submitted days of evaluation stage
+     */
     private void getCurrentReqestedDays() {
         OperationType ot = OperationType.PreEVAL_getData;
         String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EVALUATION' AND `RequestID`= '"
                 + thisRequest.getRequestID() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
+
 
     public void getCurrentReqestedDays_ServerResponse(Object object) {
         List<Integer> res = (List<Integer>) object;
@@ -199,6 +225,11 @@ public class PreEvaluationController extends AppController implements Initializa
         }
 
     }
+
+    /**
+     * server response from AcceptPreEval method
+     * @param object
+     */
 
     public void updateStatus_serverResponse(Object object) {
         boolean res = (boolean) object;

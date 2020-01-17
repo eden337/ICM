@@ -38,6 +38,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * @apiNote Controller for decision phase page
+ */
+
 public class EvaluationReportController extends AppController implements Initializable {
 
     /*
@@ -163,7 +167,13 @@ public class EvaluationReportController extends AppController implements Initial
     }
 
     private static int c2 = 0;
-
+    /**
+     *
+     * @param object
+     * @apiNote
+     * client response from Server, this function checks of the update of SbmtEvlBtnClick was updated successfully
+     * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
+     */
     public void evaluationStageUpdateQueryResult(Object object) {
         c2++;
         boolean res = (boolean) object;
@@ -179,6 +189,13 @@ public class EvaluationReportController extends AppController implements Initial
                 showAlert(AlertType.ERROR, "Error!", "Could not update treatment phase", null);
         }
     }
+
+    /**
+     *
+     * @param location
+     * @param resources
+     * @apiNote initialization of the Evaluation screen
+     */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -239,6 +256,10 @@ public class EvaluationReportController extends AppController implements Initial
 
     }
 
+    /**
+     * initialize the titlePane on the screen, it will changed its color to green
+     * and finally calls setFieldData method
+     */
     private void formInit() {
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) { // Watching only
             Platform.runLater(new Runnable() {
@@ -276,6 +297,10 @@ public class EvaluationReportController extends AppController implements Initial
         setFieldsData();
     }
 
+    /**
+     * loads evaluation report form DB
+     */
+
     private void setFieldsData() {
         OperationType ot = OperationType.EVAL_GetAllReportsByRID;
         String query = "SELECT * FROM `EvaluationReports` WHERE RequestID = " + thisRequest.getRequestID()
@@ -283,6 +308,11 @@ public class EvaluationReportController extends AppController implements Initial
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     *
+     * @param object
+     * client response from server for setFieldData, it will load the recent evaluation report on screen
+     */
     public void setFieldsData_ServerResponse(Object object) {
         ArrayList<EvaluationReport> reports = (ArrayList<EvaluationReport>) object;
         if (reports.size() > 0) {
@@ -304,6 +334,12 @@ public class EvaluationReportController extends AppController implements Initial
         }
 
     }
+
+    /**
+     *
+     * @param object
+     * client response from server, submit button was pressed and it is updating the dates and stages of the request
+     */
 
     public void insertNewRequestResult(Object object) {
         boolean res = (boolean) object;
@@ -331,6 +367,13 @@ public class EvaluationReportController extends AppController implements Initial
 
     private static int c = 0;
 
+    /**
+     *
+     * @param object
+     * query result of the updates from insertNewRequestResult method,
+     * if successful it will move to requestTreatment and show a success message
+     * otherwise, show an error message.
+     */
     public void queryResult(Object object) {
         c++;
         boolean res = (boolean) object;
@@ -344,10 +387,12 @@ public class EvaluationReportController extends AppController implements Initial
                     }
                 });
             } else
-                showAlert(AlertType.ERROR, "Error!", "Data Error.", null);
+                showAlert(AlertType.ERROR, "Error!", "Could not update dates and stages", null);
         }
     }
-
+    /**
+     * Extension option visible only if day difference is bigger then -3
+     */
     // Extensions:
     private void setExtensionVisability() {
         btnRequestExtension.setVisible(false);
@@ -364,6 +409,12 @@ public class EvaluationReportController extends AppController implements Initial
     void requestExtension(ActionEvent event) {
         start(new Stage());
     }
+
+    /**
+     *
+     * @param primaryStage
+     * loads the extenstion screen
+     */
 
     public void start(Stage primaryStage) {
         try {

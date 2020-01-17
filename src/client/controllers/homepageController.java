@@ -7,8 +7,6 @@ import common.entity.ChangeRequest;
 import common.entity.OrganizationRole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -16,16 +14,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
+/**
+ * controller for homepage
+ */
 public class homepageController extends AppController implements Initializable {
 	public static homepageController instance;
 	@FXML
@@ -75,41 +74,33 @@ public class homepageController extends AppController implements Initializable {
 	void gotoRequestTreatment(MouseEvent event) {
 		mainController.instance.gotoRequestTreatment(null);
 	}
-
-	@FXML
-	void initialize() {
-		assert userRequestsInTreatment != null : "fx:id=\"userRequestsInTreatment\" was not injected: check your FXML file 'Homepage.fxml'.";
-		assert userTotalRequest != null : "fx:id=\"userTotalRequest\" was not injected: check your FXML file 'Homepage.fxml'.";
-		assert UserNeedToTreat != null : "fx:id=\"UserNeedToTreat\" was not injected: check your FXML file 'Homepage.fxml'.";
-		assert table5last != null : "fx:id=\"table5last\" was not injected: check your FXML file 'Homepage.fxml'.";
-
-	}
-
+	/**
+	 *
+	 * @param location
+	 * @param resources
+	 * @apiNote initialization of the homepage screen
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
-		showLoading(true);
 		paneForIT.setVisible(false);
 		setGreeting();
 		initData_Request();
-		 get5request();
+		 get10requests();
 		if (App.user.isEngineer())
 			paneForIT.setVisible(true);
 	}
 
-	public void get5request() {
+	public void get10requests() {
 		String query = "SELECT * FROM `Requests` WHERE `USERNAME`='" + App.user.getUserName() + "' AND (Status='ACTIVE' OR Treatment_Phase='INIT')  ORDER BY DATE LIMIT 10";
-		App.client.handleMessageFromClientUI(new Message(OperationType.FiveRequest, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.TenRequest, query));
 	}
 
 	private void setGreeting() {
 		String greetingText = "";
 		GregorianCalendar time = new GregorianCalendar();
 		int hour = time.get(Calendar.HOUR_OF_DAY);
-//        int min = time.get(Calendar.MINUTE);
 		int day = time.get(Calendar.DAY_OF_MONTH);
-//        int month = time.get(Calendar.MONTH) + 1;
-//        int year = time.get(Calendar.YEAR);
 
 		if (hour < 4)
 			greetingText = "Good Night";
@@ -125,6 +116,10 @@ public class homepageController extends AppController implements Initializable {
 		greeting.setText(greetingText + ", " + App.user.getFirstName());
 	}
 
+	/**
+	 * initialize the dashboard's buttons text
+	 */
+
 	private void initData_Request() {
 		App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyActiveRequests, setTableByUser()));
 		App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
@@ -134,19 +129,32 @@ public class homepageController extends AppController implements Initializable {
 						+ App.user.getUserName() + "';"));
 	}
 
-	// Main_getMyTotalRequests
+	/**
+	 *
+	 * @param res
+	 * response from server, if not empty will change userTotalRequest text
+	 */
 	public void Main_getMyTotalRequests_Response(Object res) {
 		if (res == null)
 			return;
 		userTotalRequest.setText(res.toString());
 	}
-
+	/**
+	 *
+	 * @param res
+	 * response from server, if not empty will change userRequestsInTreatment text
+	 */
 	public void Main_getMyActiveRequests_Response(Object res) {
 		if (res == null)
 			return;
 		userRequestsInTreatment.setText(res.toString());
 	}
 
+	/**
+	 *
+	 * @param res
+	 * response from server, if not empty will change UserNeedToTreat text
+	 */
 	public void Main_getMyRequestTreatment_Response(Object res) {
 		if (res == null)
 			return;
@@ -184,11 +192,15 @@ public class homepageController extends AppController implements Initializable {
 						+ "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'VALIDATION' AND S.StageName = 'VALIDATION' AND S.init_confirmed = 0)";
 			return query;
 		}
-
 		// general:
 		return query;
 	}
 
+	/**
+	 *
+	 * @param object - will get all the info of last 10 requests
+	 * Setting the table view of the dashboard
+	 */
 	public void setTable(Object object) {
 		ArrayList<ChangeRequest> info = ((ArrayList<ChangeRequest>) object);
         o = FXCollections.observableArrayList(info);
@@ -198,26 +210,6 @@ public class homepageController extends AppController implements Initializable {
         Statustable.setCellValueFactory(new PropertyValueFactory<>("status"));
         Stagetable.setCellValueFactory(new PropertyValueFactory<>("currentStage"));
         table5last.setItems(o);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-		}
-		showLoading(false);
-
-
+		
 	}
-
-	@FXML
-	private Pane LoadingPane;
-
-	@FXML
-	private VBox MainPane;
-
-	void showLoading(boolean enable){
-		LoadingPane.setVisible(false);
-		MainPane.setVisible(false);
-		LoadingPane.setVisible(enable);
-		MainPane.setVisible(!enable);
-	}
-
 }

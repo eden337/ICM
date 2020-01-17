@@ -37,7 +37,7 @@ public class ClientMessages {
             case getRequirementData:
                 requestTreatmentController.Instance.setDataTable(m.getObject());
                 break;
-            case FiveRequest:
+            case TenRequest:
             	homepageController.instance.setTable(m.getObject());
             	break;
             case getViewRequestData:
