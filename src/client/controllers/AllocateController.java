@@ -125,7 +125,7 @@ public class AllocateController extends AppController implements Initializable {
                     @Override
                     public void run() {
                         showAlert(AlertType.INFORMATION, "Allocation Approved", "The in-charges of the request were assigned", null);
-                        loadPage("requestTreatment");
+                        loadPage("requestTreatment", "Request Treatment and Management");
                     }
                 });
             } else

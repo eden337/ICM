@@ -30,6 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -186,6 +187,8 @@ public class ViewRequestController extends AppController implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
 
         Instance = this;
+        showLoading(true);
+
         finishedStatus.setVisible(false);
         // request data from server
         getDatafromServer();
@@ -323,6 +326,7 @@ public class ViewRequestController extends AppController implements Initializabl
 
         // 5. Add sorted (and filtered) data to the table.
         table.setItems(sortedData);
+        showLoading(false);
 
         // table.setItems(o);
     }
@@ -352,6 +356,19 @@ public class ViewRequestController extends AppController implements Initializabl
         ft.setToValue(0.0);
         ft.setAutoReverse(false);
         ft.play();
+    }
+
+    @FXML
+    private Pane LoadingPane;
+
+    @FXML
+    private HBox MainPane;
+
+    void showLoading(boolean enable){
+        LoadingPane.setVisible(false);
+        MainPane.setVisible(false);
+        LoadingPane.setVisible(enable);
+        MainPane.setVisible(!enable);
     }
 
 }

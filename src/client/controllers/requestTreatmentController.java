@@ -44,6 +44,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -60,6 +61,7 @@ public class requestTreatmentController extends AppController implements Initial
     private TextArea supervisorRemarks;
     // @FXML
     // private Pane Footer_defualt;
+
 
     private static long days;
 
@@ -267,6 +269,7 @@ public class requestTreatmentController extends AppController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Instance = this;
+        showLoading(true);
         supervisorWaiting.setVisible(false);
         if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             supervisorWaiting.setVisible(true);
@@ -414,8 +417,9 @@ public class requestTreatmentController extends AppController implements Initial
         colIntitator.setCellValueFactory(new PropertyValueFactory<>("initiator"));
         colStage.setCellValueFactory(new PropertyValueFactory<>("currentStage"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-
+        showLoading(false);
         FilteredList<ChangeRequest> filteredData = new FilteredList<>(o, b -> true);
+
         searchBoxTF.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(request -> {
                 // If filter text is empty, display all persons.
@@ -702,6 +706,19 @@ public class requestTreatmentController extends AppController implements Initial
         selectedRequested.setCurrentStageObject(currentStage);
         rightPane_requestTreatment.setDisable(false);
 
+    }
+
+    @FXML
+    private Pane LoadingPane;
+
+    @FXML
+    private Pane MainPane;
+
+    void showLoading(boolean enable){
+        LoadingPane.setVisible(false);
+        MainPane.setVisible(false);
+        LoadingPane.setVisible(enable);
+        MainPane.setVisible(!enable);
     }
 
 }

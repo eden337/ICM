@@ -140,6 +140,7 @@ public class EchoServer extends AbstractServer {
                     break;
 
                 case LoginAsEmployee:
+                    ICM_Scheduler.checkConnectedUsers();
                     rs = mysql.getQuery(m.getObject().toString());
                     EmployeeUser employeeUser = null;
 
@@ -166,8 +167,10 @@ public class EchoServer extends AbstractServer {
                                 client);
                     }
                     rs.close();
+                    ICM_Scheduler.updateUserList();
                     break;
                 case LoginAsStudent:
+                    ICM_Scheduler.checkConnectedUsers();
                     rs = mysql.getQuery(m.getObject().toString());
                     StudentUser studentUser = null;
                     if (rs != null) {
@@ -192,9 +195,11 @@ public class EchoServer extends AbstractServer {
                                 client);
                     }
                     rs.close();
+                    ICM_Scheduler.updateUserList();
                     break;
                 case Logout:
                     connectedUsers.remove(m.getObject());
+                    ICM_Scheduler.updateUserList();
                     break;
                 case ChangeRequest_File:
                     boolean resultFile;

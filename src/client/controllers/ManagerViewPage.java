@@ -32,6 +32,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -139,6 +142,8 @@ public class ManagerViewPage extends AppController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Instance = this;
         // request data from server
+        showLoading(true);
+
         getDatafromServer();
         getSystemsTable();
         rightPane.setVisible(false);
@@ -354,6 +359,7 @@ public class ManagerViewPage extends AppController implements Initializable {
 
         // 5. Add sorted (and filtered) data to the table.
         table.setItems(sortedData);
+        showLoading(false);
 
         // table.setItems(o);
     }
@@ -415,4 +421,18 @@ public class ManagerViewPage extends AppController implements Initializable {
         ArrayList<InfoSystem> infoSystem = ((ArrayList<InfoSystem>) object);
         is = FXCollections.observableArrayList(infoSystem);
     }
+
+    @FXML
+    private Pane LoadingPane;
+
+    @FXML
+    private HBox MainPane;
+
+    void showLoading(boolean enable){
+        LoadingPane.setVisible(false);
+        MainPane.setVisible(false);
+        LoadingPane.setVisible(enable);
+        MainPane.setVisible(!enable);
+    }
+
 }

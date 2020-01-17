@@ -92,4 +92,11 @@ public class AppController {
         }
         mainController.instance.getBorderPane().setCenter(root);
     }
+
+
+    protected void loadPage(String fxmlname, String pageTitle) {
+        mainController.instance.setTitle(pageTitle);
+        loadPage(fxmlname);
+    }
+
 }

@@ -138,6 +138,8 @@ public class ExtensionController extends AppController implements Initializable 
             if (thisStage.getExtension_decision() != null) {
                 btnAccept.setVisible(false);
                 btnDeny.setVisible(false);
+                tfDays.setEditable(false);
+                taReason.setEditable(false);
                 return;
             }
 

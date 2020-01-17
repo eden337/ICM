@@ -203,7 +203,7 @@ public class EvaluationReportController extends AppController implements Initial
         if (!thisRequest.getCurrentStage().equals("EVALUATION")) {
             Pane_Form.setVisible(true);
             rightPane.setVisible(true);
-
+            dueDateLabel.setDisable(true);
             inchargeTF.setText("Evaluator");
             return;
         } else { // in Eval Stage

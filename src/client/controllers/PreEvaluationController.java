@@ -122,7 +122,7 @@ public class PreEvaluationController extends AppController implements Initializa
         boolean flag = false;
         try {
             days = Integer.parseInt(tfDays.getText());
-            if (days <= 0 || days > 20)
+            if (days <= 0)
                 showAlert(Alert.AlertType.WARNING, "Error", "Number must be greater then zero.", null);
             flag = true;
         } catch (Exception e) {

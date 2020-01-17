@@ -16,6 +16,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -87,6 +88,7 @@ public class homepageController extends AppController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		instance = this;
+		showLoading(true);
 		paneForIT.setVisible(false);
 		setGreeting();
 		initData_Request();
@@ -182,6 +184,7 @@ public class homepageController extends AppController implements Initializable {
 						+ "' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'DECISION' AND S.StageName = 'DECISION' OR R.RequestID = S.RequestID AND R.Treatment_Phase = 'VALIDATION' AND S.StageName = 'VALIDATION' AND S.init_confirmed = 0)";
 			return query;
 		}
+
 		// general:
 		return query;
 	}
@@ -195,6 +198,26 @@ public class homepageController extends AppController implements Initializable {
         Statustable.setCellValueFactory(new PropertyValueFactory<>("status"));
         Stagetable.setCellValueFactory(new PropertyValueFactory<>("currentStage"));
         table5last.setItems(o);
-		
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
+		showLoading(false);
+
+
 	}
+
+	@FXML
+	private Pane LoadingPane;
+
+	@FXML
+	private VBox MainPane;
+
+	void showLoading(boolean enable){
+		LoadingPane.setVisible(false);
+		MainPane.setVisible(false);
+		LoadingPane.setVisible(enable);
+		MainPane.setVisible(!enable);
+	}
+
 }
