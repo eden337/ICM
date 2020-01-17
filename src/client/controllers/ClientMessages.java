@@ -122,7 +122,6 @@ public class ClientMessages {
                 ExecutionController.instance.queryResult(m.getObject());
                 break;
 
-            // pre Eval
             case PreEVAL_SetInitStat:
             case PreEVAL_SetConfirmationStatus:
                 PreEvaluationController.instance.updateStatus_serverResponse(m.getObject());
@@ -165,6 +164,12 @@ public class ClientMessages {
             case ClousreEmail:
                 ClosureController.instance.emailResponse(m.getObject());
                 break;
+            case mailToDirectorExtension:
+            	ExtensionController.instance.emailResponse(m.getObject());
+            	break;
+            case mailToDirectorRequestChange:
+            	requestTreatmentController.Instance.emailResponse(m.getObject());
+            	break;
             case ChangeRequest_getStageObject:
                 requestTreatmentController.Instance.appendStageObject_ServerResponse(m.getObject());
                 break;

@@ -757,6 +757,8 @@ public class requestTreatmentController extends AppController implements Initial
         supervisorRemarks.setText("");
         supervisorRemarks.setPromptText("Please write your remarks");
         stageProgressHBox.setVisible(false);
+        OperationType ot2= OperationType.mailToDirectorRequestChange;
+        App.client.handleMessageFromClientUI(new Message(ot2,selectedRequested.getRequestID()));
     }
 
     /**
@@ -845,5 +847,14 @@ public class requestTreatmentController extends AppController implements Initial
         LoadingPane.setVisible(enable);
         MainPane.setVisible(!enable);
     }
+    /**
+     * Response from server from sending an email to director
+     * @param object
+     */
+	public void emailResponse(Object object) {
+		if((boolean)object)
+			showAlert(AlertType.ERROR, "ERROR", "Could not send mail", null);
+		
+	}
 
 }

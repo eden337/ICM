@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -103,7 +104,10 @@ public class ExtensionController extends AppController implements Initializable 
                 "`Deadline`= '" + thisStage.getDeadline().plusDays(thisStage.getExtension_days()).format(formatter) + "' " +
                 " WHERE`RequestID`= '" + thisRequest.getRequestID() + "' AND `StageName` = '" + thisRequest.getCurrentStage() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        OperationType ot2= OperationType.mailToDirectorExtension;
+        App.client.handleMessageFromClientUI(new Message(ot2,thisRequest.getRequestID()));
         loadPage("requestTreatment");
+        
     }
     /**
      *
@@ -220,5 +224,15 @@ public class ExtensionController extends AppController implements Initializable 
             }
         });
     }
+   
+    /**
+     * Response from server from sending an email to director
+     * @param object
+     */
+	public void emailResponse(Object object) {
+		if((boolean)object)
+			showAlert(AlertType.ERROR, "ERROR", "Could not send mail", null);
+		
+	}
 
 }

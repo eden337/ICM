@@ -709,6 +709,26 @@ public class EchoServer extends AbstractServer {
                         e.printStackTrace();
                     }
                     break;
+                case mailToDirectorExtension:
+                	rs=mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
+                	int requestID=(int) m.getObject();
+                	String mailTo = null;
+                	while(rs.next()) {
+                		mailTo=rs.getString("EMAIL");
+                	}
+                	EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has accepted an extension to request #"+requestID);
+                	sendToClient(new Message(OperationType.mailToDirectorExtension,rs==null),client);
+                	break;
+                case mailToDirectorRequestChange:
+                	rs=mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
+                	requestID=(int) m.getObject();
+                	mailTo = null;
+                	while(rs.next()) {
+                		mailTo=rs.getString("EMAIL");
+                	}
+                	EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has made changes to request #"+requestID);
+                	sendToClient(new Message(OperationType.mailToDirectorRequestChange,rs==null),client);
+                	break;
                 case TenRequest:
                 	rs = mysql.getQuery(m.getObject().toString());
                 	   ArrayList<ChangeRequest> requests5 = getRequsets(rs);
