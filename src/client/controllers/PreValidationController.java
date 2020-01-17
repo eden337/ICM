@@ -112,7 +112,6 @@ public class PreValidationController extends AppController implements Initializa
                 " , `init_confirmed` = 1" +
                 " where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
         App.client.handleMessageFromClientUI(new Message(ot, query1));
-        App.ForceAuthorizeAllUsers();
 
 
     }
@@ -128,8 +127,9 @@ public class PreValidationController extends AppController implements Initializa
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    //App.ForceAuthorizeAllUsers();
                     showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
-                    loadPage("requestTreatment");
+                    loadPage("requestTreatment", "Request Treatment and Management");
                 }
             });
         } else
