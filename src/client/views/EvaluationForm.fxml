@@ -85,7 +85,7 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0" visible="false">
+                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0">
                      <children>
                         <Label alignment="CENTER" layoutX="204.0" layoutY="14.0" text="Evalutaion Report" textAlignment="CENTER">
                            <font>
@@ -117,11 +117,16 @@
                         <TextArea fx:id="reqChngTXT" layoutX="20.0" layoutY="206.0" prefHeight="71.0" prefWidth="544.0" wrapText="true" />
                         <TextArea fx:id="expResTXT" layoutX="20.0" layoutY="309.0" prefHeight="83.0" prefWidth="544.0" wrapText="true" />
                         <TextArea fx:id="cnstrntTXT" layoutX="20.0" layoutY="424.0" prefHeight="83.0" prefWidth="544.0" wrapText="true" />
-                        <TitledPane fx:id="titledPane" animated="false" layoutX="20.0" layoutY="74.0" prefHeight="71.0" prefWidth="544.0" styleClass="info" text="Waiting for your action">
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="20.0" layoutY="74.0" prefHeight="92.0" prefWidth="544.0" styleClass="info" text="Waiting for your action">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <Text fx:id="titledPane_Text" fill="#0600d9" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Evaluation stage. Seems like you need to fix your last Evaluation-Report.">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="titledPane_daysLeft" fill="#0600d9" layoutX="13.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Days Left">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>

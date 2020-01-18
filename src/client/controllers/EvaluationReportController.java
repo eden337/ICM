@@ -127,7 +127,8 @@ public class EvaluationReportController extends AppController implements Initial
 
     @FXML
     private Button btnAnswerStageExtensionRequest;
-
+    @FXML
+    private Text titledPane_daysLeft;
     @FXML
     void SbmtEvlBtnClick(ActionEvent event) {
         c2 = 0;
@@ -199,6 +200,7 @@ public class EvaluationReportController extends AppController implements Initial
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
         thisStage = thisRequest.getCurrentStageObject();
         this.requestNumberTXT.setText("Request Number " + thisRequest.getRequestID());
+        titledPane_daysLeft.setVisible(false);
         SbmtEvlBtn.setVisible(false);
         rightPane.setVisible(false);
         Pane_Form.setVisible(false);
@@ -237,11 +239,7 @@ public class EvaluationReportController extends AppController implements Initial
             if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) { // EVALUATOR
                 SbmtEvlBtn.setVisible(true);
                 Pane_Form.setVisible(true);
-                long estimatedTime = Duration
-                        .between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline()).toDays();
-                estimatedTime += 1;
-                Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-                setExtensionVisability();
+
 
             } else { // NOT EVALUATOR
                 Pane_locked.setVisible(true);
@@ -288,6 +286,12 @@ public class EvaluationReportController extends AppController implements Initial
 
                     titledPane.setText("Fill in Evaluation report.");
                     titledPane_Text.setText("After you submit the form, the evaluation will go to decision stage. ");
+                    titledPane_daysLeft.setVisible(true);
+                    long estimatedTime = Duration
+                            .between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline()).toDays();
+                    estimatedTime += 1;
+                    Tools.setTitlePane(estimatedTime, titledPane, titledPane_daysLeft);
+                    setExtensionVisability();
                 }
             });
 
