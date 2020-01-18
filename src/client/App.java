@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 /**
  * Start the first screen of the app.
  *
- * @author Idan
  */
 public class App extends Application {
 
@@ -30,6 +29,7 @@ public class App extends Application {
     public static String server_ip = "";
     public static String server_port = "";
     public static boolean appInitialized = false;
+    public static Stage stage;
 
     /**
      * main method

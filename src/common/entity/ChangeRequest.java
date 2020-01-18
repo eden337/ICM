@@ -17,7 +17,6 @@ import java.util.Date;
 public class ChangeRequest implements Serializable {
 
     /**
-     * @apiNote
      * initiator: user creating request
      * request details by user: status,existingCondition,suggestedChange,reasonForChange
      * request optional details by user: attachedFiles,remarks

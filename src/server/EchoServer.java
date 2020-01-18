@@ -1291,10 +1291,10 @@ public class EchoServer extends AbstractServer {
         return ret.toString();
     }
 
-    public static void NotifyDelaydStages() {
+    public static void NotifyDelayedStages() {
         String res = "", row = "";
         String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
-        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) < CURDATE() AND s.`RequestID` = r.`RequestID` AND r.`STATUS` = 'ACTIVE';";
+        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) < CURDATE() AND s.`RequestID` = r.`RequestID` AND ( r.`STATUS` = 'ACTIVE' OR r.`STATUS` LIKE 'WAITING%');";
         try {
             ResultSet rs = mysql.getQuery(query);
             if (rs != null) {
@@ -1309,7 +1309,7 @@ public class EchoServer extends AbstractServer {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception in: getDelaydStages[1]");
+            System.out.println("SQL Exception in: getDelayedStages[1]");
         }
 
         String supervisorEmail = "", DirectorEmail = "";
@@ -1330,9 +1330,9 @@ public class EchoServer extends AbstractServer {
             }
 
             if (!supervisorEmail.equals(""))
-                EmailSender.sendEmail(supervisorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>" + res);
+                EmailSender.sendEmail(supervisorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in this stages: </b><br>" + res);
             if (!DirectorEmail.equals(""))
-                EmailSender.sendEmail(DirectorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in there stages: </b><br>" + res);
+                EmailSender.sendEmail(DirectorEmail, "ICM Daily Exceptions reports", "<b>Exceptions in this stages: </b><br>" + res);
 
 
         }
@@ -1341,7 +1341,7 @@ public class EchoServer extends AbstractServer {
     public static void NotifyUncompletedStagesDayBeforeDeadline() {
         String res = "", row = "";
         String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
-        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) = (CURDATE()+1) AND s.`RequestID` = r.`RequestID` AND r.`STATUS` = 'ACTIVE';";
+        String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , r.`EMAIL` FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) = (CURDATE()+1) AND s.`RequestID` = r.`RequestID` AND ( r.`STATUS` = 'ACTIVE' OR r.`STATUS` LIKE 'WAITING%');";
         try {
             ResultSet rs = mysql.getQuery(query);
             if (rs != null) {

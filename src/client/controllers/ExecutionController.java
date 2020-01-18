@@ -330,7 +330,6 @@ public class ExecutionController extends AppController implements Initializable 
     /**
      *
      * @param object
-     * @apiNote
      * client response from Server, this function checks of the update of approveBtnClick was updated successfully
      * if it was updated successfully then the screen will return to request Treatment screen, else it will show an error
      */

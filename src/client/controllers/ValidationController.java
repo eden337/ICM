@@ -160,7 +160,7 @@ public class ValidationController extends AppController implements Initializable
 	
 	
 	/**
-	 * <PRE><B> initialize</B><BR>
+	 * <B> initialize</B><BR>
 	 *  public void initialize(URL location, ResourceBundle resources)<BR>
 	 * Is the first to run when this class is created.
 	 * it is meant to give default values for the arguments in the class.
@@ -234,7 +234,7 @@ public class ValidationController extends AppController implements Initializable
 	}
 	
 	/**
-	 * <PRE><B> checkPreConditions_ServerResponse</B><BR>
+	 * <B> checkPreConditions_ServerResponse</B><BR>
 	 *  public void checkPreConditions_ServerResponse(Object object)<BR>
 	 * This method is called after the server runs the query from {@link #checkPreConditions()} and set values for the arguments of the class.
 	 * if the conditions are not met it loads the {@link PreValidationController} page.
@@ -354,7 +354,7 @@ public class ValidationController extends AppController implements Initializable
 	private static int c2 = 0;
 	
 	/**
-	 * <PRE><B> queryResult2</B><BR>
+	 *<B> queryResult2</B><BR>
 	 *  public void queryResult2(Object object)
 	 *  This method is called after server runs a query from this class
 	 *  On success pop an alert of return to "execution" and load "requestTreatment" page
@@ -393,8 +393,8 @@ public class ValidationController extends AppController implements Initializable
 	}
 	
 	/**
-	 * <PRE><B> setValidationTable</B><BR>
-	 *  public void setValidationTable()<BR>
+	 * <B> setValidationTable</B><br>
+	 *  public void setValidationTable()<br>
 	 * Is called on {@link #failureReportBtnClicked(ActionEvent)} and send a query to the server in order to insert a new row in "Execution Failure Report" table.
 	 * This method is linked with {@link #setValidationTable_ServerResponse(Object)} method as it is the answer to the query.
 	 */
@@ -426,7 +426,7 @@ public class ValidationController extends AppController implements Initializable
 	}
 	
 	/**
-	 * <PRE><B> getReport_ServerResponse</B><BR>
+	 * <B> getReport_ServerResponse</B><BR>
 	 *  public void getReport_ServerResponse(Object object)<BR>
 	 * This method is called after the server runs the query from {@link #checkReport()}.
 	 * If a report already exist it pops an appropriate alert and hide to "no" button.
@@ -496,8 +496,8 @@ public class ValidationController extends AppController implements Initializable
 	private static int c = 0;
 	
 	/**
-	 * <PRE><B> queryResult</B><BR>
-	 *  public void queryResult(Object object)<BR>
+	 * <B> queryResult</B><br>
+	 *  public void queryResult(Object object)<br>
 	 *  This method is called after server runs a query from this class
 	 *  On success pop an alert of success and load "requestTreatment" page
 	 *  On failure pop an alert of failure
@@ -549,7 +549,7 @@ public class ValidationController extends AppController implements Initializable
 	}
 	
 	/**
-	 * <PRE><B> requestExtension</B><BR>
+	 * <B> requestExtension</B><BR>
 	 *  public void start(javafx.stage.Stage primaryStage)
 	 * This method is called on {@link #requestExtension(ActionEvent)} and opens a new "Extension" windows.
 	 * 

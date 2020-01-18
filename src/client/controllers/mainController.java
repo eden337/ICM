@@ -1,10 +1,8 @@
 package client.controllers;
 
 import client.App;
-import client.BypassedApp;
 import common.controllers.Message;
 import common.controllers.OperationType;
-import common.entity.EmployeeUser;
 import common.entity.OrganizationRole;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,7 +15,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert.AlertType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -192,7 +189,7 @@ public class mainController extends AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
-        primaryStage = BypassedApp.stage;
+        primaryStage = App.stage;
         setUser();
         pHome.setVisible(false);
         p2.setVisible(false);

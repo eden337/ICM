@@ -9,12 +9,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Schedule Tasks and handle it.
+ */
 public class ICM_Scheduler {
 
     public static void scheduler() {
-//        Timer timer1 = new Timer(); // Instantiate Timer Object
-//        TimerTask checkConnectedUsers_Task = new checkConnectedUsers();
-//        timer1.scheduleAtFixedRate(checkConnectedUsers_Task, 0, 30000);
 
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 9); // timer2 runs everyday in 9:00 AM
@@ -27,7 +27,7 @@ public class ICM_Scheduler {
                                        @Override
                                        public void run() {
                                            Platform.runLater(() -> {
-                                               EchoServer.NotifyDelaydStages();
+                                               EchoServer.NotifyDelayedStages();
                                                EchoServer.NotifyUncompletedStagesDayBeforeDeadline();
                                            });
                                        }

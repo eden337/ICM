@@ -142,7 +142,7 @@ public class ViewRequestController extends AppController implements Initializabl
     
     
     /**
-     * <PRE><B> getCurrentRequest</B><BR>
+     * <B> getCurrentRequest</B><BR>
      *  protected ChangeRequest getCurrentRequest()<BR>
      * @return the instance of the selected request from the table.
      */
@@ -202,7 +202,7 @@ public class ViewRequestController extends AppController implements Initializabl
     private static int c = 0;
     
     /**
-	 * <PRE><B> queryResult</B><BR>
+	 * <B> queryResult</B><BR>
 	 *  public void queryResult(Object object)<BR>
 	 *  This method is called after server runs a query from this class
 	 *  On success pop an alert of success and disable the button "Confirm Closure"
@@ -242,7 +242,7 @@ public class ViewRequestController extends AppController implements Initializabl
     }
 	
     /**
-	 * <PRE><B> initialize</B><BR>
+	 * <B> initialize</B><BR>
 	 *  public void initialize(URL location, ResourceBundle resources)<BR>
 	 * Is the first to run when this class is created.
 	 * it is meant to give default values for the arguments in the class.
@@ -299,8 +299,8 @@ public class ViewRequestController extends AppController implements Initializabl
     }
     
     /**
-     * <PRE><B> getPrevStage</B><BR>
-     *  public void getPrevStage()<BR>
+     * <B> getPrevStage</B><br>
+     *  public void getPrevStage()<br>
      * This method is called on {@link #initialize(URL, ResourceBundle)} and sends a query to the server
      * This method is linked with {@link #getPrevStage_ServerResponse(Object)} method as it is the answer to the query.
      */
@@ -311,8 +311,8 @@ public class ViewRequestController extends AppController implements Initializabl
     }
     
     /**
-	 * <PRE><B> getPrevStage_ServerResponse</B><BR>
-	 *  public void queryResult(Object object)<BR>
+	 * <B> getPrevStage_ServerResponse</B><br>
+	 *  public void queryResult(Object object)<br>
 	 * This method is called after server runs the query from {@link #getPrevStage()}.
 	 * If the answer from the server is not an existing stage it will pop an alert of failure.
 	 * Set the text near the "Confirm Closure" according to the stage return from server. 
@@ -372,8 +372,8 @@ public class ViewRequestController extends AppController implements Initializabl
     }
 
     /**
-     * <PRE><B> setDataTable</B><BR>
-     *  public void setDataTable(Object object)<BR>
+     * <B> setDataTable</B><br>
+     *  public void setDataTable(Object object)<br>
      * This method loads the data received from the server into the table.
      * @param object
      */
