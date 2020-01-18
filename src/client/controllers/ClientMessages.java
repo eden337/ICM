@@ -188,7 +188,6 @@ public class ClientMessages {
             case DECISION_GetPrevStage:
                 decisionController.instance.appendPrevStageObject_ServerResponse(m.getObject());
                 break;
-            case DECISION_SendEmailToUser:
             case DECISION_updateRequestStatus:
                 decisionController.instance.queryResult2(m.getObject());
                 break;

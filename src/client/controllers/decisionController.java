@@ -431,21 +431,19 @@ public class decisionController extends AppController implements Initializable {
                 + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
         String query3 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
                 + thisRequest.getRequestID();
-        String query4 = "SELECT e.EMAIL FROM Employees e, Stage s WHERE e.username = s.Incharge and s.StageName='EVALUATION' and s.RequestID = "
-                + thisRequest.getRequestID() + ";";
-        String query5 = "INSERT INTO Repeted (RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ('"
+
+        String query4 = "INSERT INTO Repeted (RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ('"
                 + prevStage.getRequestID() + "', '" + prevStage.getStageName() + "', '"
                 + prevStage.getStartTime().format(formatter) + "', '" + prevStage.getEndTime().format(formatter)
                 + "', '" + prevStage.getDeadline().format(formatter) + "', '" + prevStage.getIncharge() + "');";
         OperationType ot = OperationType.DECISION_updateRequestStatus;
-        OperationType ot2 = OperationType.DECISION_SendEmailToUser;
 
         App.client.handleMessageFromClientUI(new Message(ot, query1));
         App.client.handleMessageFromClientUI(new Message(ot, query2));
         App.client.handleMessageFromClientUI(new Message(ot, query3));
-        App.client.handleMessageFromClientUI(new Message(ot, query5));
+        App.client.handleMessageFromClientUI(new Message(ot, query4));
 
-        App.client.handleMessageFromClientUI(new Message(ot2, query4));
+
     }
 
     private static int c2 = 0;
@@ -464,7 +462,7 @@ public class decisionController extends AppController implements Initializable {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        showAlert(AlertType.INFORMATION, "Return to evaluator", "A email message was sent to the evaluator", null);
+                        showAlert(AlertType.INFORMATION, "Return to evaluator", "The request returned to evaluator for further inspection", null);
 
                         loadPage("requestTreatment");
                     }

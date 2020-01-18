@@ -404,12 +404,6 @@ public class EchoServer extends AbstractServer {
                     res = mysql.insertOrUpdate(m.getObject().toString());
                     sendToClient(new Message(OperationType.updateSystems, res), client);
                     break;
-                case DECISION_SendEmailToUser:
-                        rs = mysql.getQuery(m.getObject().toString());
-                        while (rs.next()) {
-                            EmailSender.sendEmail(rs.getString("EMAIL"), "ICM Notification", "Please view your progress");
-                        }
-                        break;
                 case VALID_GetReport:
                 case EXECUTION_GetFailReport:
                     rs = mysql.getQuery(m.getObject().toString());
