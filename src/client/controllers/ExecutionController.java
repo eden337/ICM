@@ -160,6 +160,7 @@ public class ExecutionController extends AppController implements Initializable 
         pane_form.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Waiting for your action");
+        inchargeTF.setText(thisStage.getIncharge());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         checkPreConditions();
@@ -167,7 +168,7 @@ public class ExecutionController extends AppController implements Initializable 
         setExtensionVisability();
         if (!thisRequest.getCurrentStage().equals("EXECUTION")) {
             pane_msg.setVisible(true);
-            inchargeTF.setText("Executer");
+            inchargeTF.setText(thisStage.getIncharge());
             return;
         }
 

@@ -213,7 +213,7 @@ public class EvaluationReportController extends AppController implements Initial
         btnRequestExtension.setVisible(false);
         if (thisStage.getExtension_reason() != null)
             btnAnswerStageExtensionRequest.setVisible(true);
-
+        inchargeTF.setText(thisStage.getIncharge());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
         formInit();
@@ -221,7 +221,7 @@ public class EvaluationReportController extends AppController implements Initial
             Pane_Form.setVisible(true);
             rightPane.setVisible(true);
             dueDateLabel.setDisable(true);
-            inchargeTF.setText("Evaluator");
+            inchargeTF.setText(thisStage.getIncharge());
             return;
         } else { // in Eval Stage
             if (thisStage.getInit_confirmed() == 1 && thisStage.getInit() == 1)

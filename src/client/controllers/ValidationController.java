@@ -179,7 +179,7 @@ public class ValidationController extends AppController implements Initializable
 		this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
 		btnAnswerStageExtensionRequest.setVisible(false);
 		thisStage = thisRequest.getCurrentStageObject();
-
+		inchargeTF.setText(thisStage.getIncharge());
 		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
 				dueDateLabel, requestNameLabel, thisRequest);
 
@@ -194,7 +194,7 @@ public class ValidationController extends AppController implements Initializable
 			textInMsgPane.setFill(Color.BLUE);
 			textInMsgPane.setText("Stage in progress");
 			pane_msg.setVisible(true);
-			inchargeTF.setText("Tester");
+			inchargeTF.setText(thisStage.getIncharge());
 			if (thisStage.getExtension_reason() != null)
 				btnAnswerStageExtensionRequest.setVisible(true);
 			return;
