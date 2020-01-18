@@ -77,7 +77,14 @@ public class ServerController implements Initializable {
     @FXML
     public ListView<String> usersList;
 
+    @FXML
+    private Button btnRunTimersManually;
 
+    @FXML
+    void runTimersManually(ActionEvent event) {
+        EchoServer.NotifyDelayedStages();
+        EchoServer.NotifyUncompletedStagesDayBeforeDeadline();
+    }
     private DBDetails MySQLWorkbench = new DBDetails("localhost", "yRBHdnFuc9?serverTimezone=IST", "root", "Aa123456", "5555");
     private DBDetails RemoteSQL = new DBDetails("remotemysql.com", "yRBHdnFuc9", "yRBHdnFuc9", "QOMMWb8Jo6", "5555");
 
@@ -86,6 +93,8 @@ public class ServerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        btnRunTimersManually.setDisable(true);
+
         OutputStream out = new OutputStream() {
             @Override
             public void write(int b) throws IOException {
@@ -94,6 +103,7 @@ public class ServerController implements Initializable {
         };
         System.setOut(new PrintStream(out, true));
         printFormFields(RemoteSQL);
+
     }
 
     private void appendText(String str) {
@@ -193,6 +203,7 @@ public class ServerController implements Initializable {
 
         // call to ICM Scheduler.
         ICM_Scheduler.scheduler();
+        btnRunTimersManually.setDisable(false);
 
     }
 
@@ -201,6 +212,8 @@ public class ServerController implements Initializable {
      */
     @FXML
     void stopServer() {
+        btnRunTimersManually.setDisable(true);
+
         // EchoServer.mainServer(args);
 
         if (AppServer.echoserver.isListening()) {

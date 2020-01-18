@@ -88,7 +88,7 @@ public class EmailSender {
         try {
             mailer.sendPlainTextEmail(host, port, mailFrom, password, mailTo,
                     subject, msgHTML);
-            System.out.println("Email sent.");
+            System.out.println("Email sent to: "+ mailTo + "{"+subject+" , " + msgHTML+" }" );
         } catch (Exception ex) {
             System.out.println("Failed to sent email.");
             ex.printStackTrace();
