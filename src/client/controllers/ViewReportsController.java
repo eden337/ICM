@@ -122,15 +122,12 @@ public class ViewReportsController extends AppController implements Initializabl
 		}
 		file = new File(path + selectedReport.toString() + ".csv");
 		if (!file.exists())
-			if (selectedReport.isPeriodReport())
-				App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport,
-						"Select * From Reports WHERE ReportType='" + selectedReport.getType() + "' And Since ='"
-								+ selectedReport.getFrom().toString() + "' AND Till ='"
-								+ selectedReport.getTo().toString() + "'"));
-			else
-				App.client.handleMessageFromClientUI(new Message(OperationType.OpenReport,
-						"Select * From Reports WHERE ReportType='" + selectedReport.getType() + "' And Created ='"
-								+ selectedReport.getCreated().toString() + "'"));
+			try {
+				createInPC();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		else
 			try {
 				Desktop.getDesktop().open(file);
@@ -447,6 +444,22 @@ public class ViewReportsController extends AppController implements Initializabl
 
 		csvFile = new PrintWriter(file);
 		csvFile.write(report.getData());
+		csvFile.close();
+		try {
+			Desktop.getDesktop().open(file);
+		} catch (IOException e) {
+		}
+
+	}
+	public void createInPC() throws FileNotFoundException {
+
+		PrintWriter csvFile;
+		
+
+		new File(path).mkdirs();
+
+		csvFile = new PrintWriter(file);
+		csvFile.write(selectedReport.getData());
 		csvFile.close();
 		try {
 			Desktop.getDesktop().open(file);
