@@ -82,7 +82,7 @@ public class ServerController implements Initializable {
 
     @FXML
     void runTimersManually(ActionEvent event) {
-        EchoServer.NotifyDelayedStages();
+        //EchoServer.NotifyDelayedStages();
         EchoServer.NotifyUncompletedStagesDayBeforeDeadline();
     }
     private DBDetails MySQLWorkbench = new DBDetails("localhost", "yRBHdnFuc9?serverTimezone=IST", "root", "Aa123456", "5555");

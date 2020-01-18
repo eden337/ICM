@@ -14,7 +14,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -219,13 +218,13 @@ public class EchoServer extends AbstractServer {
                     rs.close();
                     break;
                 case Allocate_System_Incharge:
-                	String evaluator;
-                	rs = mysql.getQuery(m.getObject().toString());
-                	rs.next();
-                	evaluator=rs.getString(1);
-                	sendToClient(new Message(m.getOperationtype(), evaluator), client);
-                	rs.close();
-                	break;
+                    String evaluator;
+                    rs = mysql.getQuery(m.getObject().toString());
+                    rs.next();
+                    evaluator = rs.getString(1);
+                    sendToClient(new Message(m.getOperationtype(), evaluator), client);
+                    rs.close();
+                    break;
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
                     // stages permission:
@@ -553,19 +552,19 @@ public class EchoServer extends AbstractServer {
                             performData = mysql.getQuery(
                                     "SELECT Deadline,EndTime,extension_days FROM `Requests` as r ,`Stage` as s WHERE s.extension_days IS NOT NULL AND r.RequestID=s.RequestID AND r.SystemID='"
                                             + system + "'");
-                            while(performData.next()) {
-                            ZonedDateTime t1,t2;
-                            t1=Tools.convertDateSQLToZoned(performData.getDate("EndTime"));
-                            t2=Tools.convertDateSQLToZoned(performData.getDate("Deadline"));
-                            int extensionDays=performData.getInt("extension_days");
-                            int days=(int) Duration.between(t1, t2).toDays();
-                            if(days>extensionDays)
-                            	days=extensionDays;
-                            val=val-days;
+                            while (performData.next()) {
+                                ZonedDateTime t1, t2;
+                                t1 = Tools.convertDateSQLToZoned(performData.getDate("EndTime"));
+                                t2 = Tools.convertDateSQLToZoned(performData.getDate("Deadline"));
+                                int extensionDays = performData.getInt("extension_days");
+                                int days = (int) Duration.between(t1, t2).toDays();
+                                if (days > extensionDays)
+                                    days = extensionDays;
+                                val = val - days;
                             }
                             /***************************************/
 
-                            if (val != null&&val>0)
+                            if (val != null && val > 0)
                                 values.add((Integer) val);
                             else
                                 values.add(0);
@@ -607,7 +606,7 @@ public class EchoServer extends AbstractServer {
                          */
                         boolean insertOrUpdeate = isReportExist("SELECT * FROM `Reports` WHERE (ReportType IN('"
                                 + report.getType() + "') AND Created IN ('" + report.getCreated().toString() + "') )");
-                        
+
                         HashMap<String, ArrayList<Integer>> frequency = new HashMap<>();
 
                         frequency.put("Moodle", new ArrayList<Integer>());
@@ -625,7 +624,7 @@ public class EchoServer extends AbstractServer {
                         frequency.put("Library", new ArrayList<Integer>());
                         frequency.get("Library").add(0);
                         calcDelayedDaysPer(frequency);
-                        ArrayList<String> dealyCols=new ArrayList<String>();
+                        ArrayList<String> dealyCols = new ArrayList<String>();
                         dealyCols.add("Delayed Days");
                         dealyCols.add("delayed Times");
                         String reportDelayData = reportBuilder(frequency, dealyCols);
@@ -659,8 +658,8 @@ public class EchoServer extends AbstractServer {
                     ArrayList<Report> allReports = new ArrayList<Report>();
                     ResultSet repoData = mysql.getQuery(m.getObject().toString());
                     while (repoData.next()) {
-                    	Report temp=new Report(repoData.getString("ReportType"), repoData.getDate("Created"), repoData.getDate("Since"), repoData.getDate("Till"));
-                    	temp.setData(repoData.getString("Data"));
+                        Report temp = new Report(repoData.getString("ReportType"), repoData.getDate("Created"), repoData.getDate("Since"), repoData.getDate("Till"));
+                        temp.setData(repoData.getString("Data"));
                         allReports.add(temp);
 
                     }
@@ -712,31 +711,31 @@ public class EchoServer extends AbstractServer {
                     }
                     break;
                 case mailToDirectorExtension:
-                	rs=mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
-                	int requestID=(int) m.getObject();
-                	String mailTo = null;
-                	while(rs.next()) {
-                		mailTo=rs.getString("EMAIL");
-                	}
-                	EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has accepted an extension to request #"+requestID);
-                	sendToClient(new Message(OperationType.mailToDirectorExtension,rs==null),client);
-                	break;
+                    rs = mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
+                    int requestID = (int) m.getObject();
+                    String mailTo = null;
+                    while (rs.next()) {
+                        mailTo = rs.getString("EMAIL");
+                    }
+                    EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has accepted an extension to request #" + requestID);
+                    sendToClient(new Message(OperationType.mailToDirectorExtension, rs == null), client);
+                    break;
                 case mailToDirectorRequestChange:
-                	rs=mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
-                	requestID=(int) m.getObject();
-                	mailTo = null;
-                	while(rs.next()) {
-                		mailTo=rs.getString("EMAIL");
-                	}
-                	EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has made changes to request #"+requestID);
-                	sendToClient(new Message(OperationType.mailToDirectorRequestChange,rs==null),client);
-                	break;
+                    rs = mysql.getQuery("SELECT `EMAIL`,'Name' FROM `Employees` WHERE `RoleInOrg` = 'DIRECTOR'");
+                    requestID = (int) m.getObject();
+                    mailTo = null;
+                    while (rs.next()) {
+                        mailTo = rs.getString("EMAIL");
+                    }
+                    EmailSender.sendEmail(mailTo, "ICM Notification", "Director  \n The supervisor has made changes to request #" + requestID);
+                    sendToClient(new Message(OperationType.mailToDirectorRequestChange, rs == null), client);
+                    break;
                 case TenRequest:
-                	rs = mysql.getQuery(m.getObject().toString());
-                	   ArrayList<ChangeRequest> requests5 = getRequsets(rs);
-                       sendToClient(new Message(OperationType.TenRequest,  requests5), client);
-                       rs.close();
-                	break;
+                    rs = mysql.getQuery(m.getObject().toString());
+                    ArrayList<ChangeRequest> requests5 = getRequsets(rs);
+                    sendToClient(new Message(OperationType.TenRequest, requests5), client);
+                    rs.close();
+                    break;
 
                 default:
                     break;
@@ -1138,9 +1137,9 @@ public class EchoServer extends AbstractServer {
                 int res = (int) Duration.between(deadline, compareTo).toDays();
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
-                ArrayList<Integer> tempdelays=new ArrayList<Integer>();
+                ArrayList<Integer> tempdelays = new ArrayList<Integer>();
                 tempdelays.add(mapDelays.get(system).get(0));
-                
+
                 mapDelays.replace(system, tempdelays);
             }
             delayData = mysql.getQuery(
@@ -1152,18 +1151,17 @@ public class EchoServer extends AbstractServer {
                 int res = (int) Duration.between(deadline, compareTo).toDays();
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
-                ArrayList<Integer> tempdelays=new ArrayList<Integer>();
+                ArrayList<Integer> tempdelays = new ArrayList<Integer>();
                 tempdelays.add(mapDelays.get(system).get(0));
-                
+
                 mapDelays.replace(system, tempdelays);
             }
-            for(String s: mapDelays.keySet())
-            {
-            	delayData=mysql.getQuery("SELECT COUNT(*) FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND s.delay=1 AND r.SystemID='"+s+"'");
-            	delayData.next();
-            	 mapDelays.get(s).add(delayData.getInt(1));
+            for (String s : mapDelays.keySet()) {
+                delayData = mysql.getQuery("SELECT COUNT(*) FROM `Requests` as r, `Stage` as s WHERE r.RequestID=s.RequestID AND s.delay=1 AND r.SystemID='" + s + "'");
+                delayData.next();
+                mapDelays.get(s).add(delayData.getInt(1));
             }
-      
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1278,12 +1276,12 @@ public class EchoServer extends AbstractServer {
             if (rs != null) {
                 res = row0;
                 while (rs.next()) {
-                	int requestId=rs.getInt(1);
-                	String stage=rs.getString(2);
+                    int requestId = rs.getInt(1);
+                    String stage = rs.getString(2);
                     row = requestId + "&nbsp;&nbsp;&nbsp;" + stage + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
                     res += row;
                     EmailSender.sendEmail(rs.getString(4), "ICM - Exceptions in request treatment +" + rs.getInt(1), row0 + row);
-                    mysql.insertOrUpdate("Update `Stage` Set Delay=1 WHERE RequestID='"+requestId+"' AND `StageName`='"+stage+"' ");
+                    mysql.insertOrUpdate("Update `Stage` Set Delay=1 WHERE RequestID='" + requestId + "' AND `StageName`='" + stage + "' ");
                 }
             }
         } catch (SQLException e) {
@@ -1315,21 +1313,47 @@ public class EchoServer extends AbstractServer {
 
     public static void NotifyUncompletedStagesDayBeforeDeadline() {
         String res = "", row = "";
+        String query2 = "SELECT `EMAIL` FROM `Employees` WHERE `RoleInOrg` = 'SUPERVISOR'";
+        ResultSet rs = mysql.getQuery(query2);
+        String mail = "", supervisorEmail = "";
+        try {
+            while (rs.next()) {
+                supervisorEmail = rs.getString(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception in: NotifyUncompletedStagesDayBeforeDeadline[1]");
+        }
         String row0 = "Request&nbsp;&nbsp;StageName&nbsp;&nbsp;&nbsp;DeadLine <br>";
         String query = "SELECT s.`RequestID`, s.`StageName`, s.`DeadLine` , e.`EMAIL` FROM `Stage` as s, `Requests` as r , `Employees` as e WHERE s.`Endtime` IS NULL and date(s.deadline) = (CURDATE()+1) AND s.`incharge` = e.`username` AND s.`RequestID` = r.`RequestID`" +
                 "AND ( r.`STATUS` = 'ACTIVE' OR r.`STATUS` LIKE 'WAITING%');";
         try {
-            ResultSet rs = mysql.getQuery(query);
+            rs = mysql.getQuery(query);
             if (rs != null) {
                 res = row0;
                 while (rs.next()) {
+                    System.out.println(rs.getInt(1));
                     row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
                     res += row;
+
+                    if(rs.getString(2).equals("CLOSURE"))
+                        continue;
                     EmailSender.sendEmail(rs.getString(4), "ICM - Reminder : You have to treat request +" + rs.getInt(1), row0 + row);
                 }
+
+                res = "";
+                row = "";
+                query = "SELECT s.`RequestID`, s.`DeadLine`  FROM `Stage` as s, `Requests` as r WHERE s.`Endtime` IS NULL and date(s.deadline) = (CURDATE()+1) AND s.`StageName` = 'CLOSURE' AND s.`RequestID` = r.`RequestID` AND ( r.`STATUS` = 'ACTIVE' OR r.`STATUS` LIKE 'WAITING%');"; //
+                rs = mysql.getQuery(query);
+                while (rs.next()) {
+                    row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;CLOSURE<br> ";
+                    res += row;
+                }
+                if(res!="")
+                    EmailSender.sendEmail(supervisorEmail, "ICM - Reminder : You have to treat request/s ", row0 + res);
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception in: getDelayedStages[1]");
+            e.printStackTrace();
+            System.out.println("SQL Exception in: NotifyUncompletedStagesDayBeforeDeadline[2]");
         }
     }
 }
