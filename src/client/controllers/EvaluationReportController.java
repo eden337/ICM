@@ -145,7 +145,6 @@ public class EvaluationReportController extends AppController implements Initial
         expectedRisk = this.cnstrntTXT.getText();
         LocalDate date = this.timeEvlBox.getValue();
         estimatedTime = date.toString();
-        btnAnswerStageExtensionRequest.setVisible(false);
 
 
         String query1 = "INSERT INTO `EvaluationReports` (`RequestID`, `System_ID`, `Required_Change`, `Expected_Result`, `Expected_Risks`, `Estimated_Time`) VALUES ("
@@ -209,7 +208,7 @@ public class EvaluationReportController extends AppController implements Initial
         dueDateLabel.setVisible(false);
         titledPane.setCollapsible(false);
         titledPane.setText("Welcome");
-
+        btnAnswerStageExtensionRequest.setVisible(false);
         btnRequestExtension.setVisible(false);
         if (thisStage.getExtension_reason() != null)
             btnAnswerStageExtensionRequest.setVisible(true);

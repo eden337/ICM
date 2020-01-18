@@ -19,7 +19,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ViewRequestController">
    <children>
-      <Pane fx:id="LoadingPane" prefHeight="710.0" prefWidth="1000.0">
+      <Pane fx:id="LoadingPane" prefHeight="710.0" prefWidth="1000.0" visible="false">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="400.0" layoutY="320.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -28,7 +28,7 @@
             </ImageView>
          </children>
       </Pane>
-      <HBox fx:id="MainPane" prefHeight="711.0" prefWidth="1000.0" visible="false">
+      <HBox fx:id="MainPane" prefHeight="711.0" prefWidth="1000.0">
          <children>
             <VBox prefHeight="711.0" prefWidth="420.0">
                <children>
@@ -164,9 +164,9 @@
                         <Font name="System Bold" size="38.0" />
                      </font>
                   </Text>
-                  <Text fx:id="finishedStatus" layoutX="229.0" layoutY="640.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="267.13671875">
+                  <Text fx:id="finishedStatus" layoutX="228.0" layoutY="635.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="267.13671875">
                      <font>
-                        <Font name="System Bold Italic" size="24.0" />
+                        <Font name="System Bold Italic" size="16.0" />
                      </font>
                   </Text>
                </children>

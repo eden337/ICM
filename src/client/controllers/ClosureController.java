@@ -146,7 +146,7 @@ public class ClosureController extends AppController implements Initializable {
 
         // Otherwise: this is the Supervisor in his stage
         pane_msg.setVisible(true);
-        textInMsgPane.setText("The request waiting for " + thisRequest.getInitiator() + " Action");
+        textInMsgPane.setText("The request waiting for Initiator Action (" + thisRequest.getInitiator() + ")");
         estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
                 .toDays();
 

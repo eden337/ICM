@@ -127,13 +127,14 @@ public class PreValidationController extends AppController implements Initializa
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    //App.ForceAuthorizeAllUsers();
+                    App.ForceAuthorizeAllUsers();
                     showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
                     loadPage("requestTreatment", "Request Treatment and Management");
                 }
             });
         } else
             showAlert(Alert.AlertType.ERROR, "Error!", "Could not update.", null);
+
     }
     /**
      * Initialize the pre validation screen
