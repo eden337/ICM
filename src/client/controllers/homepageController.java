@@ -131,7 +131,7 @@ public class homepageController extends AppController implements Initializable {
 		App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyTotalRequests,
 				"SELECT COUNT(*) FROM Requests WHERE USERNAME = '" + App.user.getUserName() + "';"));
 		App.client.handleMessageFromClientUI(new Message(OperationType.Main_getMyRequestTreatment,
-				"SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status = 'WAITING(SUPERVISOR)')  AND USERNAME = '"
+				"SELECT COUNT(*) FROM Requests WHERE (Status = 'ACTIVE' OR Status LIKE 'WAITING%')  AND USERNAME = '"
 						+ App.user.getUserName() + "';"));
 	}
 

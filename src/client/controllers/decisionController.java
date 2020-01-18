@@ -299,7 +299,7 @@ public class decisionController extends AppController implements Initializable {
         Date today = new Date(System.currentTimeMillis());
         ZonedDateTime tomorrow = ZonedDateTime.now().plusDays(1);
         String tomorrowFormat = tomorrow.getYear() + "/" + tomorrow.getMonthValue() + "/" + tomorrow.getDayOfMonth();
-        String query1 = "UPDATE Requests SET Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
+        String query1 = "UPDATE Requests SET Status = 'WAITING(USER)', Treatment_Phase = 'CLOSURE' WHERE RequestID = '"
                 + thisRequest.getRequestID() + "'";
         String query2 = " UPDATE `Stage` SET Status = 'WAITING(USER)', `EndTime` = '" + dateFormat.format(today)
                 + "' where  `StageName` = 'DECISION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";

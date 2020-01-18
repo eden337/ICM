@@ -324,7 +324,7 @@ public class ViewRequestController extends AppController implements Initializabl
         if (thisStage != null) {
             if (thisStage.getPreStage().equals("DECISION")) {
                 finishedStatus.setFill(Color.DARKRED);
-                finishedStatus.setText("FAILED");
+                finishedStatus.setText("Request Declined");
             } else if (thisStage.getPreStage().equals("VALIDATION"))// else if prevStage == Validation{
             {
 

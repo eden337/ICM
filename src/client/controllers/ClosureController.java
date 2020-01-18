@@ -153,7 +153,7 @@ public class ClosureController extends AppController implements Initializable {
         Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
         if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
             finishedStatus.setFill(Color.DARKRED);
-            finishedStatus.setText("FAILED");
+            finishedStatus.setText("Request Declined");
         } else // else if prevStage == Validation{
         {
             finishedStatus.setFill(Color.FORESTGREEN);
