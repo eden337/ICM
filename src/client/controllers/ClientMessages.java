@@ -75,6 +75,7 @@ public class ClientMessages {
                 break;
             case Allocate_System_Incharge:
             	AllocateController.instance.setEvaluuator(m.getObject());
+            	break;
             case Allocate_UpdateRoles:
                 AllocateController.instance.allocQueryResult(m.getObject());
                 break;
