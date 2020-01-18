@@ -225,6 +225,7 @@ public class EchoServer extends AbstractServer {
                 	evaluator=rs.getString(1);
                 	sendToClient(new Message(m.getOperationtype(), evaluator), client);
                 	rs.close();
+                	break;
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
                     // stages permission:
