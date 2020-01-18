@@ -149,7 +149,7 @@ public class ClosureController extends AppController implements Initializable {
         textInMsgPane.setText("The request waiting for " + thisRequest.getInitiator() + " Action");
         estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
                 .toDays();
-        estimatedTime += 1;
+
         Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
         if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
             finishedStatus.setFill(Color.DARKRED);

@@ -168,7 +168,7 @@ public class decisionController extends AppController implements Initializable {
         setFieldsData();
         estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
                 .toDays();
-        estimatedTime += 1;
+
         Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
     }
 

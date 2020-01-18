@@ -148,8 +148,10 @@ public class PreEvaluationController extends AppController implements Initializa
         }
 
         if (flag) {
+            String query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+            App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
             OperationType ot = OperationType.PreEVAL_SetInitStat;
-            String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText()
+            query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText()
                     + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
             showAlert(AlertType.INFORMATION, "Evaluation end time asked",
@@ -220,8 +222,7 @@ public class PreEvaluationController extends AppController implements Initializa
             if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EVALUATOR)) {
                 btnSubmit.setVisible(true);
                 tfDays.setEditable(true);
-                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
-                App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+
             }
 
         }

@@ -151,6 +151,9 @@ public class PreExecutionController extends AppController implements Initializab
             OperationType ot = OperationType.PreEXE_SetInitStat;
             String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
+
+            query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+            App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
         }
     }
 
@@ -214,8 +217,7 @@ public class PreExecutionController extends AppController implements Initializab
             if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
                 btnSubmit.setVisible(true);
                 tfDays.setEditable(true);
-                query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
-                App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
+
             }
         }
 

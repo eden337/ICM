@@ -44,7 +44,7 @@
                            </HBox.margin>
                         </Button>
                         <Button fx:id="activitybtn" mnemonicParsing="false" onAction="#showActivity" prefHeight="47.0" prefWidth="127.0" text="Activty" />
-                        <Button fx:id="performencesbtn" mnemonicParsing="false" onAction="#showPerformences" prefHeight="47.0" prefWidth="127.0" text="Performences" />
+                        <Button fx:id="performencesbtn" mnemonicParsing="false" onAction="#showPerformences" prefHeight="47.0" prefWidth="127.0" text="Performances" />
                         <Button fx:id="delaysBtn" mnemonicParsing="false" onAction="#showDelays" prefHeight="47.0" prefWidth="127.0" text="Delays" />
                      </children>
                   </HBox>
@@ -55,7 +55,7 @@
             <Button fx:id="viewReportBtn" layoutX="228.0" layoutY="607.0" mnemonicParsing="false" onAction="#showReport" prefHeight="32.0" prefWidth="160.0" styleClass="primary" text="View Selected Report" />
          </children>
       </AnchorPane>
-      <Button fx:id="generateReportBtn" layoutX="775.0" layoutY="608.0" mnemonicParsing="false" onAction="#screenGenerateReport" text="Back to: Genreate Report" />
+      <Button fx:id="generateReportBtn" layoutX="775.0" layoutY="608.0" mnemonicParsing="false" onAction="#screenGenerateReport" styleClass="warning" stylesheets="@css/theme.css" text="Back to: Genreate Report" />
       <ImageView fx:id="buffer" fitHeight="150.0" fitWidth="200.0" layoutX="400.0" layoutY="322.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@img/Loading.gif" />
