@@ -108,15 +108,23 @@
                         </Text>
                         <AnchorPane fx:id="returnedNoteAP" layoutX="13.0" layoutY="220.0" prefHeight="322.0" prefWidth="544.0" visible="false">
                            <children>
-                              <Text layoutX="8.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" />
+                              <Text layoutX="8.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Validation Failure Report:">
+                                 <font>
+                                    <Font name="System Bold Italic" size="13.0" />
+                                 </font></Text>
                               <TextArea fx:id="returnedNotes" editable="false" layoutX="7.0" layoutY="41.0" prefHeight="263.0" prefWidth="519.0" text="none" />
                            </children>
                         </AnchorPane>
-                        <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="71.0" prefWidth="544.0" styleClass="info" text="Fix Required">
+                        <TitledPane fx:id="titledPane" animated="false" layoutX="24.0" layoutY="81.0" prefHeight="100.0" prefWidth="544.0" styleClass="info" text="Fix Required">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="50.0" prefWidth="542.0">
                                  <children>
                                     <Text fx:id="titledPane_Text" fill="#0016d9" layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back to Execution stage. ">
+                                       <font>
+                                          <Font name="System Italic" size="13.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="titledPane_daysLeft" fill="#0600d9" layoutX="14.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Days Left">
                                        <font>
                                           <Font name="System Italic" size="13.0" />
                                        </font>

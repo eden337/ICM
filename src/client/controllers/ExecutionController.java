@@ -56,6 +56,9 @@ public class ExecutionController extends AppController implements Initializable 
     protected ChangeRequest thisRequest;
 
     @FXML
+    private Text titledPane_daysLeft;
+
+    @FXML
     private Text requestNumberTXT;
 
     @FXML
@@ -191,6 +194,7 @@ public class ExecutionController extends AppController implements Initializable 
             returnedNoteAP.setVisible(true);
             returnedNotes.setText(thisRequest.getReturnedNote());
         }
+
         pane_form.setVisible(true);
         inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge() + "");
 
@@ -244,6 +248,10 @@ public class ExecutionController extends AppController implements Initializable 
 
         if (init_confirmed && init) {
             init();
+            titledPane_daysLeft.setVisible(true);
+            estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+                    .toDays();
+            Tools.setTitlePane(estimatedTime, titledPane, titledPane_daysLeft);
             rightPane.setVisible(true);
             return;
         }
@@ -264,7 +272,7 @@ public class ExecutionController extends AppController implements Initializable 
 
         if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
             workDone.setVisible(true);// Change to false once you deal with permissions
-
+            titledPane_daysLeft.setVisible(false);
             if (responseSupervisor) {
                 titledPane.getStyleClass().remove("danger");
                 titledPane.getStyleClass().add("success");
@@ -274,10 +282,7 @@ public class ExecutionController extends AppController implements Initializable 
                 titledPane_Text.setFill(Color.FORESTGREEN);
                 titledPane_Text.setVisible(true);
                 workDone.setVisible(false);
-                estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-                        .toDays();
-                estimatedTime += 1;
-                Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+
                 if (!thisRequest.getCurrentStage().equals("EXECUTION")) { // Watching only
                     titledPane.getStyleClass().remove("danger");
                     titledPane.getStyleClass().add("success");
