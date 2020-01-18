@@ -218,6 +218,13 @@ public class EchoServer extends AbstractServer {
                     sendToClient(new Message(m.getOperationtype(), listOfUsers), client);
                     rs.close();
                     break;
+                case Allocate_System_Incharge:
+                	String evaluator;
+                	rs = mysql.getQuery(m.getObject().toString());
+                	rs.next();
+                	evaluator=rs.getString(1);
+                	sendToClient(new Message(m.getOperationtype(), evaluator), client);
+                	rs.close();
                 case User_getStageRoleObject:
                     User u1 = (User) m.getObject();
                     // stages permission:

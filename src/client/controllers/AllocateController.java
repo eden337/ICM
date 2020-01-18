@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 
 public class AllocateController extends AppController implements Initializable {
     public static AllocateController instance;
+    private String evaluator; 
     protected ChangeRequest thisRequest;
     @FXML
     private ResourceBundle resources;
@@ -167,8 +168,10 @@ public class AllocateController extends AppController implements Initializable {
     private void getUsersFromServer() {
         OperationType ot = OperationType.Allocate_GetITUsers;
         String query = "SELECT * FROM Employees WHERE Type = 'Engineer' AND USERNAME != '" + App.user.getUserName() + "'";
-        //String query = "SELECT * FROM ITEngineer ";
+        String query2 = "SELECT `username` FROM `Systems Techncian` WHERE SystemID='"+thisRequest.getInfoSystem()+"'";
 
+        OperationType ot2 = OperationType.Allocate_System_Incharge;
+        App.client.handleMessageFromClientUI(new Message(ot2, query2));
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
@@ -192,9 +195,20 @@ public class AllocateController extends AppController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                cbEvaluator.getSelectionModel().select(r.nextInt(size));
+                cbEvaluator.getSelectionModel().select(evaluator);
             }
         });
+    }
+    /**
+     * 
+     * @author Ira Goor 
+     * method purpose:set from DB evaluator to be the one in charge of the system
+     *
+     * @param object
+     */
+    public void setEvaluuator(Object object)
+    {
+    	evaluator=(String)object;
     }
 
     /**

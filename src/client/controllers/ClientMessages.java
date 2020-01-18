@@ -73,6 +73,8 @@ public class ClientMessages {
             case Allocate_GetITUsers:
                 AllocateController.instance.setComboBoxesData(m.getObject());
                 break;
+            case Allocate_System_Incharge:
+            	AllocateController.instance.setEvaluuator(m.getObject());
             case Allocate_UpdateRoles:
                 AllocateController.instance.allocQueryResult(m.getObject());
                 break;
