@@ -1138,7 +1138,7 @@ public class EchoServer extends AbstractServer {
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
                 ArrayList<Integer> tempdelays = new ArrayList<Integer>();
-                tempdelays.add(mapDelays.get(system).get(0));
+                tempdelays.add(mapDelays.get(system).get(0)+res);
 
                 mapDelays.replace(system, tempdelays);
             }
@@ -1152,7 +1152,7 @@ public class EchoServer extends AbstractServer {
                 res = res > 0 ? res : 0;
                 String system = delayData.getString("SystemID");
                 ArrayList<Integer> tempdelays = new ArrayList<Integer>();
-                tempdelays.add(mapDelays.get(system).get(0));
+                tempdelays.add(mapDelays.get(system).get(0)+res);
 
                 mapDelays.replace(system, tempdelays);
             }
