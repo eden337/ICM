@@ -35,7 +35,12 @@ public class App extends Application {
      * main method
      */
     public static void main(String[] args) {
-        launch(args);
+        try {
+            launch(args);
+        }
+        catch (Exception e){
+            System.out.println("Global Exception. check trace");
+        }
     }
 
     public static boolean startClient() {

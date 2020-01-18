@@ -43,7 +43,8 @@ public class BypassedApp extends Application {
             launch(args);
 
         } catch (Exception e) {
-            System.err.println("ByPassed App : GUI Launch Error. check 'DemoPage' source");
+            //e.printStackTrace();
+            System.err.println("ByPassed App : GUI Launch Error.");
         }
     }
 
