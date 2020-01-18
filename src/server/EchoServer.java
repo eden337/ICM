@@ -1300,9 +1300,12 @@ public class EchoServer extends AbstractServer {
             if (rs != null) {
                 res = row0;
                 while (rs.next()) {
-                    row = rs.getInt(1) + "&nbsp;&nbsp;&nbsp;" + rs.getString(2) + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
+                	int requestId=rs.getInt(1);
+                	String stage=rs.getString(2);
+                    row = requestId + "&nbsp;&nbsp;&nbsp;" + stage + "&nbsp;&nbsp;&nbsp;" + rs.getString(3) + "<br> ";
                     res += row;
                     EmailSender.sendEmail(rs.getString(4), "ICM - Exceptions in request treatment +" + rs.getInt(1), row0 + row);
+                    mysql.insertOrUpdate("Update `Stage` Set Delay=1 WHERE RequestID='"+requestId+"' AND `StageName`='"+stage+"' ");
                 }
             }
         } catch (SQLException e) {
