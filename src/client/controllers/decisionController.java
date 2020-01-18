@@ -428,7 +428,7 @@ public class decisionController extends AppController implements Initializable {
                 + thisRequest.getRequestID() + "'";
         String query2 = "UPDATE `Stage` SET init = 0, init_confirmed = 0, `EndTime` = '" + dateFormat.format(today)
                 + "' where  `StageName` = 'EVALUATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-        String query3 = "UPDATE `Stage` SET `StartTime` = '0001-01-01',`Deadline` = '0001-01-01',`EndTime` = '0001-01-01' where `StageName` = 'EVALUATION' AND `RequestID` = "
+        String query3 = "UPDATE `Stage` SET `StartTime` = NULL,`Deadline` = NULL,`EndTime` = NULL where `StageName` = 'EVALUATION' AND `RequestID` = "
                 + thisRequest.getRequestID();
 
         String query4 = "INSERT INTO Repeted (RequestID, StageName, StartTime, EndTime, Deadline, Incharge) VALUES ('"
