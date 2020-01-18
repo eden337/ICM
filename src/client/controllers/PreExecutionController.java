@@ -169,6 +169,7 @@ public class PreExecutionController extends AppController implements Initializab
         instance = this;
         tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
