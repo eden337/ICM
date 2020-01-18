@@ -142,7 +142,7 @@ public class decisionController extends AppController implements Initializable {
         reEvaluateBtn.setVisible(false);
         inchargeTF.setText("Committee Chairman");
         btnRequestExtension.setVisible(false);
-
+        inchargeTF.setText(thisStage.getIncharge());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
 
