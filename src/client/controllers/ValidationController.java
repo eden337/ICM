@@ -301,10 +301,14 @@ public class ValidationController extends AppController implements Initializable
 		OperationType ot = OperationType.VALID_GetPrevStage;
 		String query = "SELECT * FROM `Stage`  WHERE `RequestID` = " + thisRequest.getRequestID()
 				+ " AND `StageName` = 'EXECUTION' LIMIT 1";
+		String query2 = "UPDATE Stage SET EndTime = NULL WHERE `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 		App.client.handleMessageFromClientUI(new Message(ot, query));
+		App.client.handleMessageFromClientUI(new Message(OperationType.VALID_UpdatePrevStage, query2));
 		setValidationTable();
 	}
-	
+
+
+
 	/**
 	 * <PRE><B> setStageTable</B><BR>
 	 *  void setStageTable()<BR>
@@ -329,10 +333,12 @@ public class ValidationController extends AppController implements Initializable
 				+ prevStage.getRequestID() + "', '" + prevStage.getStageName() + "', '"
 				+ prevStage.getStartTime().format(formatter) + "', '" + prevStage.getEndTime().format(formatter)
 				+ "', '" + prevStage.getDeadline().format(formatter) + "', '" + prevStage.getIncharge() + "');";
+
 		OperationType ot = OperationType.VALID_UpdateRepeated;
 		App.client.handleMessageFromClientUI(new Message(ot, query1));
 		App.client.handleMessageFromClientUI(new Message(ot, query2));
 		App.client.handleMessageFromClientUI(new Message(ot, query3));
+
 	}
 	
 	/**
@@ -399,11 +405,16 @@ public class ValidationController extends AppController implements Initializable
 	 * This method is linked with {@link #setValidationTable_ServerResponse(Object)} method as it is the answer to the query.
 	 */
 	public void setValidationTable() {
-		String query3 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUES ( '"
+		c4=2;
+		String query1 = " INSERT INTO `Execution Failure Report` (RequestID, Report) VALUES ( '"
 				+ thisRequest.getRequestID() + "', '" + failReportTextArea.getText() + "')";
 		OperationType ot = OperationType.VALID_updateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query3));
+		App.client.handleMessageFromClientUI(new Message(ot, query1));
+		String query2 = "UPDATE Stage SET EndTime = NULL WHERE `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+		App.client.handleMessageFromClientUI(new Message(ot, query2));
 	}
+
+	private int c4;
 	
 	/**
 	 * <PRE><B> setValidationTable_ServerResponse</B><BR>
@@ -413,8 +424,9 @@ public class ValidationController extends AppController implements Initializable
 	 * @param object holds the answer from the server after running the query
 	 */
 	public void setValidationTable_ServerResponse(Object object) {
+
 		boolean res = (boolean) object;
-		if (res) {
+		if (res&&(--c4==0)) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
