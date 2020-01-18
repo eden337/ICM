@@ -266,7 +266,7 @@ public class ChangeRequestController extends AppController implements Initializa
 
     /**
      * check the return from server of the queryRes and if query is ok so put the
-     * file in DB
+     * file in DB,InsertRequirement Operation.
      *
      * @param object the object that return from the server is boolean
      */
@@ -288,7 +288,7 @@ public class ChangeRequestController extends AppController implements Initializa
 
     /**
      * Check the return from the server of the file.
-     *
+     * ChangeRequest_File Operation
      * @param object the object that return from the server is boolean
      */
     public void uploadFileResult(Object object) {
