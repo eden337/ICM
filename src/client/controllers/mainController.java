@@ -265,7 +265,7 @@ public class mainController extends AppController implements Initializable {
 
         App.client.handleMessageFromClientUI(new Message(OperationType.Logout, App.user.getUserName()));
         App.user = null;
-        BypassedApp.main(null);
+        //BypassedApp.main(null);
         changeWindow((Stage) ((Node) event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
     }
 
