@@ -150,7 +150,7 @@ public class PreValidationController extends AppController implements Initializa
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
-        inchargeTF.setText("Tester");
+        inchargeTF.setText("Chairman selecting a tester...");
         //getUsersFromServer();
         if (!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
             btnAllocate.setVisible(false);
