@@ -419,7 +419,6 @@ public class EvaluationReportController extends AppController implements Initial
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println("Could not load execution prompt");
             e.printStackTrace();
         }

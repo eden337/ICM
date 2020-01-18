@@ -49,7 +49,6 @@ public class ReportGrapicsController extends AppController implements Initializa
     }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
 		Report report=ViewReportsController.selectedReport;
 		reportInfo.setText(labelFormat(report));
 		if(report.getType().equals("Activity"))

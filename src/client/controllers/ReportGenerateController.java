@@ -160,10 +160,7 @@ public class ReportGenerateController extends AppController implements Initializ
 					Desktop desktop = Desktop.getDesktop();
 
 					desktop.open(file);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-
-				}
+				} catch (IOException e) {}
 
 			}
 

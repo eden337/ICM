@@ -62,7 +62,6 @@ public class AppController {
                     primaryStage.setTitle("ICM");
                     primaryStage.show();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -92,7 +91,6 @@ public class AppController {
         try {
             root = FXMLLoader.load(getClass().getResource("/client/views/" + fxmlName + ".fxml"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         mainController.instance.getBorderPane().setCenter(root);

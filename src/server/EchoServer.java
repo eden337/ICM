@@ -753,7 +753,6 @@ public class EchoServer extends AbstractServer {
         try {
             res = data.next();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return res;
@@ -820,7 +819,6 @@ public class EchoServer extends AbstractServer {
             ZonedDateTime submitTime = Tools.convertDateSQLToZoned(requestData.getDate("Date"));
             ZonedDateTime dueDate = Tools.convertDateSQLToZoned(requestData.getDate("Due_Date"));
 
-            // TODO: now, the currResponsible is 'none'. we need to get all users
             // participated in this request right now according to Stage table.
             request = new ChangeRequest(initiator, intiatorType, status, requestID, infoSystem, existingCondition,
                     suggestedChange, reasonForChange, remarks, dueDate, submitTime, currentStage, filespaths,
@@ -976,14 +974,12 @@ public class EchoServer extends AbstractServer {
                 try {
                     id = requestId.getInt("RequestID");
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 // System.out.println(id);
                 hm.put(id, (long) 0);
             }
         } catch (SQLException e2) {
-            // TODO Auto-generated catch block
             e2.printStackTrace();
         }
 
@@ -1036,7 +1032,6 @@ public class EchoServer extends AbstractServer {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1045,7 +1040,6 @@ public class EchoServer extends AbstractServer {
             frozen.close();
             repeated.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return hm;
@@ -1117,7 +1111,6 @@ public class EchoServer extends AbstractServer {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1126,7 +1119,6 @@ public class EchoServer extends AbstractServer {
             frozen.close();
             repeated.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1173,7 +1165,6 @@ public class EchoServer extends AbstractServer {
             }
       
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -1186,7 +1177,6 @@ public class EchoServer extends AbstractServer {
             data.next();
             frequency.get(s).add(data.getInt(1));
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -1228,12 +1218,6 @@ public class EchoServer extends AbstractServer {
             ret.append(median);
             ret.append(',');
             ret.append(Tools.calculateSD(values));
-            // extra to calculate total not that important
-            /*
-             * ret.append(','); try { ResultSet total=mysql.getQuery(totals.get(i));
-             * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
-             * Auto-generated catch block e.printStackTrace(); }
-             */
             i++;
 
             ret.append("\r\n");
@@ -1276,7 +1260,7 @@ public class EchoServer extends AbstractServer {
         // extra to calculate total not that important
         /*
          * ret.append(','); try { ResultSet total=mysql.getQuery(totals.get(i));
-         * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) { // TODO
+         * total.next(); ret.append(total.getInt(1)); } catch (SQLException e) {
          * Auto-generated catch block e.printStackTrace(); }
          */
 

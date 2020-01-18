@@ -233,7 +233,7 @@ public class ClosureController extends AppController implements Initializable {
     public void closureQueryResult(Object object) {
         c++;
         boolean res = (boolean) object;
-        if (c == 2) { // TODO : Add EMAIL REQUEST.
+        if (c == 2) {
             if (res) {
                 Platform.runLater(new Runnable() {
                     @Override

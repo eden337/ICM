@@ -393,7 +393,6 @@ public class decisionController extends AppController implements Initializable {
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println("Could not load execution prompt");
             e.printStackTrace();
         }
