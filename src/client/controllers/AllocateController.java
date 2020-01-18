@@ -64,9 +64,6 @@ public class AllocateController extends AppController implements Initializable {
     @FXML
     private TextArea descripitionsTextArea;
 
-    @FXML
-    private Text dueDateLabel;
-
 
     @FXML
     private Text requestNameLabel;
@@ -156,7 +153,7 @@ public class AllocateController extends AppController implements Initializable {
     	txtWarning.setVisible(false);
         instance = this;
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, dueDateLabel, requestNameLabel, thisRequest);
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID, null, requestNameLabel, thisRequest);
         getUsersFromServer();
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
     }

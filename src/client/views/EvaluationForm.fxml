@@ -85,7 +85,7 @@
             </Pane>
             <AnchorPane fx:id="rightPane" prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0">
+                  <Pane fx:id="Pane_Form" prefHeight="710.0" prefWidth="583.0" visible="false">
                      <children>
                         <Label alignment="CENTER" layoutX="204.0" layoutY="14.0" text="Evalutaion Report" textAlignment="CENTER">
                            <font>
