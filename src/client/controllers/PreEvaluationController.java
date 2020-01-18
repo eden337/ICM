@@ -91,6 +91,7 @@ public class PreEvaluationController extends AppController implements Initializa
     @FXML
     private Button btnDeny;
 
+    private common.entity.Stage thisStage;
     /**
      * if pre - evaluation is confirmed by pressing accept, the start time and deadline of evaluation stage for this request
      * is going to be updated om DB, and also changing the status of the request to ACTIVE
@@ -171,10 +172,11 @@ public class PreEvaluationController extends AppController implements Initializa
         instance = this;
         tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
-        inchargeTF.setText("Evaluator");
+        inchargeTF.setText(thisStage.getIncharge());
         getCurrentReqestedDays();
 
         // GUI Init

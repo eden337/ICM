@@ -86,6 +86,7 @@ public class PreExecutionController extends AppController implements Initializab
     @FXML
     private Text txtMsg;
 
+    private common.entity.Stage thisStage;
     /**
      * if pre - execution is confirmed by pressing accept, the start time and deadline of execution stage for this request
      * is going to be updated om DB, and also changing the status of the request to ACTIVE
@@ -171,7 +172,7 @@ public class PreExecutionController extends AppController implements Initializab
         this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
                 dueDateLabel, requestNameLabel, thisRequest);
-        inchargeTF.setText("Executer");
+        inchargeTF.setText(thisStage.getIncharge());
 
         getCurrentReqestedDays();
 
