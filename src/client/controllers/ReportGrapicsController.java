@@ -82,6 +82,7 @@ public class ReportGrapicsController extends AppController implements Initializa
 			NumberAxis yAxis= new NumberAxis();
 			yAxis.setLabel("Days");
 			BarChart amount =new BarChart(xAxis, yAxis, getDataPerfomencesFreq());
+			amount.setTitle("Work days");
 			freqPane.getChildren().add(amount);
 			CategoryAxis xAxis2=new CategoryAxis();
 			NumberAxis yAxis2= new NumberAxis();
@@ -96,19 +97,21 @@ public class ReportGrapicsController extends AppController implements Initializa
 			NumberAxis yAxis= new NumberAxis();
 			yAxis.setLabel("Days");
 			BarChart days =new BarChart(xAxis, yAxis, getDataDelaysDaysFreq());
-			
 			CategoryAxis xAxis0=new CategoryAxis();
 			NumberAxis yAxis0= new NumberAxis();
+			yAxis.setLabel("Times");
 			BarChart amount =new BarChart(xAxis0, yAxis0, getDataDelaysDTimesFreq());
 			freqPane.getChildren().addAll(amount,days);
 			CategoryAxis xAxis2=new CategoryAxis();
 			NumberAxis yAxis2= new NumberAxis();
 			BarChart statsChart =new BarChart(xAxis2, yAxis2,getDataDelaysStatsDays());
 			statsChart.setTitle("Statistics: Days");
+			yAxis2.setLabel("Days");
 			CategoryAxis xAxis3=new CategoryAxis();
 			NumberAxis yAxis3= new NumberAxis();
 			BarChart statsChartTimes =new BarChart(xAxis3, yAxis3,getDataDelaysStatsTomes());
-			stsPane.getChildren().addAll(statsChart,statsChartTimes);
+			statsChartTimes.setTitle("Statistics: Times");
+			stsPane.getChildren().addAll(statsChartTimes,statsChart);
 		}
 		
 	}
@@ -176,7 +179,7 @@ public class ReportGrapicsController extends AppController implements Initializa
     	ObservableList<XYChart.Series<String, Integer>> data=FXCollections.observableArrayList();
     	Series<String,Integer> delays=new Series<String, Integer>();
 
-    	delays.setName("Delayed");
+    	delays.setName("Delayed Days");
     	for(String s:ViewReportsController.datesAndData.keySet())
     	{
     		delays.getData().add(new XYChart.Data(s,ViewReportsController.datesAndData.get(s).get(0)));
@@ -193,7 +196,7 @@ public class ReportGrapicsController extends AppController implements Initializa
     	ObservableList<XYChart.Series<String, Integer>> data=FXCollections.observableArrayList();
     	Series<String,Integer> delays=new Series<String, Integer>();
 
-    	delays.setName("Delayed");
+    	delays.setName("Delayed Times");
     	for(String s:ViewReportsController.datesAndData.keySet())
     	{
     		delays.getData().add(new XYChart.Data(s,ViewReportsController.datesAndData.get(s).get(1)));
