@@ -20,11 +20,11 @@
                <children>
                   <VBox prefHeight="710.0" prefWidth="420.0" style="-fx-background-color: #fffaee;">
                      <children>
-                        <Pane prefHeight="45.0" prefWidth="420.0" styleClass="bg_color4">
+                        <Pane prefHeight="45.0" prefWidth="420.0" style="-fx-background-color: #99e1a8;">
                            <children>
-                              <Text fx:id="requestNumberTXT" layoutX="134.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
+                              <Text fx:id="requestNumberTXT" layoutX="108.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
                                  <font>
-                                    <Font name="System Bold" size="18.0" />
+                                    <Font size="24.0" />
                                  </font>
                               </Text>
                            </children>
@@ -126,16 +126,16 @@
                   <TextArea fx:id="expectedResultText" editable="false" layoutX="25.0" layoutY="320.0" prefHeight="83.0" prefWidth="447.0" wrapText="true" />
                   <TextArea fx:id="constraintText" editable="false" layoutX="25.0" layoutY="435.0" prefHeight="83.0" prefWidth="447.0" wrapText="true" />
                   <Text fx:id="timeEvaluationText" layoutX="25.0" layoutY="566.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
-                  <Button fx:id="reEvaluateBtn" layoutX="208.0" layoutY="635.0" mnemonicParsing="false" onAction="#reEvaluateBtnClick" prefHeight="58.0" prefWidth="146.0" styleClass="info" text="Re-evaluate" />
+                  <Button fx:id="reEvaluateBtn" layoutX="217.0" layoutY="635.0" mnemonicParsing="false" onAction="#reEvaluateBtnClick" prefHeight="58.0" prefWidth="146.0" styleClass="info" text="Re-evaluate" />
                   <Button fx:id="approveBtn" layoutX="25.0" layoutY="635.0" mnemonicParsing="false" onAction="#approveBtnClick" prefHeight="58.0" prefWidth="137.0" styleClass="success" text="Approve" />
                   <Button fx:id="declineBtn" layoutX="408.0" layoutY="635.0" mnemonicParsing="false" onAction="#declineBtnClick" prefHeight="58.0" prefWidth="146.0" styleClass="danger" text="Decline" />
                   <Button fx:id="btnRequestExtension" layoutX="408.0" layoutY="589.0" mnemonicParsing="false" onAction="#requestExtension" prefHeight="32.0" prefWidth="146.0" text="Request Extension" />
 
-                  <Pane prefHeight="45.0" prefWidth="583.0" styleClass="bg_color4">
+                  <Pane prefHeight="45.0" prefWidth="583.0" style="-fx-background-color: #99e1a8;">
                      <children>
-                        <Text layoutX="229.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Decision Stage">
+                        <Text layoutX="213.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Decision Stage">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font size="24.0" />
                            </font>
                         </Text>
                      </children>

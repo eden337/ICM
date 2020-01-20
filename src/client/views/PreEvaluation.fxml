@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -19,11 +20,11 @@
                <children>
                   <VBox prefHeight="710.0" prefWidth="420.0" style="-fx-background-color: #fffaee;">
                      <children>
-                        <Pane prefHeight="45.0" prefWidth="420.0" styleClass="bg_color4">
+                        <Pane prefHeight="45.0" prefWidth="420.0" style="-fx-background-color: #80b5e7;">
                            <children>
-                              <Text fx:id="requestNumberTXT" layoutX="134.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
+                              <Text fx:id="requestNumberTXT" layoutX="113.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
                                  <font>
-                                    <Font name="System Bold" size="18.0" />
+                                    <Font size="24.0" />
                                  </font>
                               </Text>
                            </children>
@@ -83,8 +84,10 @@
             </Pane>
             <AnchorPane prefHeight="710.0" prefWidth="585.0">
                <children>
-                  <Label alignment="CENTER" layoutX="198.0" layoutY="14.0" text="Pre-Evalutaion Stage " textAlignment="CENTER">
-                     <font>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#80b5e7" height="44.0" layoutX="10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="583.0" />
+                  <Label alignment="CENTER" layoutX="192.0" layoutY="5.0" text="Pre-Evalutaion Stage" textAlignment="CENTER">
+
+                  <font>
                         <Font size="24.0" />
                      </font>
                   </Label>

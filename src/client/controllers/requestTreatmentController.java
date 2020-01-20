@@ -22,6 +22,10 @@ import common.entity.MyFile;
 import common.entity.OrganizationRole;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -53,8 +57,9 @@ import javafx.util.Duration;
 
 /**
  * Controller for request treatment screen
- * @version 1.0 - 01/2020
+ *
  * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ * @version 1.0 - 01/2020
  */
 public class requestTreatmentController extends AppController implements Initializable {
 
@@ -204,8 +209,6 @@ public class requestTreatmentController extends AppController implements Initial
     ObservableList<ChangeRequest> o;
 
 
-
-
     protected ChangeRequest getCurrentRequest() {
         return selectedRequested;
     }
@@ -219,6 +222,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * change text of searchBoxTF to ACTIVE
+     *
      * @param event
      */
 
@@ -229,6 +233,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * change text of searchBoxTF to ""
+     *
      * @param event
      */
     @FXML
@@ -239,22 +244,27 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * change text of searchBoxTF to WAITING
+     *
      * @param event
      */
     @FXML
     void waitingFilterClicked(ActionEvent event) {
         searchBoxTF.setText("WAITING");
     }
+
     /**
      * change text of searchBoxTF to SUSPENDED
+     *
      * @param event
      */
     @FXML
     void suspendedFilterClicked(ActionEvent event) {
         searchBoxTF.setText("SUSPENDED");
     }
+
     /**
      * change text of searchBoxTF to CANCELED
+     *
      * @param event
      */
 
@@ -262,14 +272,17 @@ public class requestTreatmentController extends AppController implements Initial
     void canceledFilterClicked(ActionEvent event) {
         searchBoxTF.setText("CANCELED");
     }
+
     /**
      * change text of searchBoxTF to WAITING(SUPERVISOR)
+     *
      * @param event
      */
     @FXML
     void supervisorWaitingClicked(ActionEvent event) {
         searchBoxTF.setText("WAITING(SUPERVISOR)");
     }
+
     /**
      * Query by Permission
      *
@@ -277,7 +290,7 @@ public class requestTreatmentController extends AppController implements Initial
      */
     private String setTableByUser() {
         String query = "Select * FROM Requests ";
-        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)||App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) || App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
             return query;
         query = "SELECT r.`RequestID`, `USERNAME`, `Position`, `Email`, `Existing_Cond`, `Wanted_Change`,"
                 + " `Treatment_Phase`, `Status`, `Reason`, `Curr_Responsible`, `SystemID`, `Comments`, `Date`,"
@@ -323,11 +336,11 @@ public class requestTreatmentController extends AppController implements Initial
     /**
      * initialize the filter menu for director or other users.
      */
-    private void initDirector(){
+    private void initDirector() {
         waitingFilter.setVisible(false);
         suspendedFilter.setVisible(false);
         canceledFilter.setVisible(false);
-        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)){
+        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
             waitingFilter.setVisible(true);
             suspendedFilter.setVisible(true);
             canceledFilter.setVisible(true);
@@ -336,6 +349,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * initialize the request Treatment page
+     *
      * @param location
      * @param resources
      */
@@ -344,7 +358,7 @@ public class requestTreatmentController extends AppController implements Initial
         Instance = this;
         supervisorWaiting.setVisible(false);
         initDirector();
-        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
             supervisorWaiting.setVisible(true);
         // request data from server
         getDatafromServer();
@@ -355,102 +369,112 @@ public class requestTreatmentController extends AppController implements Initial
         updateRemarksBtn.setVisible(false);
         freezeBtn.setVisible(false);
         // event when user click on a row
-        table.setRowFactory(tv -> {
-            TableRow<ChangeRequest> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    btnDownloadFiles.setDisable(false);
-                    selectedRequested = row.getItem();
-                    appendStageObject();
-                    initPanes();
-                    String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
-                    if (selectedRequested.getFilesPaths() != null)
-                        if (selectedRequested.getFilesPaths().equals(filename))
-                            btnDownloadFiles.setVisible(true);
-
-                    rightPane_selectRequest.setVisible(false);
-                    if (row.getItem().getCurrentStage().equals("INIT")) {
-                        rightPane_Init.setVisible(true);
-                        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-                            btnInit.setVisible(true);
-                        }
-
-                    } else { // ACTIVE request
-                        if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))) {
-
-                            wantedChangeText.setEditable(true);
-                            reasonText.setEditable(true);
-                            existingCondition.setEditable(true);
-                            descripitionsTextArea.setEditable(true);
-                            dueDateLabel.setDisable(false);
-                            updateRemarksBtn.setDisable(false);
-                            freezeBtn.setVisible(true);
-                            freezeBtn.setDisable(false);
-                            btnIncharges.setDisable(false);
-                            if (selectedRequested.getStatus().equals("DONE")
-                                    || selectedRequested.getStatus().equals("CANCELED")) {
-                                freezeBtn.setDisable(true);
-                                updateRemarksBtn.setDisable(true);
-                                btnIncharges.setDisable(true);
-                            }
-                        }
-
-                        rightPane_requestTreatment.setVisible(true);
-                        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
-                                departmentID, null, requestNameLabel, selectedRequested);
-                        wantedChangeText.setText(selectedRequested.getSuggestedChange());
-                        reasonText.setText(selectedRequested.getReasonForChange());
-                        dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
-
-                        if (selectedRequested.getStatus().equals("SUSPENDED")
-                                && !(selectedRequested.getStatus().equals("DONE")
-                                || selectedRequested.getStatus().equals("CANCELED"))) {
-                        	 wantedChangeText.setEditable(false);
-                             reasonText.setEditable(false);
-                             existingCondition.setEditable(false);
-                             descripitionsTextArea.setEditable(false);
-                             dueDateLabel.setDisable(true);
-                             updateRemarksBtn.setDisable(true);
-                             btnIncharges.setDisable(true);
-
-                            rightPane_Freezed.setVisible(true);
-                            btnDownloadFiles.setDisable(true);
-                            rightPane_requestTreatment.setDisable(true);
-                            stageProgressHBox.setVisible(false);
-                            if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
-                                btnUnfreeze.setVisible(true);
+        table.setRowFactory(tv -> new TableRow<ChangeRequest>() {
+                    @Override
+                    public void updateItem(ChangeRequest item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null) {
+                            setStyle("");
+                        } else if (item.getStatus().equals("WAITING(SUPERVISOR)")) {
+                            setStyle("-fx-background-color: #ffd7c8;");
                         } else {
-                            rightPane_Freezed.setVisible(false);
-                            rightPane_requestTreatment.setDisable(false);
-                            stageProgressHBox.setVisible(true);
+                            setStyle("");
                         }
-                        if(selectedRequested.getStatus().equals("DONE")||selectedRequested.getStatus().equals("CANCELED")) {
-                        	wantedChangeText.setEditable(false);
-                            reasonText.setEditable(false);
-                            existingCondition.setEditable(false);
-                            descripitionsTextArea.setEditable(false);
-                            dueDateLabel.setDisable(true);
-                            updateRemarksBtn.setDisable(true);
-                            btnIncharges.setDisable(true);
-                        }
+
+                        TableRow<ChangeRequest> row = this;
+                        row.setOnMouseClicked(event -> {
+                            if (!row.isEmpty()) {
+                                btnDownloadFiles.setDisable(false);
+                                selectedRequested = row.getItem();
+                                appendStageObject();
+                                initPanes();
+                                String filename = "Request_" + selectedRequested.getRequestID() + ".zip";
+                                if (selectedRequested.getFilesPaths() != null)
+                                    if (selectedRequested.getFilesPaths().equals(filename))
+                                        btnDownloadFiles.setVisible(true);
+
+                                rightPane_selectRequest.setVisible(false);
+                                if (row.getItem().getCurrentStage().equals("INIT")) {
+                                    rightPane_Init.setVisible(true);
+                                    if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+                                        btnInit.setVisible(true);
+                                    }
+
+                                } else { // ACTIVE request
+                                    if ((App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))) {
+
+                                        wantedChangeText.setEditable(true);
+                                        reasonText.setEditable(true);
+                                        existingCondition.setEditable(true);
+                                        descripitionsTextArea.setEditable(true);
+                                        dueDateLabel.setDisable(false);
+                                        updateRemarksBtn.setDisable(false);
+                                        freezeBtn.setVisible(true);
+                                        freezeBtn.setDisable(false);
+                                        btnIncharges.setDisable(false);
+                                        if (selectedRequested.getStatus().equals("DONE")
+                                                || selectedRequested.getStatus().equals("CANCELED")) {
+                                            freezeBtn.setDisable(true);
+                                            updateRemarksBtn.setDisable(true);
+                                            btnIncharges.setDisable(true);
+                                        }
+                                    }
+
+                                    rightPane_requestTreatment.setVisible(true);
+                                    Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF,
+                                            departmentID, null, requestNameLabel, selectedRequested);
+                                    wantedChangeText.setText(selectedRequested.getSuggestedChange());
+                                    reasonText.setText(selectedRequested.getReasonForChange());
+                                    dueDateLabel.setValue(selectedRequested.getDueDate().toLocalDate());
+
+                                    if (selectedRequested.getStatus().equals("SUSPENDED")
+                                            && !(selectedRequested.getStatus().equals("DONE")
+                                            || selectedRequested.getStatus().equals("CANCELED"))) {
+                                        wantedChangeText.setEditable(false);
+                                        reasonText.setEditable(false);
+                                        existingCondition.setEditable(false);
+                                        descripitionsTextArea.setEditable(false);
+                                        dueDateLabel.setDisable(true);
+                                        updateRemarksBtn.setDisable(true);
+                                        btnIncharges.setDisable(true);
+
+                                        rightPane_Freezed.setVisible(true);
+                                        btnDownloadFiles.setDisable(true);
+                                        rightPane_requestTreatment.setDisable(true);
+                                        stageProgressHBox.setVisible(false);
+                                        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR))
+                                            btnUnfreeze.setVisible(true);
+                                    } else {
+                                        rightPane_Freezed.setVisible(false);
+                                        rightPane_requestTreatment.setDisable(false);
+                                        stageProgressHBox.setVisible(true);
+                                    }
+                                    if (selectedRequested.getStatus().equals("DONE") || selectedRequested.getStatus().equals("CANCELED")) {
+                                        wantedChangeText.setEditable(false);
+                                        reasonText.setEditable(false);
+                                        existingCondition.setEditable(false);
+                                        descripitionsTextArea.setEditable(false);
+                                        dueDateLabel.setDisable(true);
+                                        updateRemarksBtn.setDisable(true);
+                                        btnIncharges.setDisable(true);
+                                    }
+                                }
+                                if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+                                    btnIncharges.setVisible(true);
+                                    updateRemarksBtn.setVisible(true);
+                                    submitBtn.setVisible(false);
+                                    supervisorRemarks.setPromptText("Please write your remarks");
+                                    supervisorRemarks.setVisible(false);
+
+                                }
+                                resetStageImgStyleClass();
+                                Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequested);
+
+                            } // row selected
+                        });
                     }
-                    if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-                        btnIncharges.setVisible(true);
-                        updateRemarksBtn.setVisible(true);
-                        submitBtn.setVisible(false);
-                        supervisorRemarks.setPromptText("Please write your remarks");
-                        supervisorRemarks.setVisible(false);
-
-                    }
-                    resetStageImgStyleClass();
-                    Tools.highlightProgressBar(stage1, stage2, stage3, stage4, stage5, selectedRequested);
-
-                } // row selected
-            });
-            return row;
-        });
-
-        // if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR))
+                }
+        );
 
     }// initialize
 
@@ -487,6 +511,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * called from getDatafromServer, loading the details from the DB to the tableView object
+     *
      * @param object
      */
     public void setDataTable(Object object) {
@@ -552,6 +577,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * refresh button pressed
+     *
      * @param event
      */
     @FXML
@@ -569,7 +595,8 @@ public class requestTreatmentController extends AppController implements Initial
     }
 
     /**
-     *  Go to Allocate screen
+     * Go to Allocate screen
+     *
      * @param event
      */
 
@@ -617,7 +644,7 @@ public class requestTreatmentController extends AppController implements Initial
         String query2 = "INSERT INTO Frozen (RequestID, StageName, FreezeTime) VALUES ('"
                 + selectedRequested.getRequestID() + "', '" + getCurrentRequest().getCurrentStage() + "', '"
                 + dateFormat.format(today) + "'); ";
-       // System.out.println(query);
+        // System.out.println(query);
         App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
         App.client.handleMessageFromClientUI(new Message(OperationType.insertFreezedRequest, query2));
 
@@ -643,6 +670,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * response from getTimeFromFrozen operation, its updates the add time for the treatment phase for the selected request
+     *
      * @param object
      */
     public void unFreezeSelectFrozenResponse(Object object) {
@@ -656,6 +684,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * response from insertFreezedRequest operation, adds freezing time into the DB
+     *
      * @param object
      */
     public void freezeUpdateResponse(Object object) {
@@ -672,6 +701,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * response from updateUnfrozenStage operation, shows an alert if the unfreezing action is either success or failure
+     *
      * @param object
      */
     public void unFreezeUpdateResponse(Object object) {
@@ -684,6 +714,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * main purpose is to all requests from client that need to update their request.
+     *
      * @param object
      */
     public void freezeServerResponse(Object object) {
@@ -695,6 +726,7 @@ public class requestTreatmentController extends AppController implements Initial
     /**
      * submit update (only for supervisor use)
      * updating all the changes of the request and insert the update report to Supervisor Update history
+     *
      * @param event
      */
     @FXML
@@ -724,6 +756,7 @@ public class requestTreatmentController extends AppController implements Initial
 
     /**
      * query result for SUPERVISOR_REMARKS
+     *
      * @param object
      */
     public void queryResult(Object object) {
@@ -745,6 +778,7 @@ public class requestTreatmentController extends AppController implements Initial
     /**
      * (SUPERVISOR ONLY)
      * supervisor presses on this button and he has the ability to edit the request and update.
+     *
      * @param event
      */
     @FXML
@@ -757,12 +791,13 @@ public class requestTreatmentController extends AppController implements Initial
         supervisorRemarks.setText("");
         supervisorRemarks.setPromptText("Please write your remarks");
         stageProgressHBox.setVisible(false);
-        OperationType ot2= OperationType.mailToDirectorRequestChange;
-        App.client.handleMessageFromClientUI(new Message(ot2,selectedRequested.getRequestID()));
+        OperationType ot2 = OperationType.mailToDirectorRequestChange;
+        App.client.handleMessageFromClientUI(new Message(ot2, selectedRequested.getRequestID()));
     }
 
     /**
      * download files from server
+     *
      * @param event
      */
 
@@ -841,20 +876,22 @@ public class requestTreatmentController extends AppController implements Initial
     @FXML
     private Pane MainPane;
 
-    void showLoading(boolean enable){
+    void showLoading(boolean enable) {
         LoadingPane.setVisible(false);
         MainPane.setVisible(false);
         LoadingPane.setVisible(enable);
         MainPane.setVisible(!enable);
     }
+
     /**
      * Response from server from sending an email to director
+     *
      * @param object
      */
-	public void emailResponse(Object object) {
-		if((boolean)object)
-			showAlert(AlertType.ERROR, "ERROR", "Could not send mail", null);
-		
-	}
+    public void emailResponse(Object object) {
+        if ((boolean) object)
+            showAlert(AlertType.ERROR, "ERROR", "Could not send mail", null);
+
+    }
 
 }

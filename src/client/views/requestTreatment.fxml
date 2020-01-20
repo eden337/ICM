@@ -18,9 +18,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.requestTreatmentController">
    <children>
-      <Pane fx:id="LoadingPane" prefHeight="711.0" prefWidth="1000.0">
+      <Pane fx:id="LoadingPane" prefHeight="711.0" prefWidth="1000.0" visible="false">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="400.0" layoutY="321.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -29,7 +29,7 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane fx:id="MainPane" prefHeight="711.0" prefWidth="1000.0" visible="false">
+      <Pane fx:id="MainPane" prefHeight="711.0" prefWidth="1000.0">
          <children>
             <HBox>
                <children>
@@ -75,7 +75,7 @@
                            <children>
                               <Text fx:id="idText" layoutX="33.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Request ID :">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <Text fx:id="requestID" layoutX="45.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
@@ -83,30 +83,30 @@
                               <TextArea fx:id="existingCondition" editable="false" layoutX="36.0" layoutY="151.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
                               <Text layoutX="36.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Existing Condition:" wrappingWidth="145.99999731127173">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <TextArea fx:id="descripitionsTextArea" editable="false" layoutX="36.0" layoutY="388.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
                               <Text layoutX="39.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks:">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <Label layoutX="188.0" layoutY="19.0" text="DepartmentID:">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
                               <Text fx:id="departmentID" layoutX="204.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
                               <Text fx:id="idText1" layoutX="34.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Requester's Name:">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <Text fx:id="requestNameLabel" layoutX="43.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="#" />
                               <Text fx:id="idText2" layoutX="189.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date:">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <Button fx:id="freezeBtn" layoutX="321.0" layoutY="620.0" mnemonicParsing="false" onAction="#freezeButtonClick" prefHeight="59.0" prefWidth="146.0" styleClass="warning" text="Freeze Treatment" />
@@ -161,19 +161,19 @@
                               </HBox>
                               <Button fx:id="btnDownloadFiles" layoutX="34.0" layoutY="456.0" mnemonicParsing="false" onAction="#DownloadFiles" text="Download Files" />
                               <TextArea fx:id="supervisorRemarks" layoutX="28.0" layoutY="449.0" prefHeight="151.0" prefWidth="508.0" promptText="Please write your remarks" visible="false" wrapText="true" />
-                              <Button fx:id="updateRemarksBtn" disable="true" layoutX="86.0" layoutY="620.0" mnemonicParsing="false" onAction="#updateRemarksBtnClicked" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Want to update ?" />
-                              <DatePicker fx:id="dueDateLabel" disable="true" editable="false" layoutX="189.0" layoutY="88.0" />
+                              <Button fx:id="updateRemarksBtn" disable="true" layoutX="86.0" layoutY="620.0" mnemonicParsing="false" onAction="#updateRemarksBtnClicked" prefHeight="59.0" prefWidth="153.0" styleClass="primary" text="Update Request" />
+                              <DatePicker fx:id="dueDateLabel" disable="true" editable="false" layoutX="189.0" layoutY="88.0" prefHeight="31.0" prefWidth="169.0" />
                               <Button fx:id="btnIncharges" layoutX="394.0" layoutY="87.0" mnemonicParsing="false" onAction="#allocatePersonelButtonClick" prefHeight="32.0" prefWidth="153.0" text="Set In-charges" />
                               <TextArea fx:id="wantedChangeText" editable="false" layoutX="36.0" layoutY="227.0" prefHeight="51.0" prefWidth="466.0" wrapText="true" />
                               <Text layoutX="37.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wanted Change:" wrappingWidth="145.99999731127173">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                               <TextArea fx:id="reasonText" editable="false" layoutX="36.0" layoutY="301.0" prefHeight="59.0" prefWidth="466.0" wrapText="true" />
                               <Text layoutX="37.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reason:" wrappingWidth="145.99999731127173">
                                  <font>
-                                    <Font name="System Bold Italic" size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Text>
                            </children>

@@ -9,10 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClosureController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ClosureController">
    <children>
       <HBox prefHeight="710.0" prefWidth="1000.0">
          <children>
@@ -20,11 +21,11 @@
                <children>
                   <VBox prefHeight="710.0" prefWidth="420.0" style="-fx-background-color: #fffaee;">
                      <children>
-                        <Pane prefHeight="45.0" prefWidth="420.0" styleClass="bg_color4">
+                        <Pane prefHeight="45.0" prefWidth="420.0" style="-fx-background-color: #ffc9c9;">
                            <children>
-                              <Text fx:id="requestNumberTXT" layoutX="134.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
+                              <Text fx:id="requestNumberTXT" layoutX="113.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Request #">
                                  <font>
-                                    <Font name="System Bold" size="18.0" />
+                                    <Font size="24.0" />
                                  </font>
                               </Text>
                            </children>
@@ -83,30 +84,32 @@
             </Pane>
             <Pane prefHeight="710.0" prefWidth="580.0">
                <children>
-                  <Pane fx:id="pane_msg" prefHeight="712.0" prefWidth="580.0" visible="false">
+                  <Pane fx:id="pane_msg" prefHeight="712.0" prefWidth="580.0">
                      <children>
-                        <Text layoutX="233.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
-                           <font>
-                              <Font size="31.0" />
-                           </font>
-                        </Text>
                         <Text fx:id="textInMsgPane" fill="#2fba0f" layoutX="2.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure stage is done." textAlignment="CENTER" wrappingWidth="580.0">
                            <font>
                               <Font name="System Bold Italic" size="15.0" />
                            </font>
                         </Text>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffc9c9" height="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="580.0" />
+                        <Text layoutX="223.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure Stage">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
                      </children>
                   </Pane>
-                  <AnchorPane fx:id="pane_form" prefHeight="710.0" prefWidth="585.0">
+                  <AnchorPane fx:id="pane_form" prefHeight="710.0" prefWidth="585.0" visible="false">
                      <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffc9c9" height="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="580.0" />
+                        <Text layoutX="223.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure Stage">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
                         <Text fx:id="finishedStatus" fill="#2fba0f" layoutX="269.0" layoutY="219.0" strokeType="OUTSIDE" strokeWidth="0.0" text="null">
                            <font>
                               <Font name="System Bold Italic" size="15.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="236.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Closure">
-                           <font>
-                              <Font size="30.0" />
                            </font>
                         </Text>
                         <Text layoutX="21.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please confirm the closure of the process" wrappingWidth="371.009765625">
