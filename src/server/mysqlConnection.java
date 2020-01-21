@@ -44,7 +44,6 @@ public class mysqlConnection {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM requirement ;");
 			return rs;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -62,7 +61,6 @@ public class mysqlConnection {
 			Statement stmt=con.createStatement();
 			rs=stmt.executeQuery(query);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return rs;

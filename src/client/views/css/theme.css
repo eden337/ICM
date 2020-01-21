@@ -46,6 +46,15 @@
     -fx-border-radius: 25.0 25.0 25.0 25.0;
     -fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.2) , 50, 0.0 , 0 , 0 );
 }
+
+.roundedRect_Dashboard {
+	-fx-background-radius: 25.0 25.0 25.0 25.0;
+	-fx-border-radius: 25.0 25.0 25.0 25.0;
+	-fx-effect: dropshadow( one-pass-box , rgba(0,0,0,0.2) , 50, 0.0 , 0 , 0 );
+}
+.roundedRect_Dashboard:hover{
+	-fx-opacity: 0.75;
+}
 .roundedRect_Reports {
 	-fx-background-radius: 25.0 25.0 25.0 25.0;
 	-fx-border-radius: 25.0 25.0 25.0 25.0;

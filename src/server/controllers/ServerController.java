@@ -19,9 +19,13 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ *  GUI Controller - <code>serverGUI.fxml</code>
+ *  let the server user ability to control the server and database connections, see logs, connected users etc.
+ */
 public class ServerController implements Initializable {
 
-	public static ServerController instance;
+    public static ServerController instance;
     @FXML
     private ResourceBundle resources;
 
@@ -73,7 +77,14 @@ public class ServerController implements Initializable {
     @FXML
     public ListView<String> usersList;
 
+    @FXML
+    private Button btnRunTimersManually;
 
+    @FXML
+    void runTimersManually(ActionEvent event) {
+        //EchoServer.NotifyDelayedStages();
+        EchoServer.NotifyUncompletedStagesDayBeforeDeadline();
+    }
     private DBDetails MySQLWorkbench = new DBDetails("localhost", "icm?serverTimezone=IST", "root", "Aa123456", "5555");
     private DBDetails RemoteSQL = new DBDetails("remotemysql.com", "yRBHdnFuc9", "yRBHdnFuc9", "QOMMWb8Jo6", "5555");
 
@@ -81,7 +92,9 @@ public class ServerController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	instance = this;
+        instance = this;
+        btnRunTimersManually.setDisable(true);
+
         OutputStream out = new OutputStream() {
             @Override
             public void write(int b) throws IOException {
@@ -91,26 +104,16 @@ public class ServerController implements Initializable {
         System.setOut(new PrintStream(out, true));
         printFormFields(RemoteSQL);
 
-
-
     }
 
     private void appendText(String str) {
         Platform.runLater(() -> textBox.appendText(str));
     }
 
-    @FXML
-    void initialize() {
-
-        assert textBox != null : "fx:id=\"textBox\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert radio_mysqlWorkbench != null : "fx:id=\"radio_mysqlWorkbench\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert radio_remoteSQL != null : "fx:id=\"radio_remoteSQL\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert onBtn != null : "fx:id=\"onBtn\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert offBtn != null : "fx:id=\"offBtn\" was not injected: check your FXML file 'serverGUI.fxml'.";
-        assert server_light != null : "fx:id=\"server_light\" was not injected: check your FXML file 'serverGUI.fxml'.";
-
-    }
-
+    /**
+     * fills in default database connection.
+     * @param dbDetails
+     */
     private void printFormFields(DBDetails dbDetails) {
         host_field.setText(dbDetails.getDB_HOST());
         scheme_field.setText(dbDetails.getDB_SCHEME());
@@ -118,6 +121,7 @@ public class ServerController implements Initializable {
         username_field.setText(dbDetails.getDB_USERNAME());
         port_field.setText(dbDetails.getDB_PORT());
     }
+
 
     private void setDBDetailsFromGUI() {
         DBDetails dbDetails = null;
@@ -132,13 +136,17 @@ public class ServerController implements Initializable {
         dbDetails.setDB_USERNAME(username_field.getText());
     }
 
-    public void startDBService(){
-		if (currentDB != null)
-			mysqlConnection.openConnection(currentDB);
+    public void startDBService() {
+        if (currentDB != null)
+            mysqlConnection.openConnection(currentDB);
 
-	}
+    }
+
+    /**
+     * Use OCSF in order to create a new server connection, and a new Database connection.
+     */
     @FXML
-    void startServer() {
+    public void startServer() {
         // EchoServer.mainServer(args);
         setDBDetailsFromGUI();
         int port = 0; // Port to listen on
@@ -158,8 +166,10 @@ public class ServerController implements Initializable {
         else if (radio_mysqlWorkbench.isSelected())
             currentDB = MySQLWorkbench;
 
-		startDBService();
+        // create new Database connection.
+        startDBService();
 
+        // create new server connection
         if (!AppServer.echoserver.isListening()) {
             try {
                 AppServer.echoserver.listen(); // Start listening for
@@ -185,17 +195,25 @@ public class ServerController implements Initializable {
             alert.show();
         }
 
+        // update Server GUI component
         if (AppServer.echoserver.getDBStatus())
             db_light.setFill(Paint.valueOf("#1ffb1b"));
         else
             db_light.setFill(Paint.valueOf("#ff1717"));
 
+        // call to ICM Scheduler.
         ICM_Scheduler.scheduler();
+        btnRunTimersManually.setDisable(false);
 
     }
 
+    /**
+     * stop server listening.
+     */
     @FXML
     void stopServer() {
+        btnRunTimersManually.setDisable(true);
+
         // EchoServer.mainServer(args);
 
         if (AppServer.echoserver.isListening()) {
@@ -221,6 +239,10 @@ public class ServerController implements Initializable {
             db_light.setFill(Paint.valueOf("#ff1717"));
     }
 
+    /**
+     * call to <code>printFormFields</code> function according to the selected database connection.
+     * @param e
+     */
     @FXML
     void setFormFields(ActionEvent e) {
         DBDetails dbDetails = null;

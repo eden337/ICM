@@ -6,8 +6,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author Yuda Hatam
  * This class represents the general user of our system
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class User implements Serializable {
 
@@ -35,11 +36,20 @@ public class User implements Serializable {
         this.type = type;
     }
 
-    public boolean isEngineer(){
-        if(type.equals("Engineer"))
+    public void setStudentPermission(Object object) {}
+
+    public boolean isEngineer() {
+        if (type.equals("Engineer"))
             return true;
         return false;
     }
+
+    public boolean isStudent() {
+        if (type.equals("Student"))
+            return true;
+        return false;
+    }
+
     public boolean isOrganizationRole(OrganizationRole role) {
         return false;
     }
@@ -48,12 +58,20 @@ public class User implements Serializable {
         return false;
     }
 
-    public void setStageRole(int requestID, StageRole role){}
+    public void setStageRole(int requestID, StageRole role) {
+    }
 
-    public void setStageRoleServerResponse(Object object) {}
-    public void updatePermissions() { }
-    public void updatePermissionsServerResponse(Object object) {}
-    public void setOrgRoleServerResponse(Object object) {}
+    public void setStageRoleServerResponse(Object object) {
+    }
+
+    public void updatePermissions() {
+    }
+
+    public void updatePermissionsServerResponse(Object object) {
+    }
+
+    public void setOrgRoleServerResponse(Object object) {
+    }
 
 
 //    public void updateUserFromDB(){
@@ -71,9 +89,10 @@ public class User implements Serializable {
 //            mainController.instance.showAlertAtMainController(Alert.AlertType.ERROR,"User Update", "User Update Failed", null);
 //    }
 
-    public String getOrgRole(){
+    public String getOrgRole() {
         return "";
     }
+
     /**
      * @return the firstName
      */
@@ -148,9 +167,7 @@ public class User implements Serializable {
      * @return position of User
      */
     public String getPosition() {
-        if (App.user instanceof ITEngineer) {
-            return " ITEngineer";
-        } else if (App.user instanceof EmployeeUser) {
+        if (App.user instanceof EmployeeUser) {
             return "Employee";
         } else if (App.user instanceof StudentUser) {
             return "Student";
@@ -169,5 +186,9 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    public String getType() {
+        return type;
     }
 }

@@ -30,197 +30,234 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import server.controllers.EmailSender;
+
+/**
+ *
+ * Controller for Closure phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 
 public class ClosureController extends AppController implements Initializable {
 
-	/*
-	 * this static variable is supposed to hold all the data of the request chosen
-	 * in request treatment
-	 */
-	// public static ChangeRequest thisRequest;
-	public static ClosureController instance;
+    /*
+     * this static variable is supposed to hold all the data of the request chosen
+     * in request treatment
+     */
+    // public static ChangeRequest thisRequest;
+    public static ClosureController instance;
 
-	protected ChangeRequest thisRequest;
+    protected ChangeRequest thisRequest;
 
-	@FXML
-	private Text idText;
+    @FXML
+    private Text requestNumberTXT;
 
-	@FXML
-	private Text requestID;
 
-	@FXML
-	private TextArea existingCondition;
+    @FXML
+    private Text idText;
 
-	@FXML
-	private TextArea descripitionsTextArea;
+    @FXML
+    private Text requestID;
 
-	@FXML
-	private Text msg;
+    @FXML
+    private TextArea existingCondition;
 
-	@FXML
-	private TextField inchargeTF;
+    @FXML
+    private TextArea descripitionsTextArea;
 
-	@FXML
-	private Text departmentID;
+    @FXML
+    private Text msg;
 
-	@FXML
-	private Text idText1;
+    @FXML
+    private TextField inchargeTF;
 
-	@FXML
-	private Text requestNameLabel;
+    @FXML
+    private Text departmentID;
 
-	@FXML
-	private Text idText2;
+    @FXML
+    private Text idText1;
 
-	@FXML
-	private Text dueDateLabel;
+    @FXML
+    private Text requestNameLabel;
 
-	@FXML
-	private Pane pane_msg;
+    @FXML
+    private Text idText2;
 
-	@FXML
-	private Text textInMsgPane;
+    @FXML
+    private Text dueDateLabel;
 
-	@FXML
-	private AnchorPane pane_form;
+    @FXML
+    private Pane pane_msg;
 
-	@FXML
-	private Text finishedStatus;
+    @FXML
+    private Text textInMsgPane;
 
-	@FXML
-	private Button closeProcessBtn;
+    @FXML
+    private AnchorPane pane_form;
 
-	@FXML
-	private TitledPane titledPane;
+    @FXML
+    private Text finishedStatus;
 
-	@FXML
-	private Text titledPane_Text;
+    @FXML
+    private Button closeProcessBtn;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		dueDateLabel.setVisible(true);
-		instance = this;
-		long estimatedTime = 0;
-		pane_msg.setVisible(false);
-		pane_form.setVisible(false);
+    @FXML
+    private TitledPane titledPane;
 
-		inchargeTF.setText("Supervisor");
+    @FXML
+    private Text titledPane_Text;
 
-		thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-		Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
-		closureInit();
-		if (!thisRequest.getCurrentStage().equals("CLOSURE")) {
-			pane_msg.setVisible(true);
-			return;
-		}
+    /**
+     *
+     * @param location
+     * @param resources
+     * @apiNote initialization of the Closure screen
+     */
 
-		if (!App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
-			System.out.println("2");
-			textInMsgPane.setFill(Color.BLUE);
-			textInMsgPane.setText("Stage in progress");
-			pane_msg.setVisible(true);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        dueDateLabel.setVisible(true);
+        instance = this;
+        long estimatedTime = 0;
+        pane_msg.setVisible(false);
+        pane_form.setVisible(false);
 
-			return;
-		}
+        inchargeTF.setText("Supervisor");
 
-		// Otherwise: this is the Supervisor in his stage
-		pane_msg.setVisible(true);
-		textInMsgPane.setText("The request waiting for "+thisRequest.getInitiator()+" Action");
-		//pane_form.setVisible(true);
-		estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
-				.toDays();
-		estimatedTime += 1;
-		// titlePane_Text.setText(String.valueOf(estimatedTime));
-		Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
-		if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
-			finishedStatus.setFill(Color.DARKRED);
-			finishedStatus.setText("FAILED");
-		} else // else if prevStage == Validation{
-		{
-			finishedStatus.setFill(Color.FORESTGREEN);
-			finishedStatus.setText("Request Processed Correctly");
-		}
+        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
+        Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
+                dueDateLabel, requestNameLabel, thisRequest);
+        closureInit();
+        if (!thisRequest.getCurrentStage().equals("CLOSURE")) {
+            pane_msg.setVisible(true);
+            return;
+        }
 
-		// inchargeTF.setText(thisRequest.getCurrentStageObject().getIncharge()+"");
+        if (!App.user.isOrganizationRole(OrganizationRole.SUPERVISOR)) {
+            System.out.println("2");
+            textInMsgPane.setFill(Color.BLUE);
+            textInMsgPane.setText("Stage in progress");
+            pane_msg.setVisible(true);
 
-	}
+            return;
+        }
 
-	void closureInit() {
-		String query = "SELECT Request_Confirmed FROM Requests WHERE RequestID = '"+thisRequest.getRequestID()+"' LIMIT 1";
-		OperationType ot = OperationType.Closure_Init;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-	}
-	
-	public void checkPreConditions_ServerResponse(Object object) {
-		List<Boolean> init_res = (List<Boolean>) object;
-		boolean closure_init = init_res.get(0);
+        // Otherwise: this is the Supervisor in his stage
+        pane_msg.setVisible(true);
+        textInMsgPane.setText("The request waiting for Initiator Action (" + thisRequest.getInitiator() + ")");
+        estimatedTime = Duration.between(ZonedDateTime.now(), thisRequest.getCurrentStageObject().getDeadline())
+                .toDays();
 
-		if (closure_init) {
-			pane_msg.setVisible(false);
-			pane_form.setVisible(true);;
-			return;
-		}
-		/*// else
-		Platform.runLater(new Runnable() {
+        Tools.setTitlePane(estimatedTime, titledPane, titledPane_Text);
+        if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
+            finishedStatus.setFill(Color.DARKRED);
+            finishedStatus.setText("Request Declined");
+        } else // else if prevStage == Validation{
+        {
+            finishedStatus.setFill(Color.FORESTGREEN);
+            finishedStatus.setText("Request Processed Correctly");
+        }
+    }
 
-			@Override
-			public void run() {
-				
-			}
-		});*/
-	}
-	
-	/**
-	 * @apiNote need to check if the process succeed or not and send an appropriate
-	 *          message: use finishedStatusTF
-	 * @param event
-	 */
+    /**
+     * Getting confirmed requests from the request initiator
+     */
 
-	@FXML
-	void closeProcessBtnClicked(ActionEvent event) {
-		c=0;
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date today = new Date(System.currentTimeMillis());
-		String query;
-		System.out.println(thisRequest.getCurrentStageObject().getPreStage());
-		if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
-			query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'CANCELED' WHERE RequestID = '"
-					+ thisRequest.getRequestID() + "'";
-			thisRequest.setStatus("Canceled");
+    void closureInit() {
+        String query = "SELECT Request_Confirmed FROM Requests WHERE RequestID = '" + thisRequest.getRequestID()
+                + "' LIMIT 1";
+        OperationType ot = OperationType.Closure_Init;
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+    }
 
-		} else {
-			query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
-					+ thisRequest.getRequestID() + "'";
-			thisRequest.setStatus("Done");
-		}
-		// send email
-		String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
-				+ "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
-		OperationType ot = OperationType.Clousre_UpdateRequestStatus;
-		App.client.handleMessageFromClientUI(new Message(ot, query));
-		App.client.handleMessageFromClientUI(new Message(ot, query2));
-		
-		//
-	}
+    /**
+     *
+     * @param object
+     * @apiNote
+     * server response from closureInit function, if there is a confirmed request, the closure process will be available on screen
+     */
+    public void checkPreConditions_ServerResponse(Object object) {
+        List<Boolean> init_res = (List<Boolean>) object;
+        boolean closure_init = init_res.get(0);
 
-	private static int c = 0;
+        if (closure_init) {
+            pane_msg.setVisible(false);
+            pane_form.setVisible(true);
 
-	public void closureQueryResult(Object object) {
-		c++;
-		boolean res = (boolean) object;
-		if (c == 2) { // TODO : Add EMAIL REQUEST.
-			if (res) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						showAlert(AlertType.INFORMATION, "Request Treatment Completed", "Request #" + thisRequest.getRequestID()
-						+ " is now " + thisRequest.getStatus() + "\nnotifying appropirate users via email", null);
-						loadPage("requestTreatment");
-					}
-				});
-			} else
-				showAlert(AlertType.ERROR, "Error!", "Could not close the request", null);
-		}
-	}
+            return;
+        }
+    }
+
+    /**
+     * @param event
+     * @apiNote need to check if the process succeed or not and send an appropriate
+     * message: use finishedStatusTF
+     */
+
+    @FXML
+    void closeProcessBtnClicked(ActionEvent event) {
+        c = 0;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date today = new Date(System.currentTimeMillis());
+        String query;
+        if (thisRequest.getCurrentStageObject().getPreStage().equals("DECISION")) {
+            query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'CANCELED' WHERE RequestID = '"
+                    + thisRequest.getRequestID() + "'";
+            thisRequest.setStatus("Canceled");
+
+        } else {
+            query = "UPDATE Requests SET Treatment_Phase = 'DONE' , STATUS = 'DONE' WHERE RequestID = '"
+                    + thisRequest.getRequestID() + "'";
+            thisRequest.setStatus("Done");
+        }
+        // send email
+        String query2 = " UPDATE `Stage` SET  `EndTime` = '" + dateFormat.format(today)
+                + "' where  `StageName` = 'CLOSURE' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
+        OperationType ot = OperationType.Clousre_UpdateRequestStatus;
+        App.client.handleMessageFromClientUI(new Message(ot, query));
+        App.client.handleMessageFromClientUI(new Message(ot, query2));
+        OperationType ot2 = OperationType.ClousreEmail;
+        String query3 = "SELECT Email FROM requests WHERE RequestID='" + thisRequest.getRequestID() + "';";
+        App.client.handleMessageFromClientUI(new Message(ot2, query3));
+    }
+
+    /**
+     * @apiNote
+     * client response from server, if request closure Updates were updating the correct tuple on the DB successfully
+     * its using the Clousre_UpdateRequestStatus Operation
+     */
+    private static int c = 0;
+
+    public void closureQueryResult(Object object) {
+        c++;
+        boolean res = (boolean) object;
+        if (c == 2) {
+            if (res) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAlert(AlertType.INFORMATION, "Request Treatment Completed",
+                                "Request #" + thisRequest.getRequestID() + " is now " + thisRequest.getStatus()
+                                        + "\nnotifying appropriate users via email",
+                                null);
+                        loadPage("requestTreatment");
+                    }
+                });
+            } else
+                showAlert(AlertType.ERROR, "Error!", "Could not close the request", null);
+        }
+    }
+
+    /**
+     * @apiNote
+     * client response from server, if request closure mail was sent successfully
+     * its using the ClosureEmail Operation
+     */
+
+    public void emailResponse(Object object) {
+        if (!(boolean) object)
+            showAlert(AlertType.ERROR, "Error", "Can't send email please try again", null);
+    }
 }

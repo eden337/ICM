@@ -25,10 +25,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for pre-evaluation phase page
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 public class PreExecutionController extends AppController implements Initializable {
 
     public static PreExecutionController instance;
     private ChangeRequest thisRequest;
+
+    @FXML
+    private Text requestNumberTXT;
 
     @FXML
     private Text idText;
@@ -78,6 +86,13 @@ public class PreExecutionController extends AppController implements Initializab
     @FXML
     private Text txtMsg;
 
+    private common.entity.Stage thisStage;
+    /**
+     * if pre - execution is confirmed by pressing accept, the start time and deadline of execution stage for this request
+     * is going to be updated om DB, and also changing the status of the request to ACTIVE
+     * @param event
+     */
+
     @FXML
     void AcceptPreExe(ActionEvent event) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -97,7 +112,14 @@ public class PreExecutionController extends AppController implements Initializab
                 " where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
 
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        query = "UPDATE Requests SET Status = 'ACTIVE' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+        App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
     }
+
+    /**
+     * if pre - execution is denied by pressing deny button, the init set to false
+     * @param event
+     */
 
     @FXML
     void DenyPreExe(ActionEvent event) {
@@ -106,14 +128,19 @@ public class PreExecutionController extends AppController implements Initializab
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     * requested execution days are submitted and uploaded to DB by pressing deny button
+     * @param event
+     */
+
     @FXML
     void SubmitDaysRequest(ActionEvent event) {
         int days = 0;
         boolean flag = false;
         try {
             days = Integer.parseInt(tfDays.getText());
-            if ( days<=0 || days > 20) {
-                showAlert(Alert.AlertType.WARNING, "Error", "Days number must be greater then zero and not greater than 20.", null);
+            if (days <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Error", "Days number must be greater then zero", null);
                 return;
             }
             flag = true;
@@ -125,17 +152,29 @@ public class PreExecutionController extends AppController implements Initializab
             OperationType ot = OperationType.PreEXE_SetInitStat;
             String query = "UPDATE `Stage` SET `init` = true , `requestedDays` = '" + tfDays.getText() + "' where  `StageName` = 'EXECUTION' AND `RequestID` = '" + thisRequest.getRequestID() + "'";
             App.client.handleMessageFromClientUI(new Message(ot, query));
+
+            query = "UPDATE Requests SET Status = 'WAITING(SUPERVISOR)' WHERE RequestID = '" + thisRequest.getRequestID() + "'";
+            App.client.handleMessageFromClientUI(new Message(OperationType.updateRequestStatus, query));
         }
     }
+
+    /**
+     * Initialize the pre execution screen
+     * @param location
+     * @param resources
+     */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
+        tfDays.setEditable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
-        thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        thisStage = thisRequest.getCurrentStageObject();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
-        inchargeTF.setText("Executer");
+                dueDateLabel, requestNameLabel, thisRequest);
+        inchargeTF.setText(thisStage.getIncharge());
+
         getCurrentReqestedDays();
 
         // GUI Init
@@ -145,7 +184,9 @@ public class PreExecutionController extends AppController implements Initializab
         txtMsg.setVisible(false);
 
     }
-
+    /**
+     * gets the submitted days of execution stage
+     */
     private void getCurrentReqestedDays() {
         OperationType ot = OperationType.PreEXE_getData;
         String query = "SELECT `requestedDays`,`init`,`init_confirmed` FROM `Stage` WHERE  `StageName` = 'EXECUTION' AND `RequestID`= '" + thisRequest.getRequestID() + "'";
@@ -154,6 +195,7 @@ public class PreExecutionController extends AppController implements Initializab
 
 
     public void getCurrentReqestedDays_ServerResponse(Object object) {
+        String query;
         List<Integer> res = (List<Integer>) object;
         tfDays.setText(res.get(0) + ""); // requestedDays
         // GUI Init by Permission
@@ -164,7 +206,7 @@ public class PreExecutionController extends AppController implements Initializab
             return;
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0){
+        if (App.user.isOrganizationRole(OrganizationRole.SUPERVISOR) && res.get(0) != 0) {
             txtMsg.setText("Waiting for new days evaluation from the Executer.");
             txtMsg.setVisible(true);
             tfDays.setVisible(false);
@@ -173,15 +215,21 @@ public class PreExecutionController extends AppController implements Initializab
         if (res.get(1) == 1) {
             txtMsg.setVisible(true);
             tfDays.setEditable(false);
-        }
-        else{
-            if(App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER))
+        } else {
+            if (App.user.isStageRole(thisRequest.getRequestID(), StageRole.EXECUTER)) {
                 btnSubmit.setVisible(true);
+                tfDays.setEditable(true);
+
+            }
         }
 
 
     }
 
+    /**
+     * server response from AcceptPreExe method
+     * @param object
+     */
 
     public void updateStatus_serverResponse(Object object) {
         boolean res = (boolean) object;
@@ -190,6 +238,7 @@ public class PreExecutionController extends AppController implements Initializab
 
                 @Override
                 public void run() {
+                    showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreExecution Updated", null);
                     loadPage("requestTreatment");
                 }
             });

@@ -4,126 +4,124 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 
+/**
+ * Report Object contains individual report information.
+ * type, date of creation, reported date range, data (generated string for CSV Files) and period(for supported types)
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
+public class Report implements Serializable {
 
-public class Report implements Serializable{
+    private String type;
+    private Date created;
+    private Date from;
+    private Date to;
+    private String data;
+    private ArrayList<String> period;
 
-	private String type;
-	private Date created;
-	private Date from;
-	
-	
-	private Date to;
-	private String data;
-	private ArrayList<String> period;
-	
 
-	/**
-	 *@author: Ira Goor
-	 *
-	 *Constructors purpose: non period Report
-	 *
-	 * @param type
-	 * @param created
-	 */
-	public Report(String type, Date created) {
-		this.type = type;
-		this.created = created;
-		this.period=new ArrayList<String>();
-		this.period.add("Activity");
-	}
+    /**
+     * @param type
+     * @param created
+     * <p>
+     * Constructors purpose: non period Report
+     */
+    public Report(String type, Date created) {
+        this.type = type;
+        this.created = created;
+        this.period = new ArrayList<String>();
+        this.period.add("Activity");
+    }
 
-	/**
-	 *@author: Ira Goor
-	 *
-	 *Constructors purpose: for a period report
-	 *
-	 * @param type
-	 * @param from
-	 * @param to
-	 */
-	public Report(String type, Date created,Date from, Date to) {
-		this.type = type;
-		this.created=created;
-		this.from = from;
-		this.to = to;
-		this.period=new ArrayList<String>();
-		period.add("Activity");
+    /**
+     * @param type
+     * @param from
+     * @param to
+     * <p>
+     * Constructors purpose: for a period report
+     */
+    public Report(String type, Date created, Date from, Date to) {
+        this.type = type;
+        this.created = created;
+        this.from = from;
+        this.to = to;
+        this.period = new ArrayList<String>();
+        period.add("Activity");
 
-	}
+    }
 
-	public String getType() {
-		return type;
-	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public Date getFrom() {
-		return from;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setFrom(Date from) {
-		this.from = from;
-	}
+    public Date getFrom() {
+        return from;
+    }
 
-	public Date getTo() {
-		return to;
-	}
+    public void setFrom(Date from) {
+        this.from = from;
+    }
 
-	public void setTo(Date to) {
-		this.to = to;
-	}
+    public Date getTo() {
+        return to;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public void setTo(Date to) {
+        this.to = to;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public Date getCreated() {
-		return created;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-	
-	
-	public ArrayList<String> getPeriod() {
-		return period;
-	}
+    public Date getCreated() {
+        return created;
+    }
 
-	public void setPeriod(ArrayList<String> period) {
-		this.period = period;
-	}
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
-	public boolean isPeriodReport()
-	{
-		return period.contains(type);
-	}
-	public String flipDateformat(String date)
-	{
-		StringBuilder s=new StringBuilder();
-		s.append(date.substring(8));
-		
-		s.append('-');
-		s.append(date.substring(5, 7));
-		s.append('-');
-		s.append(date.substring(0, 4));
-		return s.toString();
-	}
+    public ArrayList<String> getPeriod() {
+        return period;
+    }
 
-	
-	@Override
-	public String toString() {
-		if(isPeriodReport())
-			return type + " created " + flipDateformat(created.toString()) + " from " + flipDateformat(from.toString()) + " to " + flipDateformat(to.toString());
-		else
-			return  type + " created " + flipDateformat(created.toString()) ;
-	}
-	
-	
+    public void setPeriod(ArrayList<String> period) {
+        this.period = period;
+    }
+
+    public boolean isPeriodReport() {
+        return period.contains(type);
+    }
+
+    public String flipDateformat(String date) {
+        StringBuilder s = new StringBuilder();
+        s.append(date.substring(8));
+
+        s.append('-');
+        s.append(date.substring(5, 7));
+        s.append('-');
+        s.append(date.substring(0, 4));
+        return s.toString();
+    }
+
+
+    @Override
+    public String toString() {
+        if (isPeriodReport())
+            return type + " created " + flipDateformat(created.toString()) + " from " + flipDateformat(from.toString()) + " to " + flipDateformat(to.toString());
+        else
+            return type + " created " + flipDateformat(created.toString());
+    }
+
+
 }

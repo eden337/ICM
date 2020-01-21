@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.controllers.ServerController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1097.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.controllers.ServerController">
    <children>
       <VBox prefHeight="771.0" prefWidth="1097.0">
          <children>
@@ -88,8 +88,9 @@
                         <Text layoutX="137.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server" />
                         <Text layoutX="137.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DateBase" />
                         <Circle fx:id="db_light" fill="#a1a1a1" layoutX="214.0" layoutY="140.0" radius="17.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-                        <ListView fx:id="usersList" layoutX="100.0" layoutY="312.0" prefHeight="295.0" prefWidth="221.0" />
-                        <Text layoutX="100.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Clients connected: (update every 30 sec)" />
+                        <ListView fx:id="usersList" layoutX="98.0" layoutY="312.0" prefHeight="289.0" prefWidth="223.0" />
+                        <Text layoutX="99.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connected clients : (updated immediately)" />
+                        <Button fx:id="btnRunTimersManually" layoutX="123.0" layoutY="229.0" mnemonicParsing="false" onAction="#runTimersManually" styleClass="warning" text="Bypass Timers - Run Now!" />
                      </children></AnchorPane>
                </children>
             </HBox>

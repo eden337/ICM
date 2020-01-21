@@ -4,39 +4,42 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * MyFile represents the File information.
+ * fileName, original path, Description , size, byte-array
+ */
 public class MyFile implements Serializable {
 
-	private String Description = null;
-	private String fileName = null;
-	private String filePath = null;
-	private int size = 0;
-	public byte[] mybytearray;
+    private String Description = null;
+    private String fileName = null;
+    private String filePath = null;
+    private int size = 0;
+    public byte[] mybytearray;
 
-	/**
-	 * 
-	 * @param size
-	 */
-	public void initArray(int size) {
-		mybytearray = new byte[size];
-	}
+    /**
+     * @param size
+     */
+    public void initArray(int size) {
+        mybytearray = new byte[size];
+    }
 
-	/**
-	 * constructor of MyFile
-	 * @param filepath
-	 * @param fileName
-	 */
-	public MyFile(String filepath, String fileName) {
-		this.fileName = fileName;
-		this.filePath = filepath;
-	}
+    /**
+     * constructor of MyFile
+     *
+     * @param filepath
+     * @param fileName
+     */
+    public MyFile(String filepath, String fileName) {
+        this.fileName = fileName;
+        this.filePath = filepath;
+    }
 
-	/**
-	 * 
-	 * @return name file
-	 */
-	public String getFileName() {
-		return fileName;
-	}
+    /**
+     * @return name file
+     */
+    public String getFileName() {
+        return fileName;
+    }
 
 	/**
 	 * set new file name

@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -23,6 +24,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+
+/**
+ * Extension prompt controller
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 
 public class ExtensionController extends AppController implements Initializable {
     public static ExtensionController instance;
@@ -50,25 +57,41 @@ public class ExtensionController extends AppController implements Initializable 
     @FXML
     private Pane msgPane;
 
+    @FXML
+    private Text currentStageText;
+
 
     @FXML
     private Text warning;
+
+    /**
+     *
+     * @param event
+     * submission of time extension send to DB
+     */
+
     @FXML
     void submitForm(ActionEvent event) {
         this.event = event;
         warning.setVisible(false);
 
-        if(tfDays.getText().isEmpty() || taReason.getText().isEmpty()){
+        if (tfDays.getText().isEmpty() || taReason.getText().isEmpty()) {
             warning.setVisible(true);
             return;
         }
         OperationType ot = OperationType.Extension_submit;
         String query = "UPDATE `Stage` SET " +
-                "`extension_days`= '"+tfDays.getText()+"', " +
-                "`extension_reason`= '"+taReason.getText()+"' " +
-                "WHERE`RequestID`= '"+thisRequest.getRequestID()+"' AND `StageName` = '"+thisRequest.getCurrentStage()+"'";
+                "`extension_days`= '" + tfDays.getText() + "', " +
+                "`extension_reason`= '" + taReason.getText() + "' " +
+                "WHERE`RequestID`= '" + thisRequest.getRequestID() + "' AND `StageName` = '" + thisRequest.getCurrentStage() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
+
+    /**
+     *
+     * @param event
+     * supervisor accepted the extension, deadLine is updated on database
+     */
 
     @FXML
     void accept(ActionEvent event) {
@@ -78,31 +101,46 @@ public class ExtensionController extends AppController implements Initializable 
 
         String query = "UPDATE `Stage` SET " +
                 "`extension_decision`= 'ACCEPT' , " +
-                "`Deadline`= '"+  thisStage.getDeadline().plusDays(thisStage.getExtension_days()).format(formatter) +"' " +
-                " WHERE`RequestID`= '"+thisRequest.getRequestID()+"' AND `StageName` = '"+thisRequest.getCurrentStage()+"'";
+                "`Deadline`= '" + thisStage.getDeadline().plusDays(thisStage.getExtension_days()).format(formatter) + "' " +
+                " WHERE`RequestID`= '" + thisRequest.getRequestID() + "' AND `StageName` = '" + thisRequest.getCurrentStage() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
+        OperationType ot2= OperationType.mailToDirectorExtension;
+        App.client.handleMessageFromClientUI(new Message(ot2,thisRequest.getRequestID()));
         loadPage("requestTreatment");
+        
     }
-
+    /**
+     *
+     * @param event
+     * supervisor denied the extension, result sent to server
+     */
     @FXML
     void deny(ActionEvent event) {
         this.event = event;
         OperationType ot = OperationType.Extension_submit;
         String query = "UPDATE `Stage` SET " +
                 "`extension_decision`= 'DENIED' " +
-                " WHERE`RequestID`= '"+thisRequest.getRequestID()+"' AND `StageName` = '"+thisRequest.getCurrentStage()+"'";
+                " WHERE`RequestID`= '" + thisRequest.getRequestID() + "' AND `StageName` = '" + thisRequest.getCurrentStage() + "'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
 
     }
 
 
     private Event event;
+
+    /**
+     *
+     * @param location
+     * @param resources
+     * initialization of the extension screen
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         thisRequest = requestTreatmentController.Instance.selectedRequested;
         thisStage = thisRequest.getCurrentStageObject();
 
+        this.currentStageText.setText(thisRequest.getCurrentStage());
         warning.setVisible(false);
         defualtPane.setVisible(false);
         msgPane.setVisible(false);
@@ -111,10 +149,11 @@ public class ExtensionController extends AppController implements Initializable 
         initScreen();
     }
 
-
-
+    /**
+     * initialization of the extension screen with the validation of the extension data.
+     */
     public void initScreen() {
-        if (thisStage.getExtension_reason() != null ) { // if request sent
+        if (thisStage.getExtension_reason() != null) { // if request sent
             defualtPane.setVisible(true);
             tfDays.setEditable(false);
             taReason.setEditable(false);
@@ -123,14 +162,14 @@ public class ExtensionController extends AppController implements Initializable 
             taReason.setText(thisStage.getExtension_reason());
             tfDays.setText(thisStage.getExtension_days() + "");
 
-            if(thisStage.getExtension_decision()!=null)
+            if (thisStage.getExtension_decision() != null)
                 warning.setText("Extension request " + thisStage.getExtension_decision().toLowerCase());
             else
                 warning.setText("You have to answer this request");
 
             warning.setVisible(true);
 
-            if(thisStage.getExtension_decision()!=null){
+            if (thisStage.getExtension_decision() != null) {
                 btnAccept.setVisible(false);
                 btnDeny.setVisible(false);
                 return;
@@ -154,20 +193,24 @@ public class ExtensionController extends AppController implements Initializable 
         }
     }
 
-    public void InsertOrUpdate_ServerResponse(Object object){
-        Boolean res = (Boolean)object;
-        if(res){
-            showAlert(Alert.AlertType.INFORMATION,"Operation Done!","Operation done successfully!",null);
+    /**
+     *
+     * @param object
+     * client response from server, its a response from the submitForm method, it will show an alert if the update is a success or not
+     */
+    public void InsertOrUpdate_ServerResponse(Object object) {
+        Boolean res = (Boolean) object;
+        if (res) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+                    showAlert(Alert.AlertType.INFORMATION, "Operation Done!", "Operation done successfully!", null);
+                    ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
                 }
             });
 
-        }
-        else{
-            showAlert(Alert.AlertType.ERROR,"Operation Failed!","Operation failed. Try again.",null);
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Operation Failed!", "Operation failed. Try again.", null);
         }
 
     }
@@ -177,9 +220,19 @@ public class ExtensionController extends AppController implements Initializable 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+                ((Stage) (((Button) event.getSource()).getScene().getWindow())).close();
             }
         });
     }
+   
+    /**
+     * Response from server from sending an email to director
+     * @param object
+     */
+	public void emailResponse(Object object) {
+		if((boolean)object)
+			showAlert(AlertType.ERROR, "ERROR", "Could not send mail", null);
+		
+	}
 
 }

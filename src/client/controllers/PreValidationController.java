@@ -27,11 +27,19 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+/**
+ *  Controller for pre-validation phase page
+ *  @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
+ */
 
 public class PreValidationController extends AppController implements Initializable {
 
     public static PreValidationController instance;
     private ChangeRequest thisRequest;
+
+    @FXML
+    private Text requestNumberTXT;
 
     @FXML
     private Text idText;
@@ -79,6 +87,9 @@ public class PreValidationController extends AppController implements Initializa
     private Text txtWarning;
 
     @FXML
+    /**
+     * send to the data base the allocated tester that was selected via cbValidator
+     */
     void allocateTester(ActionEvent event) {
         if (cbValidator.getValue() == null) {
             txtWarning.setVisible(true);
@@ -96,53 +107,74 @@ public class PreValidationController extends AppController implements Initializa
 
         String query1 = " UPDATE `Stage` SET  `StartTime` = '" + dateFormat.format(today) +
                 "' ,`Deadline` = '" + dateFormat.format(deadlineDate) +
-                "' , `Incharge` = '" +cbValidator.getValue() +
+                "' , `Incharge` = '" + cbValidator.getValue() +
                 "' , `init` = 1" +
                 " , `init_confirmed` = 1" +
                 " where  `StageName` = 'VALIDATION' AND `RequestID` = '" + thisRequest.getRequestID() + "';";
         App.client.handleMessageFromClientUI(new Message(ot, query1));
-        App.ForceAuthorizeAllUsers();
 
 
     }
 
+    /**
+     * server response from the allocateTester queries that were sent
+     * @param object
+     */
     public void queryResult(Object object) {
         boolean res = (boolean) object;
         if (res) {
+
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    loadPage("requestTreatment");
+                    App.ForceAuthorizeAllUsers();
+                    showAlert(Alert.AlertType.INFORMATION, "Update Success", "PreValidation Updated", null);
+                    loadPage("requestTreatment", "Request Treatment and Management");
                 }
             });
         } else
             showAlert(Alert.AlertType.ERROR, "Error!", "Could not update.", null);
-    }
 
+    }
+    /**
+     * Initialize the pre validation screen
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
         btnAllocate.setVisible(true);
         cbValidator.setDisable(false);
         thisRequest = requestTreatmentController.Instance.getCurrentRequest();
+        this.requestNumberTXT.setText("Request Number "+thisRequest.getRequestID());
         Tools.fillRequestPanes(requestID, existingCondition, descripitionsTextArea, inchargeTF, departmentID,
-				dueDateLabel, requestNameLabel, thisRequest);
-        inchargeTF.setText("Tester");
+                dueDateLabel, requestNameLabel, thisRequest);
+        inchargeTF.setText("Chairman selecting a tester...");
         //getUsersFromServer();
-        if(!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
-        	btnAllocate.setVisible(false);
-        	cbValidator.setDisable(true);
-        	return;
+        if (!App.user.isOrganizationRole(OrganizationRole.COMMITEE_CHAIRMAN)) {
+            btnAllocate.setVisible(false);
+            cbValidator.setDisable(true);
+            return;
         }
         getUsersFromServer();
     }
 
+    /**
+     * called from preValidationController.initialize method
+     * gets all the available committee members for the testing of execution stage
+     * this is done by loading the fetched data into a comboBox.
+     */
     private void getUsersFromServer() {
         OperationType ot = OperationType.PreValidation_GetCOMMITEE_MEMBERS;
         String query = "SELECT * FROM `Employees` WHERE `RoleInOrg` LIKE 'COMMITEE_MEMBER%'";
         App.client.handleMessageFromClientUI(new Message(ot, query));
     }
 
+    /**
+     * server response, this method build the data within the combobox that located in prevalidation screen
+     * @param object
+     */
     public void setComboBoxesData(Object object) {
         List<String> listOfUsers = (List<String>) object;
         Platform.runLater(new Runnable() {
@@ -151,7 +183,8 @@ public class PreValidationController extends AppController implements Initializa
                 ObservableList<String> oblist = FXCollections.observableArrayList(listOfUsers);
                 int size = oblist.size();
                 Random r = new Random(size);
-                cbValidator.setItems(oblist);            }
+                cbValidator.setItems(oblist);
+            }
         });
 
     }

@@ -1,20 +1,20 @@
 package client.controllers;
 
 import client.App;
-import client.BypassedApp;
 import common.controllers.Message;
 import common.controllers.OperationType;
 import common.entity.OrganizationRole;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert.AlertType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,6 +26,8 @@ import java.util.ResourceBundle;
  * menu actions,
  * log out,
  * Notifications
+ * @version 1.0 - 01/2020
+ * @author Group-10: Idan Abergel, Eden Schwartz, Ira Goor, Hen Hess, Yuda Hatam
  */
 public class mainController extends AppController implements Initializable {
     public static mainController instance;
@@ -99,50 +101,57 @@ public class mainController extends AppController implements Initializable {
         markPage(p2);
         loadPage("ChangeRequestForm", "Change Request");
     }
-    
+
     @FXML
     void goToViewRequest(MouseEvent event) {
-    	markPage(p3);
-    	loadPage("watchRequest","My Requests");
+        markPage(p3);
+        loadPage("watchRequest", "My Requests");
     }
 
 
     @FXML
     void gotoRequestTreatment(MouseEvent event) {
-    	markPage(p4);
-    	loadPage("requestTreatment","Request Treatment and Management");
+        markPage(p4);
+        loadPage("requestTreatment", "Request Treatment and Management");
     }
 
     @FXML
     void goToStats(MouseEvent event) {
         markPage(p5);
-        loadPage("Reports","Reports Generator");
+        loadPage("Reports", "Reports Generator");
     }
+
     @FXML
     void goToManager(MouseEvent event) {
         markPage(p6);
-        loadPage("ManagerPage","Manager view");
+        loadPage("ManagerPage", "Manager view");
     }
+
     /**
      * select a pain to be colored as current page
      *
      * @param p : Pane to be colored as selected.
      */
     void markPage(Pane p) {
-        if (p == null) return;
-        p.getStyleClass().add("bg_currentPage");
-        if (p != pHome)
-            pHome.getStyleClass().remove("bg_currentPage");
-        if (p != p2)
-            p2.getStyleClass().remove("bg_currentPage");
-        if (p != p3)
-            p3.getStyleClass().remove("bg_currentPage");
-        if (p != p4)
-            p4.getStyleClass().remove("bg_currentPage");
-        if (p != p5)
-            p5.getStyleClass().remove("bg_currentPage");
-        if (p != p6)
-            p6.getStyleClass().remove("bg_currentPage");
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (p == null) return;
+                p.getStyleClass().add("bg_currentPage");
+                if (p != pHome)
+                    pHome.getStyleClass().remove("bg_currentPage");
+                if (p != p2)
+                    p2.getStyleClass().remove("bg_currentPage");
+                if (p != p3)
+                    p3.getStyleClass().remove("bg_currentPage");
+                if (p != p4)
+                    p4.getStyleClass().remove("bg_currentPage");
+                if (p != p5)
+                    p5.getStyleClass().remove("bg_currentPage");
+                if (p != p6)
+                    p6.getStyleClass().remove("bg_currentPage");
+            }
+        });
     }
 
 
@@ -180,7 +189,7 @@ public class mainController extends AppController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         instance = this;
-        primaryStage = BypassedApp.stage;
+        primaryStage = App.stage;
         setUser();
         pHome.setVisible(false);
         p2.setVisible(false);
@@ -190,32 +199,41 @@ public class mainController extends AppController implements Initializable {
         p6.setVisible(false);
 
         loadPage("Homepage");
-
     }
 
-    public void initialize_afterUserUpdate(){
-        if(!App.appInitialized) {
+    public void initialize_afterUserUpdate() {
+        if (!App.appInitialized) {
             gotoHome(null);
             App.appInitialized = true;
         }
 
+        // DEFAULT
+        pHome.setVisible(true);
+        p2.setVisible(true);
+        p3.setVisible(true);
+
+
         p6.setVisible(false);
 
         // Menu Permissions:
-        if(App.user.isEngineer()){
+        if (App.user.isEngineer()) {
             pHome.setVisible(true);
             p2.setVisible(true);
             p3.setVisible(true);
             p4.setVisible(true);
         }
 
-        if(App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
+
+        if (App.user.isOrganizationRole(OrganizationRole.DIRECTOR)) {
             p5.setVisible(true);
             p6.setVisible(true);
         }
-        text_hello.setText("Hello, " + App.user.getFirstName() + " ( "+App.user.getOrgRole()+" ) ");
+
+        String showRole= !App.user.getOrgRole().equals("") ? " ( " + App.user.getOrgRole() + " ) " :"";
+        text_hello.setText("Hello, " + App.user.getFirstName() + showRole);
 
     }
+
     public void showAlertAtMainController(AlertType at, String title, String content, String header) {
         showAlert(at, title, content, header);
     }
@@ -244,7 +262,7 @@ public class mainController extends AppController implements Initializable {
 
         App.client.handleMessageFromClientUI(new Message(OperationType.Logout, App.user.getUserName()));
         App.user = null;
-        BypassedApp.main(null);
+        //BypassedApp.main(null);
         changeWindow((Stage) ((Node) event.getSource()).getScene().getWindow(), "/client/views/Login.fxml");
     }
 

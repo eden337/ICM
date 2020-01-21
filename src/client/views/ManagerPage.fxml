@@ -16,7 +16,16 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1000.0" stylesheets="@css/theme.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.controllers.ManagerViewPage">
    <children>
-      <HBox>
+      <Pane fx:id="LoadingPane" prefHeight="710.0" prefWidth="1000.0">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="400.0" layoutY="320.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@img/Loading.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <HBox fx:id="MainPane" visible="false">
          <children>
             <VBox prefHeight="711.0" prefWidth="440.0">
                <children>

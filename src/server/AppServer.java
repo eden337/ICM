@@ -3,6 +3,7 @@ package server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -28,6 +29,9 @@ public class AppServer extends Application {
             Scene s1 = new Scene(root);
             primaryStage.setScene(s1);
             primaryStage.show();
+            Image image = new Image("/client/views/img/serverlogo.png");
+            primaryStage.getIcons().add(image);
+            primaryStage.setTitle("Server-ICM");
             primaryStage.setResizable(false);
         } catch (Exception e) {
             e.printStackTrace();
